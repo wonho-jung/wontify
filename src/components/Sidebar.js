@@ -1,10 +1,26 @@
 import React from "react";
 import styled from "styled-components";
-
+import SidebarOption from "./SidebarOption";
+import HomeIcon from "@material-ui/icons/Home";
+import SearchIcon from "@material-ui/icons/Search";
+import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
+import { useSelector } from "react-redux";
+import { selectPlaylists } from "../features/userSlice";
 function Sidebar() {
+  const myList = useSelector(selectPlaylists);
   return (
     <SidebarContainer>
       <img src="https://getheavy.com/wp-content/uploads/2019/12/spotify2019-830x350.jpg" />
+
+      <SidebarOption title="Home" Icon={HomeIcon} />
+      <SidebarOption title="Search" Icon={SearchIcon} />
+      <SidebarOption title="Your Library" Icon={LibraryMusicIcon} />
+      <br />
+      <strong>PLAYLISTS</strong>
+      <hr />
+      {myList?.playlists?.items?.map((playlist) => (
+        <SidebarOption title={playlist.name} />
+      ))}
     </SidebarContainer>
   );
 }
@@ -24,5 +40,16 @@ const SidebarContainer = styled.div`
     height: 70px;
     padding: 10px;
     margin-right: auto;
+  }
+
+  > strong {
+    margin-left: 10px;
+    padding: 5px;
+    font-size: 12px;
+  }
+  > hr {
+    border: 1px solid #282828;
+    width: 90%;
+    margin: 10px auto;
   }
 `;

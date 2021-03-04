@@ -11,19 +11,22 @@ import {
   set_user,
   set_token,
   selectToken,
+  set_playlists,
+  selectPlaylists,
 } from "./features/userSlice";
 
 const spotify = new SpotifyWebApi();
 function App() {
   const users = useSelector(selectUser);
   const tokens = useSelector(selectToken);
-  console.log(users, tokens);
+  const playlists = useSelector(selectPlaylists);
+  console.log(users, tokens, playlists);
   const dispatch = useDispatch();
   const [token, setToken] = useState(null);
   useEffect(() => {
     const hash = getTokenFromResponse();
     window.location.hash = "";
-    const _token = hash.access_token;
+    let _token = hash.access_token;
 
     if (_token) {
       dispatch(
@@ -39,6 +42,13 @@ function App() {
         dispatch(
           set_user({
             user,
+          })
+        );
+      });
+      spotify.getUserPlaylists().then((playlists) => {
+        dispatch(
+          set_playlists({
+            playlists,
           })
         );
       });
