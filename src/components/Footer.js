@@ -12,14 +12,18 @@ function Footer() {
   return (
     <FooterContainer>
       <FooterLeft>
-        <p>Album and song details</p>
+        <img src="" alt="" />
+        <FooterSongInfo>
+          <h4>songName</h4>
+          <p>songosng</p>
+        </FooterSongInfo>
       </FooterLeft>
       <FooterCenter>
-        <ShuffleIcon />
+        <ShuffleIcon style={{ color: "green" }} />
         <SkipPreviousIcon />
         <PlayCircleOutlineIcon fontSize="large" />
         <SkipNextIcon />
-        <RepeatIcon />
+        <RepeatIcon style={{ color: "green" }} />
       </FooterCenter>
       <FooterRight>
         <Grid container spacing={2}>
@@ -53,6 +57,24 @@ const FooterContainer = styled.div`
 
 const FooterLeft = styled.div`
   flex: 0.3;
+  display: flex;
+  align-items: center;
+  color: white;
+  width: 300px;
+  > img {
+    height: 60px;
+    width: 60px;
+    margin-right: 20px;
+    object-fit: contain;
+  }
+`;
+const FooterSongInfo = styled.div`
+  h4 > {
+    font-size: 12px;
+  }
+  p > {
+    font-size: 12px;
+  }
 `;
 
 const FooterCenter = styled.div`
@@ -63,6 +85,10 @@ const FooterCenter = styled.div`
   align-items: center;
   justify-content: space-between;
   max-width: 300px;
+  > .MuiSvgIcon-root:hover {
+    transition: transform 0.2s ease-in-out !important;
+    transform: scale(1.2) !important;
+  }
 `;
 
 const FooterRight = styled.div`
@@ -71,4 +97,7 @@ const FooterRight = styled.div`
   justify-content: space-between;
   align-items: center;
   color: white;
+  > * .MuiSlider-root {
+    color: green;
+  }
 `;

@@ -9,7 +9,7 @@ function Player({ spotify }) {
     <PlayerContainer>
       <PlayerBody>
         <Sidebar />
-        <Body />
+        <Body spotify={spotify} />
       </PlayerBody>
       <Footer />
     </PlayerContainer>

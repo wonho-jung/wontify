@@ -13,6 +13,8 @@ import {
   selectToken,
   set_playlists,
   selectPlaylists,
+  set_list,
+  selectList,
 } from "./features/userSlice";
 
 const spotify = new SpotifyWebApi();
@@ -20,9 +22,11 @@ function App() {
   const users = useSelector(selectUser);
   const tokens = useSelector(selectToken);
   const playlists = useSelector(selectPlaylists);
-  console.log(users, tokens, playlists);
+  const res = useSelector(selectList);
+  console.log(users, tokens, playlists, res);
   const dispatch = useDispatch();
   const [token, setToken] = useState(null);
+
   useEffect(() => {
     const hash = getTokenFromResponse();
     window.location.hash = "";
@@ -49,6 +53,13 @@ function App() {
         dispatch(
           set_playlists({
             playlists,
+          })
+        );
+      });
+      spotify.getPlaylist("3X3a74S8tRKBXc8nd9p3OO").then((res) => {
+        dispatch(
+          set_list({
+            res,
           })
         );
       });
