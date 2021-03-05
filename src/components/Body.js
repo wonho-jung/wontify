@@ -15,11 +15,11 @@ function Body({ spotify }) {
       <Header spotify={spotify} />
 
       <BodyInfo>
-        {/* <img src={list?.res.items[0]?.images[0].url} alt="" /> */}
+        <img src={list?.res.images[0].url} alt="" />
         <BodyInfoText>
           <strong>PLAYLIST</strong>
-          {/* <h2>{list?.res.items[0]?.name}</h2>
-          <p>{list?.res.items[0]?.description}</p> */}
+          <h2>{list?.res.name}</h2>
+          <p>{list?.res.description}</p>
         </BodyInfoText>
       </BodyInfo>
       <BodySongs>
@@ -28,9 +28,9 @@ function Body({ spotify }) {
           <FavoriteIcon fontSize="large" />
           <MoreHorizIcon />
         </BodyIcons>
-        {/* {list?.res.items[0].tracks.map((item) => (
+        {list?.res.tracks.items.map((item) => (
           <SongRow track={item.track} />
-        ))} */}
+        ))}
       </BodySongs>
     </BodyContainer>
   );
@@ -43,6 +43,7 @@ const BodyContainer = styled.div`
   flex: 0.8;
   height: 100vh;
   color: white;
+  overflow-y: overlay;
   background: linear-gradient(rgb(91, 87, 115), rgba(0, 0, 0, 1));
 `;
 const BodyInfo = styled.div`
