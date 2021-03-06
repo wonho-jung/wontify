@@ -9,6 +9,7 @@ export const userSlice = createSlice({
     playing: false,
     item: null,
     honne: null,
+    recentlyPlayed: null,
   },
 
   reducers: {
@@ -24,6 +25,9 @@ export const userSlice = createSlice({
     set_list: (state, action) => {
       state.honne = action.payload;
     },
+    set_recentlyPlayed: (state, action) => {
+      state.recentlyPlayed = action.payload;
+    },
   },
 });
 
@@ -32,6 +36,7 @@ export const {
   set_token,
   set_playlists,
   set_list,
+  set_recentlyPlayed,
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user.user;
@@ -39,5 +44,6 @@ export const selectUser = (state) => state.user.user;
 export const selectToken = (state) => state.user.token;
 export const selectPlaylists = (state) => state.user.playlists;
 export const selectList = (state) => state.user.honne;
+export const selectRecentlyPlayed = (state) => state.user.recentlyPlayed;
 
 export default userSlice.reducer;

@@ -6,13 +6,17 @@ import SearchIcon from "@material-ui/icons/Search";
 import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
 import { useSelector } from "react-redux";
 import { selectPlaylists } from "../features/userSlice";
+import { Link } from "react-router-dom";
 function Sidebar() {
   const myList = useSelector(selectPlaylists);
+  console.log(myList);
+
   return (
     <SidebarContainer>
       <img src="https://getheavy.com/wp-content/uploads/2019/12/spotify2019-830x350.jpg" />
-
-      <SidebarOption title="Home" Icon={HomeIcon} />
+      <Link to="/home" style={{ textDecoration: "none" }}>
+        <SidebarOption title="Home" Icon={HomeIcon} />
+      </Link>
       <SidebarOption title="Search" Icon={SearchIcon} />
       <SidebarOption title="Your Library" Icon={LibraryMusicIcon} />
       <br />

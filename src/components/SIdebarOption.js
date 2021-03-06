@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-function SidebarOption({ title, Icon }) {
+function SidebarOption({ title, Icon, test }) {
   return (
     <SidebarOptionContainer>
       {Icon && <Icon />}
