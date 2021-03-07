@@ -14,7 +14,7 @@ function Sidebar() {
   return (
     <SidebarContainer>
       <img src="https://getheavy.com/wp-content/uploads/2019/12/spotify2019-830x350.jpg" />
-      <Link to="/home" style={{ textDecoration: "none" }}>
+      <Link to="/" style={{ textDecoration: "none" }}>
         <SidebarOption title="Home" Icon={HomeIcon} />
       </Link>
       <SidebarOption title="Search" Icon={SearchIcon} />
@@ -22,8 +22,8 @@ function Sidebar() {
       <br />
       <strong>PLAYLISTS</strong>
       <hr />
-      {myList?.playlists?.items?.map((playlist) => (
-        <SidebarOption title={playlist.name} />
+      {myList?.playlists?.items?.map((playlist, idx) => (
+        <SidebarOption key={idx} id={playlist.id} title={playlist.name} />
       ))}
     </SidebarContainer>
   );

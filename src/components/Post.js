@@ -1,13 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 
-function Post({ image, name, artistsName }) {
+function Post({ image, name, artistsName, description }) {
   return (
     <PostContainer>
       <PostContent>
         <img src={image} alt="" />
         <h4>{artistsName}</h4>
-        <p>{name}</p>
+        <p>{name && name}</p>
+        <p>{description && description}</p>
       </PostContent>
     </PostContainer>
   );
@@ -15,7 +16,7 @@ function Post({ image, name, artistsName }) {
 
 export default Post;
 const PostContainer = styled.div`
-  max-width: 220px;
+  max-width: 180px;
   background-color: #181818;
   margin: 10px;
 `;
@@ -25,6 +26,6 @@ const PostContent = styled.div`
   padding-left: 20px;
   padding-right: 20px;
   > img {
-    height: 180px;
+    height: 140px;
   }
 `;

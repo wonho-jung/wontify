@@ -1,32 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import Post from "./Post";
-import { selectNewReleases, selectRecentlyPlayed } from "../features/userSlice";
+import {
+  selectMood,
+  selectNewReleases,
+  selectParty,
+  selectRecentlyPlayed,
+  selectTopList,
+  selectWorkout,
+} from "../features/userSlice";
 import { useSelector } from "react-redux";
 function Home() {
-  const played = useSelector(selectRecentlyPlayed);
-  const {
-    recentlyPlayed: { items: playedRecently },
-  } = played;
-
+  const recentlyPlayed = useSelector(selectRecentlyPlayed);
   const newReleases = useSelector(selectNewReleases);
-  const {
-    newReleases: {
-      albums: { items: newSong },
-    },
-  } = newReleases;
-  console.log(newSong);
-
+  const topList = useSelector(selectTopList);
+  const workout = useSelector(selectWorkout);
+  const party = useSelector(selectParty);
+  const mood = useSelector(selectMood);
+  console.log(mood);
   return (
     <HomeContainer>
       <HomeContentContainer>
         <h1>Recently played</h1>
         <PostsContainer>
-          {playedRecently.map((track) => (
+          {recentlyPlayed?.recentlyPlayed?.map((track, inx) => (
             <Post
-              key={track.track.id}
+              key={inx}
               image={track.track.album.images[0].url}
-              artistsName={track.track.artists.name}
+              artistsName={track.track.artists[0].name}
               name={track.track.name}
             />
           ))}
@@ -36,12 +37,67 @@ function Home() {
       <HomeContentContainer>
         <h1>New Releases</h1>
         <PostsContainer>
-          {newSong.map((track) => (
+          {newReleases?.newReleases?.map((track, inx) => (
             <Post
-              key={track.id}
+              key={inx}
               image={track.images[0].url}
               artistsName={track.artists[0].name}
               name={track.name}
+            />
+          ))}
+        </PostsContainer>
+      </HomeContentContainer>
+
+      <HomeContentContainer>
+        <h1>Top play lists</h1>
+        <PostsContainer>
+          {topList?.topList?.map((track, inx) => (
+            <Post
+              key={inx}
+              image={track.images[0].url}
+              artistsName={track.name}
+              description={track.description}
+            />
+          ))}
+        </PostsContainer>
+      </HomeContentContainer>
+
+      <HomeContentContainer>
+        <h1>Work out</h1>
+        <PostsContainer>
+          {workout?.workout?.map((track, inx) => (
+            <Post
+              key={inx}
+              image={track.images[0].url}
+              artistsName={track.name}
+              description={track.description}
+            />
+          ))}
+        </PostsContainer>
+      </HomeContentContainer>
+      <HomeContentContainer>
+        <h1>Mood</h1>
+        <PostsContainer>
+          {mood?.mood?.map((track, inx) => (
+            <Post
+              key={inx}
+              image={track.images[0].url}
+              artistsName={track.name}
+              description={track.description}
+            />
+          ))}
+        </PostsContainer>
+      </HomeContentContainer>
+
+      <HomeContentContainer>
+        <h1>Party</h1>
+        <PostsContainer>
+          {party?.party?.map((track, inx) => (
+            <Post
+              key={inx}
+              image={track.images[0].url}
+              artistsName={track.name}
+              description={track.description}
             />
           ))}
         </PostsContainer>

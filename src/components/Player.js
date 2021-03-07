@@ -13,11 +13,11 @@ function Player({ spotify }) {
         <PlayerBody>
           <Sidebar />
           <Switch>
-            <Route path="/home" exact>
-              <Home />
-            </Route>
-            <Route path="/">
+            <Route path="/:id">
               <Body spotify={spotify} />
+            </Route>
+            <Route path="/" exact>
+              <Home />
             </Route>
           </Switch>
         </PlayerBody>

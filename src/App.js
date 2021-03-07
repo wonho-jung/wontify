@@ -17,15 +17,25 @@ import {
   selectList,
   set_recentlyPlayed,
   set_newReleases,
+  set_topList,
+  selectTopList,
+  set_workout,
+  selectWorkout,
+  set_party,
+  set_mood,
 } from "./features/userSlice";
 
 const spotify = new SpotifyWebApi();
 function App() {
   const users = useSelector(selectUser);
+  const topList = useSelector(selectTopList);
+
   const tokens = useSelector(selectToken);
   const playlists = useSelector(selectPlaylists);
   const res = useSelector(selectList);
-  console.log(users, tokens, playlists, res);
+  const workout = useSelector(selectWorkout);
+
+  console.log(workout);
   const dispatch = useDispatch();
   const [token, setToken] = useState(null);
 
@@ -70,21 +80,43 @@ function App() {
       spotify.getMyRecentlyPlayedTracks().then((recentlyPlayed) => {
         dispatch(
           set_recentlyPlayed({
-            recentlyPlayed,
+            recentlyPlayed: recentlyPlayed.items,
           })
         );
       });
       spotify.getNewReleases().then((newReleases) => {
         dispatch(
           set_newReleases({
-            newReleases,
+            newReleases: newReleases.albums.items,
           })
         );
       });
-      spotify.getFeaturedPlaylists().then((newReleases) => {
+
+      spotify.getCategoryPlaylists("toplists").then((topList) => {
         dispatch(
-          set_newReleases({
-            newReleases,
+          set_topList({
+            topList: topList.playlists.items,
+          })
+        );
+      });
+      spotify.getCategoryPlaylists("workout").then((workout) => {
+        dispatch(
+          set_workout({
+            workout: workout.playlists.items,
+          })
+        );
+      });
+      spotify.getCategoryPlaylists("mood").then((mood) => {
+        dispatch(
+          set_mood({
+            mood: mood.playlists.items,
+          })
+        );
+      });
+      spotify.getCategoryPlaylists("party").then((party) => {
+        dispatch(
+          set_party({
+            party: party.playlists.items,
           })
         );
       });

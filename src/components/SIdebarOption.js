@@ -1,12 +1,24 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-function SidebarOption({ title, Icon }) {
+function SidebarOption({ title, Icon, id }) {
   return (
-    <SidebarOptionContainer>
-      {Icon && <Icon />}
-      {Icon ? <h4>{title}</h4> : <p>{title}</p>}
-    </SidebarOptionContainer>
+    <>
+      {id ? (
+        <Link to={`/${id}`}>
+          <SidebarOptionContainer>
+            {Icon && <Icon />}
+            {Icon ? <h4>{title}</h4> : <p>{title}</p>}
+          </SidebarOptionContainer>
+        </Link>
+      ) : (
+        <SidebarOptionContainer>
+          {Icon && <Icon />}
+          {Icon ? <h4>{title}</h4> : <p>{title}</p>}
+        </SidebarOptionContainer>
+      )}
+    </>
   );
 }
 
