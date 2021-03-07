@@ -1,57 +1,48 @@
 import React from "react";
 import styled from "styled-components";
 import Post from "./Post";
-import { selectRecentlyPlayed } from "../features/userSlice";
+import { selectNewReleases, selectRecentlyPlayed } from "../features/userSlice";
 import { useSelector } from "react-redux";
 function Home() {
   const played = useSelector(selectRecentlyPlayed);
   const {
     recentlyPlayed: { items: playedRecently },
   } = played;
-  console.log(playedRecently);
+
+  const newReleases = useSelector(selectNewReleases);
+  const {
+    newReleases: {
+      albums: { items: newSong },
+    },
+  } = newReleases;
+  console.log(newSong);
+
   return (
     <HomeContainer>
       <HomeContentContainer>
         <h1>Recently played</h1>
         <PostsContainer>
           {playedRecently.map((track) => (
-            <Post key={track.id} recentlyPlayed={track} />
+            <Post
+              key={track.track.id}
+              image={track.track.album.images[0].url}
+              artistsName={track.track.artists.name}
+              name={track.track.name}
+            />
           ))}
         </PostsContainer>
       </HomeContentContainer>
 
       <HomeContentContainer>
-        <h1>The Top Podcasts of 2020</h1>
+        <h1>New Releases</h1>
         <PostsContainer>
-          {playedRecently.map((track) => (
-            <Post key={track.id} recentlyPlayed={track} />
-          ))}
-        </PostsContainer>
-      </HomeContentContainer>
-
-      <HomeContentContainer>
-        <h1>Mood</h1>
-        <PostsContainer>
-          {playedRecently.map((track) => (
-            <Post key={track.id} recentlyPlayed={track} />
-          ))}
-        </PostsContainer>
-      </HomeContentContainer>
-
-      <HomeContentContainer>
-        <h1>The Top Podcasts of 2020</h1>
-        <PostsContainer>
-          {playedRecently.map((track) => (
-            <Post key={track.id} recentlyPlayed={track} />
-          ))}
-        </PostsContainer>
-      </HomeContentContainer>
-
-      <HomeContentContainer>
-        <h1>The Top Podcasts of 2020</h1>
-        <PostsContainer>
-          {playedRecently.map((track) => (
-            <Post key={track.id} recentlyPlayed={track} />
+          {newSong.map((track) => (
+            <Post
+              key={track.id}
+              image={track.images[0].url}
+              artistsName={track.artists[0].name}
+              name={track.name}
+            />
           ))}
         </PostsContainer>
       </HomeContentContainer>

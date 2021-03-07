@@ -1,13 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 
-function Post({ recentlyPlayed }) {
+function Post({ image, name, artistsName }) {
   return (
     <PostContainer>
       <PostContent>
-        <img src={recentlyPlayed.track.album.images[0].url} alt="" />
-        <h4>{recentlyPlayed.track.artists[0].name}</h4>
-        <p>{recentlyPlayed.track.name}</p>
+        <img src={image} alt="" />
+        <h4>{artistsName}</h4>
+        <p>{name}</p>
       </PostContent>
     </PostContainer>
   );

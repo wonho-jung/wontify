@@ -16,6 +16,7 @@ import {
   set_list,
   selectList,
   set_recentlyPlayed,
+  set_newReleases,
 } from "./features/userSlice";
 
 const spotify = new SpotifyWebApi();
@@ -43,7 +44,6 @@ function App() {
 
       spotify.setAccessToken(_token);
       spotify.getMe().then((user) => {
-        console.log("user", user);
         dispatch(
           set_user({
             user,
@@ -56,19 +56,35 @@ function App() {
             playlists,
           })
         );
+        playlists.items.map((item) => {
+          spotify.getPlaylist(item.id).then((res) => {
+            dispatch(
+              set_list({
+                res,
+              })
+            );
+          });
+        });
       });
 
-      spotify.getPlaylist("3X3a74S8tRKBXc8nd9p3OO").then((res) => {
-        dispatch(
-          set_list({
-            res,
-          })
-        );
-      });
       spotify.getMyRecentlyPlayedTracks().then((recentlyPlayed) => {
         dispatch(
           set_recentlyPlayed({
             recentlyPlayed,
+          })
+        );
+      });
+      spotify.getNewReleases().then((newReleases) => {
+        dispatch(
+          set_newReleases({
+            newReleases,
+          })
+        );
+      });
+      spotify.getFeaturedPlaylists().then((newReleases) => {
+        dispatch(
+          set_newReleases({
+            newReleases,
           })
         );
       });

@@ -1,7 +1,7 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectList } from "../features/userSlice";
+import { selectList, selectPlaylists, set_list } from "../features/userSlice";
 import Header from "./Header";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -9,6 +9,7 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "./SongRow";
 function Body({ spotify }) {
   const list = useSelector(selectList);
+
   console.log(list);
   return (
     <BodyContainer>

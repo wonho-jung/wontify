@@ -50,7 +50,7 @@ const FooterContainer = styled.div`
   justify-content: space-between;
   bottom: 0;
   height: 65px;
-  width: 95%;
+  width: 100%;
   background-color: #282828;
   padding: 20px;
 `;
@@ -97,6 +97,7 @@ const FooterRight = styled.div`
   justify-content: space-between;
   align-items: center;
   color: white;
+  padding-right: 40px;
   > * .MuiSlider-root {
     color: green;
   }
