@@ -8,13 +8,15 @@ export const userSlice = createSlice({
     playlists: null,
     playing: false,
     item: null,
-    honne: null,
+    userplaylist: null,
     recentlyPlayed: null,
     newReleases: null,
     topList: null,
     workout: null,
     mood: null,
     party: null,
+    playlistid: null,
+    recommended: null,
   },
 
   reducers: {
@@ -28,7 +30,7 @@ export const userSlice = createSlice({
       state.playlists = action.payload;
     },
     set_list: (state, action) => {
-      state.honne = action.payload;
+      state.userplaylist = action.payload;
     },
     set_recentlyPlayed: (state, action) => {
       state.recentlyPlayed = action.payload;
@@ -48,6 +50,12 @@ export const userSlice = createSlice({
     set_party: (state, action) => {
       state.party = action.payload;
     },
+    set_playlistid: (state, action) => {
+      state.playlistid = action.payload;
+    },
+    set_Recommended: (state, action) => {
+      state.recommended = action.payload;
+    },
   },
 });
 
@@ -62,17 +70,22 @@ export const {
   set_workout,
   set_mood,
   set_party,
+  set_playlistid,
+  set_Recommended,
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user.user;
 
 export const selectToken = (state) => state.user.token;
 export const selectPlaylists = (state) => state.user.playlists;
-export const selectList = (state) => state.user.honne;
+export const selectList = (state) => state.user.userplaylist;
 export const selectRecentlyPlayed = (state) => state.user.recentlyPlayed;
 export const selectNewReleases = (state) => state.user.newReleases;
 export const selectTopList = (state) => state.user.topList;
 export const selectWorkout = (state) => state.user.workout;
 export const selectMood = (state) => state.user.mood;
 export const selectParty = (state) => state.user.party;
+export const selectPlaylistid = (state) => state.user.playlistid;
+export const selectRecommended = (state) => state.user.recommended;
+
 export default userSlice.reducer;

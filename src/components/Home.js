@@ -124,6 +124,9 @@ const HomeContentContainer = styled.div`
   > h1 {
     padding-bottom: 30px;
   }
+  :last-child {
+    padding-bottom: 150px;
+  }
 `;
 const PostsContainer = styled.div`
   display: flex;

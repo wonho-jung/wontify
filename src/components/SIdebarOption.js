@@ -1,12 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { selectPlaylistid, set_playlistid } from "../features/userSlice";
 
-function SidebarOption({ title, Icon, id }) {
+function SidebarOption({ title, Icon, id, spotify }) {
+  const dispatch = useDispatch();
+  const playlistid = useSelector(selectPlaylistid);
+  console.log(id);
+  const click = () => {
+    dispatch(
+      set_playlistid({
+        playlistid: id,
+      })
+    );
+  };
+
+  console.log(playlistid);
+
   return (
     <>
       {id ? (
-        <Link to={`/${id}`}>
+        <Link to={`/${id}`} onClick={click}>
           <SidebarOptionContainer>
             {Icon && <Icon />}
             {Icon ? <h4>{title}</h4> : <p>{title}</p>}

@@ -7,7 +7,7 @@ import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
 import { useSelector } from "react-redux";
 import { selectPlaylists } from "../features/userSlice";
 import { Link } from "react-router-dom";
-function Sidebar() {
+function Sidebar({ spotify }) {
   const myList = useSelector(selectPlaylists);
   console.log(myList);
 
@@ -23,7 +23,12 @@ function Sidebar() {
       <strong>PLAYLISTS</strong>
       <hr />
       {myList?.playlists?.items?.map((playlist, idx) => (
-        <SidebarOption key={idx} id={playlist.id} title={playlist.name} />
+        <SidebarOption
+          spotify={spotify}
+          key={idx}
+          id={playlist.id}
+          title={playlist.name}
+        />
       ))}
     </SidebarContainer>
   );

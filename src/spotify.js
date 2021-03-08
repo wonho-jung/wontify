@@ -11,6 +11,8 @@ const scopes = [
   "user-modify-playback-state",
   "user-library-read",
   "user-library-modify",
+  "playlist-modify-public",
+  "playlist-modify-private",
 ];
 export const getTokenFromResponse = () => {
   return window.location.hash

@@ -11,7 +11,7 @@ function Player({ spotify }) {
     <Router>
       <PlayerContainer>
         <PlayerBody>
-          <Sidebar />
+          <Sidebar spotify={spotify} />
           <Switch>
             <Route path="/:id">
               <Body spotify={spotify} />
