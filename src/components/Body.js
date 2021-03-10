@@ -33,6 +33,7 @@ function Body({ spotify }) {
         );
         res.tracks.items.map((item) => {
           db.collection("tracks").add({
+            id: id,
             image: item.track.album.images[0].url,
             name: item.track.name,
             albumName: item.track.album.name,

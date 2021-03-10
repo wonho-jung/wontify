@@ -8,7 +8,7 @@ function SongRow({ track, recommended, spotify, id }) {
   };
   return (
     <SongRowContainer>
-      <img src={track?.album?.images[0].url} alt="" />
+      <img src={track?.album?.images[0]?.url} alt="" />
       <SongRowInfo>
         <h1>{track?.name}</h1>
         <p>
