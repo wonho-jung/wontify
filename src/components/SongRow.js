@@ -1,19 +1,38 @@
 import { Button } from "@material-ui/core";
 import React from "react";
 import styled from "styled-components";
+import { db } from "./firebase";
+import firebase from "firebase";
 
-function SongRow({ track, recommended, spotify, id }) {
-  const addList = () => {
+function SongRow({
+  track,
+  image,
+  name,
+  albumName,
+  recommended,
+  artistsName,
+  spotify,
+  id,
+}) {
+  const addList = (e) => {
+    e.preventDefault();
     spotify.addTracksToPlaylist(id, [track.uri]);
+    db.collection("tracks").doc(id).collection("track").add({
+      id: track.uri,
+      image,
+      name,
+      albumName,
+      artistsName: track.artists,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
   };
   return (
     <SongRowContainer>
-      <img src={track?.album?.images[0]?.url} alt="" />
+      <img src={image} alt="" />
       <SongRowInfo>
-        <h1>{track?.name}</h1>
+        <h1>{name}</h1>
         <p>
-          {track?.artists.map((artist) => artist.name).join(",")}/
-          {track?.album.name}
+          {artistsName?.map((artist) => artist.name).join(", ")}/{albumName}
         </p>
       </SongRowInfo>
       {recommended && <Button onClick={addList}>ADD</Button>}

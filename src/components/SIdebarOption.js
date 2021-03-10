@@ -21,7 +21,7 @@ function SidebarOption({ title, Icon, id, spotify }) {
   return (
     <>
       {id ? (
-        <Link to={`/${id}`} onClick={click}>
+        <Link to={`/${id}`} onClick={click} style={{ textDecoration: "none" }}>
           <SidebarOptionContainer>
             {Icon && <Icon />}
             {Icon ? <h4>{title}</h4> : <p>{title}</p>}

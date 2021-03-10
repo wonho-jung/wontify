@@ -14,51 +14,53 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "./SongRow";
 import { db } from "./firebase";
+import { useCollection } from "react-firebase-hooks/firestore";
 function Body({ spotify }) {
   const dispatch = useDispatch();
   const playlistid = useSelector(selectPlaylistid);
   const { playlistid: id } = playlistid;
   const userplaylist = useSelector(selectList);
-  console.log(userplaylist?.res.tracks.items[0].track.artists[0].id);
   const recommended = useSelector(selectRecommended);
+
+  const [tracksDetail] = useCollection(id && db.collection("tracks").doc(id));
+  const [trackItem, loading] = useCollection(
+    id &&
+      db
+        .collection("tracks")
+        .doc(id)
+        .collection("track")
+        .orderBy("timestamp", "asc")
+  );
 
   useEffect(() => {
     if (id) {
       spotify.getPlaylist(id).then((res) => {
-        console.log(res.tracks.items);
         dispatch(
           set_list({
             res,
           })
         );
-        res.tracks.items.map((item) => {
-          db.collection("tracks").add({
-            id: id,
-            image: item.track.album.images[0].url,
-            name: item.track.name,
-            albumName: item.track.album.name,
-            artistsName: item.track.artists
-              .map((artist) => artist.name)
-              .join(","),
-          });
-        });
       });
-      spotify
-        .getRecommendations({
-          seed_artists: userplaylist?.res.tracks.items[0].track.artists[0].id,
-
-          seed_tracks: id,
-        })
-
-        .then((recommended) => {
-          dispatch(
-            set_Recommended({
-              recommended,
-            })
-          );
-        });
     }
   }, [id]);
+
+  useEffect(() => {
+    spotify
+      .getRecommendations({
+        seed_artists: userplaylist?.res.tracks.items[0].track.artists[0].id,
+        seed_tracks: id,
+      })
+
+      .then((recommended) => {
+        dispatch(
+          set_Recommended({
+            recommended,
+          })
+        );
+      });
+  }, [id, trackItem]);
+
+  useEffect(() => {});
   return (
     <BodyContainer>
       <Header spotify={spotify} />
@@ -77,15 +79,44 @@ function Body({ spotify }) {
           <FavoriteIcon fontSize="large" />
           <MoreHorizIcon />
         </BodyIcons>
+
         {userplaylist?.res.tracks.items.map((item) => (
-          <SongRow track={item.track} />
+          <SongRow
+            image={item?.track.album?.images[0]?.url}
+            name={item?.track.name}
+            albumName={item?.track.album.name}
+            artistsName={item?.track.artists}
+          />
         ))}
+
+        {tracksDetail &&
+          trackItem &&
+          trackItem?.docs.map((doc) => {
+            const { albumName, artistsName, id, image, name } = doc.data();
+            return (
+              <SongRow
+                albumName={albumName}
+                artistsName={artistsName}
+                image={image}
+                name={name}
+              />
+            );
+          })}
 
         <Recommended>
           <h3>Recommended</h3>
           <p className="recommend_p">Based on what's in this playlist</p>
           {recommended?.recommended.tracks.map((item) => (
-            <SongRow id={id} spotify={spotify} track={item} recommended />
+            <SongRow
+              id={id}
+              track={item}
+              spotify={spotify}
+              image={item?.album.images[0]?.url}
+              name={item?.name}
+              albumName={item?.album.name}
+              artistsName={item?.artists}
+              recommended
+            />
           ))}
         </Recommended>
       </BodySongs>
@@ -149,6 +180,7 @@ const BodyIcons = styled.div`
   }
 `;
 const Recommended = styled.div`
+  margin-top: 50px;
   h3,
   .recommend_p {
     padding-left: 30px;
