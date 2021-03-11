@@ -6,7 +6,6 @@ import { selectUser } from "../features/userSlice";
 import { useSelector } from "react-redux";
 function Header({ spotify }) {
   const user = useSelector(selectUser);
-  console.log(user?.user.display_name);
   return (
     <HeaderContainer>
       <HeaderLeft>

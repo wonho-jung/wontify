@@ -2,21 +2,49 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { selectPlaylistid, set_playlistid } from "../features/userSlice";
+import {
+  selectList,
+  selectPlaylistid,
+  set_list,
+  set_playlistid,
+  set_Recommended,
+} from "../features/userSlice";
+import { db } from "./firebase";
+import firebase from "firebase";
 
 function SidebarOption({ title, Icon, id, spotify }) {
   const dispatch = useDispatch();
-  const playlistid = useSelector(selectPlaylistid);
-  console.log(id);
-  const click = () => {
-    dispatch(
-      set_playlistid({
-        playlistid: id,
-      })
-    );
-  };
 
-  console.log(playlistid);
+  const click = () => {
+    if (id) {
+      dispatch(
+        set_playlistid({
+          playlistid: id,
+        })
+      );
+      spotify.getPlaylist(id).then((res) => {
+        dispatch(
+          set_list({
+            res,
+          })
+        );
+
+        spotify
+          .getRecommendations({
+            seed_artists: res.tracks.items[0].track.artists[0].id,
+            seed_tracks: id,
+          })
+
+          .then((recommended) => {
+            dispatch(
+              set_Recommended({
+                recommended,
+              })
+            );
+          });
+      });
+    }
+  };
 
   return (
     <>

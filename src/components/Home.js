@@ -17,7 +17,7 @@ function Home() {
   const workout = useSelector(selectWorkout);
   const party = useSelector(selectParty);
   const mood = useSelector(selectMood);
-  console.log(mood);
+
   return (
     <HomeContainer>
       <HomeContentContainer>

@@ -9,8 +9,6 @@ import { selectPlaylists } from "../features/userSlice";
 import { Link } from "react-router-dom";
 function Sidebar({ spotify }) {
   const myList = useSelector(selectPlaylists);
-  console.log(myList);
-
   return (
     <SidebarContainer>
       <img src="https://getheavy.com/wp-content/uploads/2019/12/spotify2019-830x350.jpg" />

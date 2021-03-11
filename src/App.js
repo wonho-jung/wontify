@@ -27,15 +27,6 @@ import {
 
 const spotify = new SpotifyWebApi();
 function App() {
-  const users = useSelector(selectUser);
-  const topList = useSelector(selectTopList);
-
-  const tokens = useSelector(selectToken);
-  const playlists = useSelector(selectPlaylists);
-  const res = useSelector(selectList);
-  const workout = useSelector(selectWorkout);
-
-  console.log(workout);
   const dispatch = useDispatch();
   const [token, setToken] = useState(null);
 
@@ -66,15 +57,6 @@ function App() {
             playlists,
           })
         );
-        playlists.items.map((item) => {
-          spotify.getPlaylist(item.id).then((res) => {
-            dispatch(
-              set_list({
-                res,
-              })
-            );
-          });
-        });
       });
 
       spotify.getMyRecentlyPlayedTracks().then((recentlyPlayed) => {
