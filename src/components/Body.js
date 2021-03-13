@@ -39,6 +39,31 @@ function Body({ spotify }) {
         .orderBy("timestamp", "asc")
   );
 
+  useEffect(async () => {
+    if (id) {
+      spotify.getPlaylist(id).then((res) => {
+        console.log(res.tracks.items);
+        dispatch(
+          set_list({
+            res,
+          })
+        );
+      });
+      spotify
+        .getRecommendations({
+          seed_artists: userplaylist?.res.tracks.items[0].track.artists[0].id,
+          seed_tracks: id,
+        })
+        .then((recommended) => {
+          dispatch(
+            set_Recommended({
+              recommended,
+            })
+          );
+        });
+    }
+  }, [id]);
+
   return (
     <BodyContainer>
       <Header spotify={spotify} />
