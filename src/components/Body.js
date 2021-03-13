@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import {
@@ -15,7 +15,6 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "./SongRow";
 import { db } from "./firebase";
 import { useCollection } from "react-firebase-hooks/firestore";
-import firebase from "firebase";
 
 function Body({ spotify }) {
   const dispatch = useDispatch();
@@ -23,8 +22,15 @@ function Body({ spotify }) {
   const { playlistid: id } = playlistid;
   const userplaylist = useSelector(selectList);
   const recommended = useSelector(selectRecommended);
+  console.log(userplaylist);
+  const [displaysDetail] = useCollection(
+    id && db.collection("diplays").doc(id)
+  );
+  const [displayItem] = useCollection(
+    id && db.collection("displays").doc(id).collection("display")
+  );
   const [tracksDetail] = useCollection(id && db.collection("tracks").doc(id));
-  const [trackItem, loading] = useCollection(
+  const [trackItem] = useCollection(
     id &&
       db
         .collection("tracks")
@@ -33,57 +39,6 @@ function Body({ spotify }) {
         .orderBy("timestamp", "asc")
   );
 
-  // useEffect(() => {
-  //   spotify
-  //     .getRecommendations({
-  //       seed_artists: userplaylist?.res.tracks.items[0].track.artists[0].id,
-  //       seed_tracks: id,
-  //     })
-  //     .then((recommended) => {
-  //       dispatch(
-  //         set_Recommended({
-  //           recommended,
-  //         })
-  //       );
-  //     });
-  // }, []);
-  // useEffect(async () => {
-  //   if (id) {
-  //     // spotify.getPlaylist(id).then((res) => {
-  //     //   console.log(res.tracks.items);
-  //     //   dispatch(
-  //     //     set_list({
-  //     //       res,
-  //     //     })
-  //     //   );
-  //     // });
-  //     spotify
-  //       .getRecommendations({
-  //         seed_artists: userplaylist?.res.tracks.items[0].track.artists[0].id,
-  //         seed_tracks: id,
-  //       })
-  //       .then((recommended) => {
-  //         dispatch(
-  //           set_Recommended({
-  //             recommended,
-  //           })
-  //         );
-  //       });
-  //   }
-  // }, [id]);
-
-  // useEffect(() => {
-  //   if (id !== id)
-  //     userplaylist.res.tracks.items.map((item) => {
-  //       db.collection("tracks").doc(id).collection("track").add({
-  //         image: item.track.album.images[0].url,
-  //         name: item.track.artists,
-  //         albumName: item.track.album.name,
-  //         artistsName: item.track.artists,
-  //         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-  //       });
-  //     });
-  // }, []);
   return (
     <BodyContainer>
       <Header spotify={spotify} />
@@ -96,6 +51,7 @@ function Body({ spotify }) {
           <p>{userplaylist?.res.description}</p>
         </BodyInfoText>
       </BodyInfo>
+
       <BodySongs>
         <BodyIcons>
           <PlayCircleFilledIcon className="body__shuffle" />
@@ -103,19 +59,10 @@ function Body({ spotify }) {
           <MoreHorizIcon />
         </BodyIcons>
 
-        {userplaylist?.res.tracks.items.map((item) => (
-          <SongRow
-            image={item?.track.album?.images[0]?.url}
-            name={item?.track.name}
-            albumName={item?.track.album.name}
-            artistsName={item?.track.artists}
-          />
-        ))}
-
-        {/* {tracksDetail &&
-          trackItem &&
+        {tracksDetail &&
           trackItem?.docs.map((doc) => {
-            const { albumName, artistsName, id, image, name } = doc.data();
+            const { albumName, artistsName, image, name } = doc.data();
+
             return (
               <SongRow
                 albumName={albumName}
@@ -124,7 +71,7 @@ function Body({ spotify }) {
                 name={name}
               />
             );
-          })} */}
+          })}
 
         <Recommended>
           <h3>Recommended</h3>

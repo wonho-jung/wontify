@@ -1,5 +1,5 @@
 import { Button } from "@material-ui/core";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { db } from "./firebase";
 import firebase from "firebase";
@@ -18,34 +18,33 @@ function SongRow({
   id,
 }) {
   const dispatch = useDispatch();
-
   const addList = () => {
-    spotify.addTracksToPlaylist(id, [track.uri]).then(
-      spotify.getPlaylist(id).then((res) => {
-        dispatch(
-          set_list({
-            res,
-          })
-        );
-      })
-    );
+    spotify.addTracksToPlaylist(id, [track.uri]);
+
+    db.collection("tracks").doc(id).collection("track").add({
+      image,
+      name,
+      albumName,
+      artistsName,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+
+    spotify.getPlaylist(id).then((res) => {
+      spotify
+        .getRecommendations({
+          seed_artists: res.tracks.items[0].track.artists[0].id,
+          seed_tracks: id,
+        })
+
+        .then((recommended) => {
+          dispatch(
+            set_Recommended({
+              recommended,
+            })
+          );
+        });
+    });
   };
-  // db.collection("tracks").doc(id).collection("track").add({
-  //   id: track.uri,
-  //   image,
-  //   name,
-  //   albumName,
-  //   artistsName: track.artists,
-  //   timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-  // });
-  //   spotify.getPlaylist(id).then((res) => {
-  //     dispatch(
-  //       set_list({
-  //         res,
-  //       })
-  //     );
-  //   });
-  // };
 
   return (
     <SongRowContainer>
