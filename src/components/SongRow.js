@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { db } from "./firebase";
 import firebase from "firebase";
 import { useDispatch } from "react-redux";
-import { set_list, set_Recommended } from "../features/userSlice";
+import { set_AddItem, set_list, set_Recommended } from "../features/userSlice";
 import { Link } from "react-router-dom";
 
 function SongRow({
@@ -20,14 +20,24 @@ function SongRow({
   const dispatch = useDispatch();
   const addList = () => {
     spotify.addTracksToPlaylist(id, [track.uri]);
+    dispatch(
+      set_AddItem({
+        addItem: {
+          image,
+          name,
+          albumName,
+          artistsName,
+        },
+      })
+    );
 
-    db.collection("tracks").doc(id).collection("track").add({
-      image,
-      name,
-      albumName,
-      artistsName,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    });
+    // db.collection("tracks").doc(id).collection("track").add({
+    //   image,
+    //   name,
+    //   albumName,
+    //   artistsName,
+    //   timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    // });
 
     spotify.getPlaylist(id).then((res) => {
       spotify

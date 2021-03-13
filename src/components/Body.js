@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import {
+  selectAddItem,
   selectList,
   selectPlaylistid,
   selectRecommended,
@@ -38,31 +39,32 @@ function Body({ spotify }) {
         .collection("track")
         .orderBy("timestamp", "asc")
   );
-
-  useEffect(async () => {
-    if (id) {
-      spotify.getPlaylist(id).then((res) => {
-        console.log(res.tracks.items);
-        dispatch(
-          set_list({
-            res,
-          })
-        );
-      });
-      spotify
-        .getRecommendations({
-          seed_artists: userplaylist?.res.tracks.items[0].track.artists[0].id,
-          seed_tracks: id,
-        })
-        .then((recommended) => {
-          dispatch(
-            set_Recommended({
-              recommended,
-            })
-          );
-        });
-    }
-  }, [id]);
+  const addItem = useSelector(selectAddItem);
+  console.log(id);
+  // useEffect(() => {
+  //   if (id) {
+  //     spotify.getPlaylist(id).then((res) => {
+  //       console.log(res.tracks.items);
+  //       dispatch(
+  //         set_list({
+  //           res,
+  //         })
+  //       );
+  //     });
+  //     // spotify
+  //     //   .getRecommendations({
+  //     //     seed_artists: userplaylist?.res.tracks.items[0].track.artists[0].id,
+  //     //     seed_tracks: id,
+  //     //   })
+  //     //   .then((recommended) => {
+  //     //     dispatch(
+  //     //       set_Recommended({
+  //     //         recommended,
+  //     //       })
+  //     //     );
+  //     //   });
+  //   }
+  // }, []);
 
   return (
     <BodyContainer>
@@ -84,7 +86,46 @@ function Body({ spotify }) {
           <MoreHorizIcon />
         </BodyIcons>
 
-        {tracksDetail &&
+        {spotify
+          .getPlaylist(id)
+          .then((res) =>
+            res.tracks.items.map((item) => (
+              <SongRow
+                name={item?.track.name}
+                albumName={item?.track.album.name}
+                artistsName={item?.track.artists}
+              />
+            ))
+          )}
+
+        {/* {userplaylist?.res.tracks.items.map((item) => (
+          <SongRow
+            image={item?.track.album?.images[0]?.url}
+            name={item?.track.name}
+            albumName={item?.track.album.name}
+            artistsName={item?.track.artists}
+          />
+        ))} */}
+
+        {/* {userplaylist?.res.tracks.items.map((item) => (
+          <SongRow
+            image={item?.track.album?.images[0]?.url}
+            name={item?.track.name}
+            albumName={item?.track.album.name}
+            artistsName={item?.track.artists}
+          />
+        ))} */}
+
+        {/* {addItem (
+          <SongRow
+            image={addItem.image}
+            name={addItem.name}
+            albumName={addItem.albumName}
+            artistsName={addItem.artistsName}
+          />
+        )} */}
+
+        {/* {tracksDetail &&
           trackItem?.docs.map((doc) => {
             const { albumName, artistsName, image, name } = doc.data();
 
@@ -96,7 +137,7 @@ function Body({ spotify }) {
                 name={name}
               />
             );
-          })}
+          })} */}
 
         <Recommended>
           <h3>Recommended</h3>
