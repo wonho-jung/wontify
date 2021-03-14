@@ -19,25 +19,13 @@ function SongRow({
 }) {
   const dispatch = useDispatch();
   const addList = () => {
-    spotify.addTracksToPlaylist(id, [track.uri]);
-    dispatch(
-      set_AddItem({
-        addItem: {
-          image,
-          name,
-          albumName,
-          artistsName,
-        },
-      })
-    );
-
-    // db.collection("tracks").doc(id).collection("track").add({
-    //   image,
-    //   name,
-    //   albumName,
-    //   artistsName,
-    //   timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    // });
+    db.collection("tracks").doc(id).collection("track").add({
+      image,
+      name,
+      albumName,
+      artistsName,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
 
     spotify.getPlaylist(id).then((res) => {
       spotify

@@ -2,10 +2,19 @@ import React from "react";
 import styled from "styled-components";
 import SearchIcon from "@material-ui/icons/Search";
 import { Avatar } from "@material-ui/core";
-import { selectUser } from "../features/userSlice";
+import { selectPlaylistid, selectUser } from "../features/userSlice";
 import { useSelector } from "react-redux";
+import { db } from "./firebase";
 function Header({ spotify }) {
   const user = useSelector(selectUser);
+  const playlistid = useSelector(selectPlaylistid);
+  const { playlistid: id } = playlistid;
+  console.log(id);
+  const SignOut = () => {
+    db.collection("tracks").doc("2dAHYaAxhP3AOQIQXwG1wD").delete();
+    console.log("im working");
+    // db.collection("displays").delete();
+  };
   return (
     <HeaderContainer>
       <HeaderLeft>
@@ -18,6 +27,8 @@ function Header({ spotify }) {
       <HeaderRight>
         <Avatar src={user?.user.images[0]?.url} alt="user" />
         <h4>{user?.user.display_name}</h4>
+        <hr />
+        <button onClick={SignOut}>Sign out</button>
       </HeaderRight>
     </HeaderContainer>
   );
