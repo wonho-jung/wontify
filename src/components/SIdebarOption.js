@@ -55,26 +55,6 @@ function SidebarOption({ title, Icon, id, spotify }) {
         });
     });
   };
-  useEffect(() => {
-    if (id) {
-      spotify.getPlaylist(id).then((res) => {
-        db.collection("displays").doc(id).collection("display").add({
-          image: res.images[0].url,
-          name: res.name,
-          desc: res.description,
-        });
-        res.tracks.items.map((item) => {
-          db.collection("tracks").doc(id).collection("track").add({
-            image: item.track.album.images[0].url,
-            name: item.track.name,
-            albumName: item.track.album.name,
-            artistsName: item.track.artists,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          });
-        });
-      });
-    }
-  }, []);
 
   return (
     <>

@@ -18,6 +18,7 @@ function SongRow({
   id,
 }) {
   const dispatch = useDispatch();
+
   const addList = () => {
     db.collection("tracks").doc(id).collection("track").add({
       image,
@@ -54,7 +55,11 @@ function SongRow({
         </p>
       </SongRowInfo>
 
-      {recommended && <Button onClick={addList}>ADD</Button>}
+      {recommended && (
+        <Link to={`/${id}`}>
+          <Button onClick={addList}>ADD</Button>
+        </Link>
+      )}
     </SongRowContainer>
   );
 }

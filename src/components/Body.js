@@ -62,14 +62,14 @@ function Body({ spotify }) {
           <MoreHorizIcon />
         </BodyIcons>
 
-        {/* {userplaylist?.res.tracks.items.map((item) => (
+        {userplaylist?.res.tracks.items.map((item) => (
           <SongRow
             image={item?.track.album?.images[0]?.url}
             name={item?.track.name}
             albumName={item?.track.album.name}
             artistsName={item?.track.artists}
           />
-        ))} */}
+        ))}
 
         {tracksDetail &&
           trackItem?.docs.map((doc) => {

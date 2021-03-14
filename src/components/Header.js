@@ -10,10 +10,18 @@ function Header({ spotify }) {
   const playlistid = useSelector(selectPlaylistid);
   const { playlistid: id } = playlistid;
   console.log(id);
+  let ref = db.collection("tracks");
   const SignOut = () => {
-    db.collection("tracks").doc("2dAHYaAxhP3AOQIQXwG1wD").delete();
-    console.log("im working");
-    // db.collection("displays").delete();
+    db.collection("tracks").onSnapshot((snapshot) => {
+      snapshot.docs.forEach((doc) => {
+        ref
+          .doc(id)
+          .delete()
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+    });
   };
   return (
     <HeaderContainer>
