@@ -16,7 +16,9 @@ function Sidebar({ spotify }) {
         <SidebarOption title="Home" Icon={HomeIcon} />
       </Link>
       <SidebarOption title="Search" Icon={SearchIcon} />
-      <SidebarOption title="Your Library" Icon={LibraryMusicIcon} />
+      <Link to="/Library" style={{ textDecoration: "none" }}>
+        <SidebarOption title="Your Library" Icon={LibraryMusicIcon} />
+      </Link>
       <br />
       <strong>PLAYLISTS</strong>
       <hr />

@@ -8,6 +8,7 @@ import Home from "./Home";
 import Header from "./Header";
 import DetailAlbum from "./DetailAlbum";
 import DetailPlaylist from "./DetailPlaylist";
+import Library from "./Library";
 
 function Player({ spotify }) {
   return (
@@ -21,6 +22,9 @@ function Player({ spotify }) {
             </Route>
             <Route path="/detail/playlist/:id">
               <DetailPlaylist spotify={spotify} />
+            </Route>
+            <Route path="/Library">
+              <Library spotify={spotify} />
             </Route>
             <Route path="/:id">
               <Body spotify={spotify} />

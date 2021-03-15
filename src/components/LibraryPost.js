@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import PlayCircleFilledWhiteIcon from "@material-ui/icons/PlayCircleFilledWhite";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
@@ -7,66 +7,54 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectDetailAlbum,
   selectDetailAlbumTracks,
+  selectUser,
   set_DetailAlbum,
   set_DetailAlbumTracks,
   set_list,
+  set_playlistid,
+  set_Recommended,
 } from "../features/userSlice";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
-function Post({
-  image,
-  name,
-  artistsName,
-  description,
-  albumId,
-  spotify,
-  playlistId,
-}) {
+function LibraryPost({ image, name, artistsName, description, id, spotify }) {
   const dispatch = useDispatch();
-  const Album = useSelector(selectDetailAlbum);
-  const tracks = useSelector(selectDetailAlbumTracks);
+  const user = useSelector(selectUser);
 
-  const sendAlbumDetail = () => {
-    spotify.getAlbumTracks(albumId).then((res) => {
-      dispatch(
-        set_DetailAlbumTracks({
-          detailAlbumTracks: res,
-        })
-      );
-    });
-    spotify.getAlbum(albumId).then((res) => {
-      dispatch(
-        set_DetailAlbum({
-          detailAlbum: res,
-        })
-      );
-    });
-  };
-  const sendPlaylistDetail = () => {
-    spotify.getPlaylist(playlistId).then((res) => {
+  const click = () => {
+    dispatch(
+      set_playlistid({
+        playlistid: id,
+      })
+    );
+    spotify.getPlaylist(id).then((res) => {
       dispatch(
         set_list({
           res,
         })
       );
+      spotify
+        .getRecommendations({
+          seed_artists: res.tracks.items[0].track.artists[0].id,
+          seed_tracks: id,
+        })
+        .then((recommended) => {
+          dispatch(
+            set_Recommended({
+              recommended,
+            })
+          );
+        });
     });
   };
 
   return (
     <PostContainer>
-      <Link
-        to={
-          albumId
-            ? `/detail/album/${albumId}`
-            : `/detail/playlist/${playlistId}`
-        }
-        style={{ textDecoration: "none", color: "white" }}
-      >
-        <PostContent onClick={albumId ? sendAlbumDetail : sendPlaylistDetail}>
+      <Link to={`/${id}`} style={{ textDecoration: "none", color: "white" }}>
+        <PostContent onClick={click}>
           <img src={image} alt="" />
-          <h4>{artistsName}</h4>
           <p>{name && name}</p>
-          <p>{description && description}</p>
+          <p>{description ? description : `by ${user?.user.display_name}`}</p>
         </PostContent>
         <PlayCircleOutlineIcon className="icon" fontSize="large" />
       </Link>
@@ -74,18 +62,20 @@ function Post({
   );
 }
 
-export default Post;
+export default LibraryPost;
+
 const PostContainer = styled.div`
-  max-width: 180px;
+  width: 300px;
+  height: 350px;
   background-color: #181818;
-  margin: 10px;
+  margin: 20px;
   position: relative;
   cursor: pointer;
   .icon {
     font-size: 60px;
     position: absolute;
-    top: 100px;
-    left: 100px;
+    top: 200px;
+    left: 200px;
     color: lightgreen;
     display: none;
   }
@@ -104,6 +94,6 @@ const PostContent = styled.div`
   padding-left: 20px;
   padding-right: 20px;
   > img {
-    height: 140px;
+    height: 250px;
   }
 `;

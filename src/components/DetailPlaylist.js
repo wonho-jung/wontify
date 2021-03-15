@@ -39,7 +39,6 @@ function DetailPlaylist({ spotify }) {
         {userplaylist?.res.tracks.items.map((item, inx) => (
           <SongRow
             key={inx}
-            trackNumber={inx + 1}
             time={item.track.duration_ms}
             image={item.track.album?.images[0]?.url}
             name={item.track.name}
