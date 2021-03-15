@@ -1,38 +1,21 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components";
-import {
-  selectList,
-  selectPlaylistid,
-  selectRecommended,
-} from "../features/userSlice";
+
 import Header from "./Header";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "./SongRow";
-import { db } from "./firebase";
-import { useCollection } from "react-firebase-hooks/firestore";
-
-function Body({ spotify }) {
-  const dispatch = useDispatch();
-  const playlistid = useSelector(selectPlaylistid);
-  const { playlistid: id } = playlistid;
+import styled from "styled-components";
+import { useSelector } from "react-redux";
+import {
+  selectDetailAlbum,
+  selectDetailAlbumTracks,
+  selectList,
+} from "../features/userSlice";
+function DetailPlaylist({ spotify }) {
+  const album = useSelector(selectDetailAlbum);
+  const detailAlbumTracks = useSelector(selectDetailAlbumTracks);
   const userplaylist = useSelector(selectList);
-  const recommended = useSelector(selectRecommended);
-  console.log(recommended);
-
-  const [tracksDetail] = useCollection(id && db.collection("tracks").doc(id));
-  const [trackItem] = useCollection(
-    id &&
-      db
-        .collection("tracks")
-        .doc(id)
-        .collection("track")
-        .orderBy("timestamp", "asc")
-  );
-  console.log(id);
-
   return (
     <BodyContainer>
       <Header spotify={spotify} />
@@ -56,6 +39,7 @@ function Body({ spotify }) {
         {userplaylist?.res.tracks.items.map((item, inx) => (
           <SongRow
             key={inx}
+            trackNumber={inx + 1}
             time={item.track.duration_ms}
             image={item.track.album?.images[0]?.url}
             name={item.track.name}
@@ -63,49 +47,14 @@ function Body({ spotify }) {
             artistsName={item.track.artists}
           />
         ))}
-
-        {tracksDetail &&
-          trackItem?.docs.map((doc) => {
-            const { albumName, artistsName, image, name, time } = doc.data();
-
-            return (
-              <SongRow
-                albumName={albumName}
-                artistsName={artistsName}
-                image={image}
-                name={name}
-                time={time}
-              />
-            );
-          })}
-
-        <Recommended>
-          <h3>Recommended</h3>
-          <p className="recommend_p">Based on what's in this playlist</p>
-          {recommended?.recommended.tracks.map((item) => (
-            <SongRow
-              id={id}
-              track={item}
-              spotify={spotify}
-              image={item.album.images[0]?.url}
-              name={item.name}
-              albumName={item.album.name}
-              artistsName={item.artists}
-              timeRecommend={item.duration_ms}
-              recommended
-            />
-          ))}
-        </Recommended>
       </BodySongs>
     </BodyContainer>
   );
 }
 
-export default Body;
-
+export default DetailPlaylist;
 const BodyContainer = styled.div`
   padding: 30px;
-
   flex: 0.8;
   height: 100vh;
   color: white;
@@ -116,6 +65,9 @@ const BodyContainer = styled.div`
   }
 `;
 const BodyInfo = styled.div`
+  background-size: cover;
+  background-repeat: none;
+  height: 50vh;
   display: flex;
   align-items: flex-end;
   padding: 10px;
@@ -138,6 +90,7 @@ const BodyInfoText = styled.div`
 
 const BodySongs = styled.div`
   margin: 20px -30px;
+  padding-bottom: 80px;
 `;
 const BodyIcons = styled.div`
   display: flex;
@@ -155,13 +108,4 @@ const BodyIcons = styled.div`
       transform: scale(1.08);
     }
   }
-`;
-const Recommended = styled.div`
-  margin-top: 50px;
-  h3,
-  .recommend_p {
-    padding-left: 30px;
-  }
-  padding-top: 10px;
-  padding-bottom: 200px;
 `;

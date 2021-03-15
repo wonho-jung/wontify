@@ -7,15 +7,24 @@ import {
   selectDetailAlbumTracks,
   set_DetailAlbum,
   set_DetailAlbumTracks,
+  set_list,
 } from "../features/userSlice";
 import { Link } from "react-router-dom";
 
-function Post({ image, name, artistsName, description, albumId, spotify }) {
+function Post({
+  image,
+  name,
+  artistsName,
+  description,
+  albumId,
+  spotify,
+  playlistId,
+}) {
   const dispatch = useDispatch();
   const Album = useSelector(selectDetailAlbum);
   const tracks = useSelector(selectDetailAlbumTracks);
 
-  const sendPostDetail = (e) => {
+  const sendAlbumDetail = () => {
     spotify.getAlbumTracks(albumId).then((res) => {
       dispatch(
         set_DetailAlbumTracks({
@@ -31,13 +40,27 @@ function Post({ image, name, artistsName, description, albumId, spotify }) {
       );
     });
   };
+  const sendPlaylistDetail = () => {
+    spotify.getPlaylist(playlistId).then((res) => {
+      dispatch(
+        set_list({
+          res,
+        })
+      );
+    });
+  };
+
   return (
     <PostContainer>
       <Link
-        to={`/detail/${albumId}`}
+        to={
+          albumId
+            ? `/detail/album/${albumId}`
+            : `/detail/playlist/${playlistId}`
+        }
         style={{ textDecoration: "none", color: "white" }}
       >
-        <PostContent onClick={sendPostDetail}>
+        <PostContent onClick={albumId ? sendAlbumDetail : sendPlaylistDetail}>
           <img src={image} alt="" />
           <h4>{artistsName}</h4>
           <p>{name && name}</p>

@@ -16,6 +16,9 @@ function SongRow({
   artistsName,
   spotify,
   id,
+  trackNumber,
+  time,
+  timeRecommend,
 }) {
   const dispatch = useDispatch();
 
@@ -25,6 +28,7 @@ function SongRow({
       name,
       albumName,
       artistsName,
+      time: timeRecommend,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     });
 
@@ -44,22 +48,27 @@ function SongRow({
         });
     });
   };
+  const millisToMinutesAndSeconds = (millis) => {
+    const minutes = Math.floor(millis / 60000);
+    const seconds = ((millis % 60000) / 1000).toFixed(0);
+    return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+  };
 
   return (
     <SongRowContainer>
-      <img src={image} alt="" />
+      {trackNumber && trackNumber}
+      {image && <img src={image} alt="" />}
+
       <SongRowInfo>
         <h1>{name}</h1>
         <p>
-          {artistsName?.map((artist) => artist.name).join(", ")}/{albumName}
+          {artistsName?.map((artist) => artist.name).join(", ")}
+          {albumName && `/${albumName}`}
         </p>
       </SongRowInfo>
 
-      {recommended && (
-        
-          <Button onClick={addList}>ADD</Button>
-       
-      )}
+      {time && <p className="time">{millisToMinutesAndSeconds(time)}</p>}
+      {recommended && <Button onClick={addList}>ADD</Button>}
     </SongRowContainer>
   );
 }
@@ -82,8 +91,19 @@ const SongRowContainer = styled.div`
     opacity: 0.8;
   }
   img {
+    padding-left: 10px;
     height: 40px;
     width: 40px;
+  }
+  .time {
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-right: 50px;
+
+    align-items: center;
+    position: absolute;
+    right: 0;
+    color: white;
   }
   button {
     padding-left: 20px;

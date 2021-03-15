@@ -10,14 +10,15 @@ import {
   selectWorkout,
 } from "../features/userSlice";
 import { useSelector } from "react-redux";
-function Home({spotify}) {
+function Home({ spotify }) {
   const recentlyPlayed = useSelector(selectRecentlyPlayed);
   const newReleases = useSelector(selectNewReleases);
   const topList = useSelector(selectTopList);
   const workout = useSelector(selectWorkout);
   const party = useSelector(selectParty);
   const mood = useSelector(selectMood);
-
+  console.log(recentlyPlayed);
+  console.log(workout);
   return (
     <HomeContainer>
       <HomeContentContainer>
@@ -25,7 +26,7 @@ function Home({spotify}) {
         <PostsContainer>
           {recentlyPlayed?.recentlyPlayed?.map((track, inx) => (
             <Post
-            spotify={spotify}
+              spotify={spotify}
               albumId={track.track.album.id}
               key={inx}
               image={track.track.album.images[0].url}
@@ -41,7 +42,9 @@ function Home({spotify}) {
         <PostsContainer>
           {newReleases?.newReleases?.map((track, inx) => (
             <Post
+              spotify={spotify}
               key={inx}
+              albumId={track.id}
               image={track.images[0].url}
               artistsName={track.artists[0].name}
               name={track.name}
@@ -55,6 +58,8 @@ function Home({spotify}) {
         <PostsContainer>
           {topList?.topList?.map((track, inx) => (
             <Post
+              spotify={spotify}
+              playlistId={track.id}
               key={inx}
               image={track.images[0].url}
               artistsName={track.name}
@@ -69,6 +74,8 @@ function Home({spotify}) {
         <PostsContainer>
           {workout?.workout?.map((track, inx) => (
             <Post
+              spotify={spotify}
+              playlistId={track.id}
               key={inx}
               image={track.images[0].url}
               artistsName={track.name}
@@ -82,6 +89,8 @@ function Home({spotify}) {
         <PostsContainer>
           {mood?.mood?.map((track, inx) => (
             <Post
+              spotify={spotify}
+              playlistId={track.id}
               key={inx}
               image={track.images[0].url}
               artistsName={track.name}
@@ -96,6 +105,8 @@ function Home({spotify}) {
         <PostsContainer>
           {party?.party?.map((track, inx) => (
             <Post
+              spotify={spotify}
+              playlistId={track.id}
               key={inx}
               image={track.images[0].url}
               artistsName={track.name}

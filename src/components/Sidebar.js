@@ -35,6 +35,8 @@ function Sidebar({ spotify }) {
 export default Sidebar;
 
 const SidebarContainer = styled.div`
+  overflow-y: overlay;
+
   flex: 0.2;
   height: 100vh;
   background-color: #040404;

@@ -9,12 +9,15 @@ import { useSelector } from "react-redux";
 import {
   selectDetailAlbum,
   selectDetailAlbumTracks,
+  selectList,
 } from "../features/userSlice";
 import { useEffect } from "react";
-function Detail({ spotify }) {
+function DetailAlbum({ spotify }) {
   const album = useSelector(selectDetailAlbum);
   const detailAlbumTracks = useSelector(selectDetailAlbumTracks);
+  const userplaylist = useSelector(selectList);
 
+  console.log(detailAlbumTracks);
   return (
     <BodyContainer>
       <Header spotify={spotify} />
@@ -35,20 +38,22 @@ function Detail({ spotify }) {
           <MoreHorizIcon />
         </BodyIcons>
 
-        {/* {detailAlbumTracks?.detailAlbumTracks.items.map((item) => (
-          <SongRow
-            image={item?.track.album?.images[0]?.url}
-            name={item?.track.name}
-            albumName={item?.track.album.name}
-            artistsName={item?.track.artists}
-          />
-        ))} */}
+        {detailAlbumTracks &&
+          detailAlbumTracks.detailAlbumTracks.items.map((item, inx) => (
+            <SongRow
+              key={inx}
+              trackNumber={inx + 1}
+              name={item.name}
+              artistsName={item.artists}
+              time={item.duration_ms}
+            />
+          ))}
       </BodySongs>
     </BodyContainer>
   );
 }
 
-export default Detail;
+export default DetailAlbum;
 const BodyContainer = styled.div`
   padding: 30px;
   flex: 0.8;
@@ -86,6 +91,7 @@ const BodyInfoText = styled.div`
 
 const BodySongs = styled.div`
   margin: 20px -30px;
+  padding-bottom: 80px;
 `;
 const BodyIcons = styled.div`
   display: flex;
