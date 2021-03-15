@@ -7,22 +7,7 @@ import { useSelector } from "react-redux";
 import { db } from "./firebase";
 function Header({ spotify }) {
   const user = useSelector(selectUser);
-  const playlistid = useSelector(selectPlaylistid);
-  const { playlistid: id } = playlistid;
-  console.log(id);
-  let ref = db.collection("tracks");
-  const SignOut = () => {
-    db.collection("tracks").onSnapshot((snapshot) => {
-      snapshot.docs.forEach((doc) => {
-        ref
-          .doc(id)
-          .delete()
-          .catch((error) => {
-            console.log(error);
-          });
-      });
-    });
-  };
+
   return (
     <HeaderContainer>
       <HeaderLeft>
@@ -36,7 +21,7 @@ function Header({ spotify }) {
         <Avatar src={user?.user.images[0]?.url} alt="user" />
         <h4>{user?.user.display_name}</h4>
         <hr />
-        <button onClick={SignOut}>Sign out</button>
+        
       </HeaderRight>
     </HeaderContainer>
   );

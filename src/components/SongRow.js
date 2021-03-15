@@ -56,9 +56,9 @@ function SongRow({
       </SongRowInfo>
 
       {recommended && (
-        <Link to={`/${id}`}>
+        
           <Button onClick={addList}>ADD</Button>
-        </Link>
+       
       )}
     </SongRowContainer>
   );

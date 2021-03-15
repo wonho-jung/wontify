@@ -26,9 +26,10 @@ function SidebarOption({ title, Icon, id, spotify }) {
   const [displayDetail] = useCollection(
     id && db.collection("displays").doc(id)
   );
-  console.log(tracksDetail, displayDetail);
+  
   const dispatch = useDispatch();
-  console.log(id);
+ 
+  
   const click = () => {
     dispatch(
       set_playlistid({

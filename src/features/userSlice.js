@@ -17,12 +17,8 @@ export const userSlice = createSlice({
     party: null,
     playlistid: null,
     recommended: null,
-    additem: {
-      image: null,
-      name: null,
-      albumName: null,
-      artistsName: null,
-    },
+    detailAlbum: null,
+    detailAlbumTracks: null,
   },
 
   reducers: {
@@ -63,8 +59,11 @@ export const userSlice = createSlice({
       state.recommended = action.payload;
     },
 
-    set_AddItem: (state, action) => {
-      state.additem = action.payload;
+    set_DetailAlbum: (state, action) => {
+      state.detailAlbum = action.payload;
+    },
+    set_DetailAlbumTracks: (state, action) => {
+      state.detailAlbumTracks = action.payload;
     },
   },
 });
@@ -82,7 +81,8 @@ export const {
   set_party,
   set_playlistid,
   set_Recommended,
-  set_AddItem,
+  set_DetailAlbum,
+  set_DetailAlbumTracks,
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user.user;
@@ -98,6 +98,7 @@ export const selectMood = (state) => state.user.mood;
 export const selectParty = (state) => state.user.party;
 export const selectPlaylistid = (state) => state.user.playlistid;
 export const selectRecommended = (state) => state.user.recommended;
-export const selectAddItem = (state) => state.user.additem;
+export const selectDetailAlbum = (state) => state.user.detailAlbum;
+export const selectDetailAlbumTracks = (state) => state.user.detailAlbumTracks;
 
 export default userSlice.reducer;

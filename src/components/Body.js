@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import {
-  selectAddItem,
+  
   selectList,
   selectPlaylistid,
   selectRecommended,
-  set_list,
-  set_Recommended,
+  
+  
 } from "../features/userSlice";
 import Header from "./Header";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
@@ -24,12 +24,8 @@ function Body({ spotify }) {
   const userplaylist = useSelector(selectList);
   const recommended = useSelector(selectRecommended);
   console.log(userplaylist);
-  const [displaysDetail] = useCollection(
-    id && db.collection("diplays").doc(id)
-  );
-  const [displayItem] = useCollection(
-    id && db.collection("displays").doc(id).collection("display")
-  );
+
+
   const [tracksDetail] = useCollection(id && db.collection("tracks").doc(id));
   const [trackItem] = useCollection(
     id &&
@@ -39,7 +35,6 @@ function Body({ spotify }) {
         .collection("track")
         .orderBy("timestamp", "asc")
   );
-  const addItem = useSelector(selectAddItem);
   console.log(id);
 
   return (

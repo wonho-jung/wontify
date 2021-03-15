@@ -10,7 +10,7 @@ import {
   selectWorkout,
 } from "../features/userSlice";
 import { useSelector } from "react-redux";
-function Home() {
+function Home({spotify}) {
   const recentlyPlayed = useSelector(selectRecentlyPlayed);
   const newReleases = useSelector(selectNewReleases);
   const topList = useSelector(selectTopList);
@@ -25,6 +25,8 @@ function Home() {
         <PostsContainer>
           {recentlyPlayed?.recentlyPlayed?.map((track, inx) => (
             <Post
+            spotify={spotify}
+              albumId={track.track.album.id}
               key={inx}
               image={track.track.album.images[0].url}
               artistsName={track.track.artists[0].name}
