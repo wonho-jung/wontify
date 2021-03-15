@@ -15,8 +15,10 @@ function Sidebar({ spotify }) {
       <Link to="/" style={{ textDecoration: "none" }}>
         <SidebarOption title="Home" Icon={HomeIcon} />
       </Link>
-      <SidebarOption title="Search" Icon={SearchIcon} />
-      <Link to="/Library" style={{ textDecoration: "none" }}>
+      <Link to="/search" style={{ textDecoration: "none" }}>
+        <SidebarOption title="Search" Icon={SearchIcon} />
+      </Link>
+      <Link to="/library" style={{ textDecoration: "none" }}>
         <SidebarOption title="Your Library" Icon={LibraryMusicIcon} />
       </Link>
       <br />

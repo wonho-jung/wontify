@@ -143,4 +143,5 @@ const HomeContentContainer = styled.div`
 `;
 const PostsContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
 `;

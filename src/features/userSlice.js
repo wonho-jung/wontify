@@ -19,6 +19,8 @@ export const userSlice = createSlice({
     recommended: null,
     detailAlbum: null,
     detailAlbumTracks: null,
+    category: null,
+    categoryDetail: null,
   },
 
   reducers: {
@@ -65,6 +67,12 @@ export const userSlice = createSlice({
     set_DetailAlbumTracks: (state, action) => {
       state.detailAlbumTracks = action.payload;
     },
+    set_categories: (state, action) => {
+      state.category = action.payload;
+    },
+    set_categoriesDetail: (state, action) => {
+      state.categoryDetail = action.payload;
+    },
   },
 });
 
@@ -83,6 +91,8 @@ export const {
   set_Recommended,
   set_DetailAlbum,
   set_DetailAlbumTracks,
+  set_categories,
+  set_categoriesDetail,
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user.user;
@@ -100,5 +110,7 @@ export const selectPlaylistid = (state) => state.user.playlistid;
 export const selectRecommended = (state) => state.user.recommended;
 export const selectDetailAlbum = (state) => state.user.detailAlbum;
 export const selectDetailAlbumTracks = (state) => state.user.detailAlbumTracks;
+export const selectCategories = (state) => state.user.category;
+export const selectCategoriesDetail = (state) => state.user.categoryDetail;
 
 export default userSlice.reducer;

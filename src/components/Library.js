@@ -14,11 +14,6 @@ function Library({ spotify }) {
     <LibraryContainer>
       <h1>{`${user?.user.display_name}'s playlists`}</h1>
       <HomeContentContainer>
-        <LikedContainer>
-          <h1>Liked Songs</h1>
-
-          <PlayCircleOutlineIcon className="icon" fontSize="large" />
-        </LikedContainer>
         <PostsContainer>
           {myList?.playlists?.items?.map((playlist, idx) => (
             <LibraryPost
@@ -60,27 +55,5 @@ const HomeContentContainer = styled.div`
 `;
 const PostsContainer = styled.div`
   display: flex;
-`;
-const LikedContainer = styled.div`
-  width: 500px;
-  height: 350px;
-
-  background-image: linear-gradient(to left, #ffafbd, #ffc3a0);
-
-  margin: 20px;
-  position: relative;
-  cursor: pointer;
-  h1 {
-    font-size: 40px;
-    position: absolute;
-    top: 250px;
-    left: 30px;
-  }
-  .icon {
-    font-size: 60px;
-    position: absolute;
-    top: 200px;
-    left: 400px;
-    color: lightgreen;
-  }
+  flex-wrap: wrap;
 `;

@@ -23,6 +23,7 @@ import {
   selectWorkout,
   set_party,
   set_mood,
+  set_categories,
 } from "./features/userSlice";
 
 const spotify = new SpotifyWebApi();
@@ -99,6 +100,13 @@ function App() {
         dispatch(
           set_party({
             party: party.playlists.items,
+          })
+        );
+      });
+      spotify.getCategories().then((category) => {
+        dispatch(
+          set_categories({
+            category,
           })
         );
       });
