@@ -11,6 +11,8 @@ import DetailPlaylist from "./DetailPlaylist";
 import Library from "./Library";
 import Search from "./Search";
 import SearchCategory from "./SearchCategory";
+import SearchDetail from "./SearchDetail";
+import Artist from "./Artist";
 
 function Player({ spotify }) {
   return (
@@ -25,12 +27,20 @@ function Player({ spotify }) {
             <Route path="/detail/playlist/:id">
               <DetailPlaylist spotify={spotify} />
             </Route>
+            <Route path="/search/search/song">
+              <SearchDetail spotify={spotify} />
+            </Route>
             <Route path="/search/:id">
               <SearchCategory spotify={spotify} />
             </Route>
+
             <Route path="/search" exact>
               <Search spotify={spotify} />
             </Route>
+            <Route path="/artist/:id">
+              <Artist spotify={spotify} />
+            </Route>
+
             <Route path="/library">
               <Library spotify={spotify} />
             </Route>

@@ -2,28 +2,46 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import SearchIcon from "@material-ui/icons/Search";
 import { Avatar } from "@material-ui/core";
-import { selectPlaylistid, selectUser } from "../features/userSlice";
-import { useSelector } from "react-redux";
+import {
+  selectPlaylistid,
+  selectUser,
+  set_searchResult,
+} from "../features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { db } from "./firebase";
+import { Link, useHistory } from "react-router-dom";
 function SearchHeader({ spotify }) {
   const user = useSelector(selectUser);
   const [input, setInput] = useState("");
+  const dispatch = useDispatch();
+  const history = useHistory();
   const SearchItem = (e) => {
     e.preventDefault();
-    spotify.search(input, ["artist", "track"]).then((res) => {
-      console.log(res);
-    });
+    history.push("/search/search/song");
+    if (input !== "") {
+      spotify.search(input, ["artist", "track"], { limit: 14 }).then((res) => {
+        dispatch(
+          set_searchResult({
+            searchResult: res,
+          })
+        );
+      });
+    }
+
     setInput("");
   };
+
+  console.log(input);
   return (
     <HeaderContainer>
       <HeaderLeft>
         <SearchIcon />
+
         <form onSubmit={SearchItem}>
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Search for Artists, Songs, or Podcasts "
+            placeholder="Search for Artists or Songs"
             type="text"
           />
         </form>

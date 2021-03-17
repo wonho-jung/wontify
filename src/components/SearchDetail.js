@@ -8,21 +8,33 @@ import SearchPost from "./SearchPost";
 import SearchHeader from "./SearchHeader";
 import SearchArtistPost from "./SearchArtistPost";
 import SongRow from "./SongRow";
-function Search({ spotify }) {
-  const category = useSelector(selectCategories);
+import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
+import { Link } from "react-router-dom";
+
+function SearchDetail({ spotify }) {
   const searchResult = useSelector(selectSearchResult);
   console.log(searchResult);
-
+  const sendArtist = () => {
+    spotify
+      .getArtistTopTracks(searchResult.searchResult.artists.items[0].id, "CA")
+      .then((res) => {
+        console.log(res);
+      });
+  };
   return (
-    <SearchContainer>
+    <SearchResultContainer>
       <SearchHeader spotify={spotify} />
-      {/* {searchResult && (
+
+      {searchResult && (
         <>
           <SearchresultContainer>
             <ResultLeft>
               <h3>Top result</h3>
-
-              <PostContainer>
+              {/* <Link
+                to="/artist/:id"
+                style={{ textDecoration: "none", color: "white" }}
+              > */}
+              <PostContainer onClick={sendArtist}>
                 <PostContent>
                   <img
                     src={
@@ -32,8 +44,10 @@ function Search({ spotify }) {
                   />
                   <h2>{searchResult.searchResult.artists.items[0].name}</h2>
                   <h3>Artist</h3>
+                  <PlayCircleOutlineIcon className="icon" fontSize="large" />
                 </PostContent>
               </PostContainer>
+              {/* </Link> */}
             </ResultLeft>
             <ResultRight>
               <h3>Songs</h3>
@@ -65,39 +79,25 @@ function Search({ spotify }) {
             ))}
           </Test>
         </>
-      )} */}
-      <h3>Browse all</h3>
-      <CategoryContainer>
-        <Test>
-          {category?.category.categories?.items.map((item, idx) => (
-            <SearchPost
-              key={idx}
-              id={item.id}
-              spotify={spotify}
-              image={item.icons[0].url}
-              name={item.name}
-            />
-          ))}
-        </Test>
-      </CategoryContainer>
-    </SearchContainer>
+      )}
+    </SearchResultContainer>
   );
 }
 
-export default Search;
-
-const SearchContainer = styled.div`
+export default SearchDetail;
+const SearchResultContainer = styled.div`
   padding: 30px;
   flex: 0.8;
   height: 100vh;
   color: white;
-
+  padding-bottom: 75px;
   overflow: auto;
   background-color: #121212;
   ::-webkit-scrollbar {
     display: none;
   }
 `;
+
 const CategoryContainer = styled.div`
   width: 100%;
 `;
@@ -118,18 +118,27 @@ const ResultRight = styled.div`
 const PostContainer = styled.div`
   color: white;
   width: 430px;
-
+  position: relative;
   height: 300px;
   background-color: #181818;
   margin: 15px;
   border-radius: 20px;
-
   cursor: pointer;
-
   opacity: 0.7;
 
+  .icon {
+    font-size: 60px;
+    position: absolute;
+    color: lightgreen;
+    top: 150px;
+    left: 300px;
+    display: none;
+  }
   :hover {
     opacity: 1;
+    .icon {
+      display: block;
+    }
   }
 `;
 const PostContent = styled.div`
@@ -146,7 +155,10 @@ const PostContent = styled.div`
   }
 `;
 const ResultRightSongcontainer = styled.div`
-  width: 100%;
+  margin-top: 15px;
+  border-radius: 20px;
+  width: 95%;
   height: 300px;
   overflow-y: scroll;
+  background-color: #181818;
 `;

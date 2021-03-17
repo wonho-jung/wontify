@@ -8,8 +8,7 @@ function SearchCategory({ spotify }) {
   const categoryDetail = useSelector(selectCategoriesDetail);
   console.log(categoryDetail);
   return (
-    <div>
-      {" "}
+    <SearchCategoryContainer>
       <HomeContentContainer>
         <h1>{categoryDetail?.id}</h1>
         <PostsContainer>
@@ -27,11 +26,20 @@ function SearchCategory({ spotify }) {
           )}
         </PostsContainer>
       </HomeContentContainer>
-    </div>
+    </SearchCategoryContainer>
   );
 }
 
 export default SearchCategory;
+const SearchCategoryContainer = styled.div`
+  padding-top: 80px;
+  padding-left: 30px;
+  flex: 0.8;
+  height: 100vh;
+  color: white;
+  overflow-y: overlay;
+  background-color: #121212;
+`;
 const HomeContentContainer = styled.div`
   padding-top: 20px;
   padding-bottom: 20px;
