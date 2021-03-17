@@ -2,26 +2,29 @@ import React from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { selectCategoriesDetail } from "../features/userSlice";
+import Post from "./Post";
 
-function SearchCategory() {
+function SearchCategory({ spotify }) {
   const categoryDetail = useSelector(selectCategoriesDetail);
   console.log(categoryDetail);
   return (
     <div>
       {" "}
       <HomeContentContainer>
-        <h1>{categoryDetail.id}</h1>
+        <h1>{categoryDetail?.id}</h1>
         <PostsContainer>
-          {/* {recentlyPlayed?.recentlyPlayed?.map((track, inx) => (
-            <Post
-              spotify={spotify}
-              albumId={track.track.album.id}
-              key={inx}
-              image={track.track.album.images[0].url}
-              artistsName={track.track.artists[0].name}
-              name={track.track.name}
-            />
-          ))} */}
+          {categoryDetail?.categoriesDetail.playlists.items.map(
+            (track, inx) => (
+              <Post
+                spotify={spotify}
+                playlistId={track.id}
+                key={inx}
+                image={track.images[0].url}
+                artistsName={track.name}
+                description={track.description}
+              />
+            )
+          )}
         </PostsContainer>
       </HomeContentContainer>
     </div>

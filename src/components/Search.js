@@ -5,14 +5,14 @@ import styled from "styled-components";
 import { selectCategories } from "../features/userSlice";
 import Header from "./Header";
 import SearchPost from "./SearchPost";
-
+import SearchHeader from "./SearchHeader";
 function Search({ spotify }) {
   const category = useSelector(selectCategories);
   console.log(category.category);
 
   return (
     <SearchContainer>
-      <Header spotify={spotify} />
+      <SearchHeader spotify={spotify} />
       <h3>Browse all</h3>
       <CategoryContainer>
         <Test>

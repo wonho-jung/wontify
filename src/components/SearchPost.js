@@ -7,7 +7,7 @@ import { set_categoriesDetail } from "../features/userSlice";
 function SearchPost({ spotify, image, name, id }) {
   const dispatch = useDispatch();
   const sendSearchDetail = () => {
-    spotify.getCategoryPlaylists(id, { limit: 5 }).then((res) => {
+    spotify.getCategoryPlaylists(id, { limit: 10 }).then((res) => {
       dispatch(
         set_categoriesDetail({
           categoriesDetail: res,
