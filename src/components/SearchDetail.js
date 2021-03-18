@@ -1,8 +1,12 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectCategories, selectSearchResult } from "../features/userSlice";
+import {
+  selectCategories,
+  selectSearchResult,
+  set_artistDetail,
+} from "../features/userSlice";
 import Header from "./Header";
 import SearchPost from "./SearchPost";
 import SearchHeader from "./SearchHeader";
@@ -12,13 +16,19 @@ import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import { Link } from "react-router-dom";
 
 function SearchDetail({ spotify }) {
+  const dispatch = useDispatch();
   const searchResult = useSelector(selectSearchResult);
   console.log(searchResult);
   const sendArtist = () => {
     spotify
       .getArtistTopTracks(searchResult.searchResult.artists.items[0].id, "CA")
       .then((res) => {
-        console.log(res);
+        dispatch(
+          set_artistDetail({
+            artistDetail: res,
+            artistInfo: searchResult.searchResult.artists.items[0],
+          })
+        );
       });
   };
   return (
@@ -30,24 +40,24 @@ function SearchDetail({ spotify }) {
           <SearchresultContainer>
             <ResultLeft>
               <h3>Top result</h3>
-              {/* <Link
-                to="/artist/:id"
+              <Link
+                to={`/artist/${searchResult.searchResult.artists.items[0].id}`}
                 style={{ textDecoration: "none", color: "white" }}
-              > */}
-              <PostContainer onClick={sendArtist}>
-                <PostContent>
-                  <img
-                    src={
-                      searchResult.searchResult.artists.items[0].images[0].url
-                    }
-                    alt=""
-                  />
-                  <h2>{searchResult.searchResult.artists.items[0].name}</h2>
-                  <h3>Artist</h3>
-                  <PlayCircleOutlineIcon className="icon" fontSize="large" />
-                </PostContent>
-              </PostContainer>
-              {/* </Link> */}
+              >
+                <PostContainer onClick={sendArtist}>
+                  <PostContent>
+                    <img
+                      src={
+                        searchResult.searchResult.artists.items[0].images[0].url
+                      }
+                      alt=""
+                    />
+                    <h2>{searchResult.searchResult.artists.items[0].name}</h2>
+                    <h3>Artist</h3>
+                    <PlayCircleOutlineIcon className="icon" fontSize="large" />
+                  </PostContent>
+                </PostContainer>
+              </Link>
             </ResultLeft>
             <ResultRight>
               <h3>Songs</h3>
@@ -75,6 +85,7 @@ function SearchDetail({ spotify }) {
                 spotify={spotify}
                 image={item.images[0]?.url}
                 name={item.name}
+                artistInfo={item}
               />
             ))}
           </Test>

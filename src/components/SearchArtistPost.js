@@ -2,20 +2,36 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { set_categoriesDetail } from "../features/userSlice";
+import { set_artistDetail, set_categoriesDetail } from "../features/userSlice";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 
-function SearchArtistPost({ spotify, image, name, id }) {
-  const sendSearchDetail = () => {};
+function SearchArtistPost({ spotify, image, name, id, artistInfo }) {
+  const dispatch = useDispatch();
+  console.log(artistInfo);
+  const sendToArtis = () => {
+    spotify.getArtistTopTracks(id, "CA").then((res) => {
+      dispatch(
+        set_artistDetail({
+          artistDetail: res,
+          artistInfo: artistInfo,
+        })
+      );
+    });
+  };
   return (
-    <PostContainer onClick={sendSearchDetail}>
-      <PostContent>
-        <img src={image} alt="" />
-        <p>{name && name}</p>
-        <p>Artist</p>
-        <PlayCircleOutlineIcon className="icon" fontSize="large" />
-      </PostContent>
-    </PostContainer>
+    <Link
+      to={`/artist/${id}`}
+      style={{ textDecoration: "none", color: "white" }}
+    >
+      <PostContainer onClick={sendToArtis}>
+        <PostContent>
+          <img src={image} alt="" />
+          <p>{name && name}</p>
+          <p>Artist</p>
+          <PlayCircleOutlineIcon className="icon" fontSize="large" />
+        </PostContent>
+      </PostContainer>
+    </Link>
   );
 }
 
