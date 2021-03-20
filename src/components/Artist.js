@@ -7,7 +7,8 @@ import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "./SongRow";
 import { Button } from "@material-ui/core";
-function Artist() {
+import SearchHeader from "./SearchHeader";
+function Artist({ spotify }) {
   const artistDetail = useSelector(selectArtistDetail);
   console.log(artistDetail);
   const [followNumber, setFollowNumber] = useState("");
@@ -31,7 +32,7 @@ function Artist() {
   };
   return (
     <BodyContainer>
-      <Header />
+      <SearchHeader spotify={spotify} />
       {artistDetail?.artistInfo.images[0]?.url &&
       artistDetail?.artistInfo.name &&
       artistDetail?.artistInfo.genres &&
@@ -100,6 +101,7 @@ const BodyInfo = styled.div`
   align-items: flex-end;
   padding: 10px;
   > img {
+    border-radius: 999px;
     height: 30vw;
     margin: 0 20px;
     box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);

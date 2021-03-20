@@ -61,6 +61,7 @@ function Body({ spotify }) {
             name={item.track.name}
             albumName={item.track.album.name}
             artistsName={item.track.artists}
+            spotify={spotify}
           />
         ))}
 

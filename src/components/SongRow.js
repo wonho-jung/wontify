@@ -6,6 +6,7 @@ import firebase from "firebase";
 import { useDispatch } from "react-redux";
 import { set_AddItem, set_list, set_Recommended } from "../features/userSlice";
 import { Link } from "react-router-dom";
+import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 
 function SongRow({
   track,
@@ -21,7 +22,7 @@ function SongRow({
   timeRecommend,
 }) {
   const dispatch = useDispatch();
-
+  console.log(track);
   const addList = () => {
     db.collection("tracks").doc(id).collection("track").add({
       image,
@@ -48,6 +49,14 @@ function SongRow({
         });
     });
   };
+  const playSong = () => {
+    if (!recommended) {
+      spotify.play({
+        context_uri: "spotify:album:3nf5TdSHODl88hYx0EEtmC",
+        position_ms: 2000,
+      });
+    }
+  };
   const millisToMinutesAndSeconds = (millis) => {
     const minutes = Math.floor(millis / 60000);
     const seconds = ((millis % 60000) / 1000).toFixed(0);
@@ -55,8 +64,10 @@ function SongRow({
   };
 
   return (
-    <SongRowContainer>
-      {trackNumber && trackNumber}
+    <SongRowContainer onClick={playSong}>
+      {time && <PlayCircleOutlineIcon className="icon" fontSize="large" />}
+
+      {trackNumber && <h5>{trackNumber}</h5>}
       {image && <img src={image} alt="" />}
 
       <SongRowInfo>
@@ -89,6 +100,9 @@ const SongRowContainer = styled.div`
     cursor: pointer;
     background-color: black;
     opacity: 0.8;
+    .icon {
+      display: block;
+    }
   }
   img {
     padding-left: 10px;
@@ -119,6 +133,17 @@ const SongRowContainer = styled.div`
       border: 2px solid white;
       opacity: 0.7;
     }
+  }
+  .icon {
+    font-size: 25px;
+    position: absolute;
+    top: 30px;
+    left: 0;
+    color: lightgreen;
+    display: none;
+  }
+  h5 {
+    margin-left: 10px;
   }
 `;
 const SongRowInfo = styled.div`

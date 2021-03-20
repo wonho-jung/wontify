@@ -8,14 +8,19 @@ import RepeatIcon from "@material-ui/icons/Repeat";
 import { Grid, Slider } from "@material-ui/core";
 import PlaylistPlayIcon from "@material-ui/icons/PlaylistPlay";
 import VolumeDownIcon from "@material-ui/icons/VolumeDown";
+import { useSelector } from "react-redux";
+import { selectUser } from "../features/userSlice";
 function Footer() {
   return (
     <FooterContainer>
       <FooterLeft>
-        <img src="" alt="" />
+        <img
+          src="https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=3578146698962030&height=300&width=300&ext=1618755507&hash=AeTR_TP5fNgF16LMd_Y"
+          alt=""
+        />
         <FooterSongInfo>
-          <h4>songName</h4>
-          <p>songosng</p>
+          {/* <h4>songName</h4> */}
+          <p>By won.9 devoloper</p>
         </FooterSongInfo>
       </FooterLeft>
       <FooterCenter>
