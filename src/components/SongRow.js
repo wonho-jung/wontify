@@ -3,12 +3,20 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { db } from "./firebase";
 import firebase from "firebase";
-import { useDispatch } from "react-redux";
-import { set_AddItem, set_list, set_Recommended } from "../features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectPlaying,
+  set_AddItem,
+  set_list,
+  set_playing,
+  set_Recommended,
+} from "../features/userSlice";
 import { Link } from "react-router-dom";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
+import { TurnedInTwoTone } from "@material-ui/icons";
 
 function SongRow({
+  url,
   track,
   image,
   name,
@@ -21,8 +29,9 @@ function SongRow({
   time,
   timeRecommend,
 }) {
+  // const [audio, setAudio] = useState();
   const dispatch = useDispatch();
-  console.log(track);
+
   const addList = () => {
     db.collection("tracks").doc(id).collection("track").add({
       image,
@@ -49,13 +58,21 @@ function SongRow({
         });
     });
   };
+  const playingMusic = useSelector(selectPlaying);
+
+  console.log(playingMusic);
+
   const playSong = () => {
-    if (!recommended) {
-      spotify.play({
-        context_uri: "spotify:album:3nf5TdSHODl88hYx0EEtmC",
-        position_ms: 2000,
-      });
-    }
+    // if (audio.src === "") {
+    //   audio.src = url;
+    //   audio.play();
+    //   dispatch(
+    //     set_playing({
+    //       playing: true,
+    //       url: url,
+    //     })
+    //   );
+    // }
   };
   const millisToMinutesAndSeconds = (millis) => {
     const minutes = Math.floor(millis / 60000);

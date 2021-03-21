@@ -31,7 +31,7 @@ function Body({ spotify }) {
         .collection("track")
         .orderBy("timestamp", "asc")
   );
-  console.log(id);
+  console.log(userplaylist);
 
   return (
     <BodyContainer>
@@ -56,6 +56,7 @@ function Body({ spotify }) {
         {userplaylist?.res.tracks.items.map((item, inx) => (
           <SongRow
             key={inx}
+            url={item.track.preview_url}
             time={item.track.duration_ms}
             image={item.track.album?.images[0]?.url}
             name={item.track.name}
