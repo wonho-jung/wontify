@@ -9,6 +9,7 @@ import {
   set_AddItem,
   set_list,
   set_playing,
+  set_playinglist,
   set_Recommended,
 } from "../features/userSlice";
 import { Link } from "react-router-dom";
@@ -28,10 +29,13 @@ function SongRow({
   trackNumber,
   time,
   timeRecommend,
+  songControl,
+  myRef,
+  playSongPlayer,
+  stopsongPlayer,
 }) {
   const [audioStatus, setAudioStatus] = useState(false);
 
-  const myRef = useRef();
   const dispatch = useDispatch();
 
   const addList = () => {
@@ -62,23 +66,38 @@ function SongRow({
   };
 
   const playSong = () => {
+    playSongPlayer();
     setAudioStatus(true);
     dispatch(
       set_playing({
         playSong: true,
-        url,
       })
     );
+    dispatch(
+      set_playinglist({
+        playinglist: url,
+      })
+    );
+
+    // myRef.current.play();
   };
+
   const stopsong = () => {
-    setAudioStatus(false);
+    // myRef.current.pause();
+    stopsongPlayer();
     dispatch(
       set_playing({
         playSong: false,
+      })
+    );
+    dispatch(
+      set_playinglist({
         url,
       })
     );
   };
+
+  setAudioStatus(false);
 
   const millisToMinutesAndSeconds = (millis) => {
     const minutes = Math.floor(millis / 60000);
@@ -88,6 +107,7 @@ function SongRow({
 
   return (
     <SongRowContainer>
+      {/* {time && <audio ref={myRef} src={url} />} */}
       {time && audioStatus === true && (
         <PauseCircleOutlineIcon
           onClick={stopsong}

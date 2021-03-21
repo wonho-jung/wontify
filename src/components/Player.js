@@ -13,33 +13,51 @@ import Search from "./Search";
 import SearchCategory from "./SearchCategory";
 import SearchDetail from "./SearchDetail";
 import Artist from "./Artist";
-import { useSelector } from "react-redux";
-import { selectPlaying } from "../features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectPlaying,
+  selectPlayingList,
+  set_playing,
+  set_playinglist,
+} from "../features/userSlice";
 import { useState } from "react";
+import { useRef } from "react";
 
 function Player({ spotify }) {
   const [audioStatus, setAudioStatus] = useState("");
   console.log("before useEffect", audioStatus);
   const playing = useSelector(selectPlaying);
-  console.log(playing);
-  var audio;
-  // console.log(playing);
-  useEffect(() => {
-    audio = new Audio(playing?.url);
-    setAudioStatus(playing.url);
-    console.log("after", audio);
-    // audio.play();
-  }, [playing]);
-  // useEffect(() => {
-  //   if (audioStatus !== "") {
-  //     audio.src = "";
-  //     console.log("after not play", audioStatus);
-  //     // audio.play();
-  //   }
-  // }, [playing]);
+  const dispatch = useDispatch();
+  const playlisturl = useSelector(selectPlayingList);
+  const myRef = useRef();
+  var url;
+  const playSongPlayer = () => {
+    // setAudioStatus(true);
+    // dispatch(
+    //   set_playing({
+    //     playSong: true,
+    //   })
+    // );
+
+    myRef.current.play();
+  };
+  const stopsongPlayer = () => {
+    // console.log(myRef);
+
+    // setAudioStatus(false);
+    // dispatch(
+    //   set_playing({
+    //     playSong: false,
+    //   })
+    // );
+    myRef.current.pause();
+  };
+  console.log(myRef);
   return (
     <Router>
       <PlayerContainer>
+        <audio ref={myRef} src={playlisturl?.playinglist} />
+
         <PlayerBody>
           <Sidebar spotify={spotify} />
           <Switch>
@@ -67,7 +85,12 @@ function Player({ spotify }) {
               <Library spotify={spotify} />
             </Route>
             <Route path="/:id">
-              <Body spotify={spotify} />
+              <Body
+                spotify={spotify}
+                myRef={myRef}
+                playSongPlayer={playSongPlayer}
+                stopsongPlayer={stopsongPlayer}
+              />
             </Route>
             <Route path="/" exact>
               <Home spotify={spotify} />

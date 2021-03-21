@@ -23,6 +23,7 @@ export const userSlice = createSlice({
     categoryDetail: null,
     searchResult: null,
     artistDetail: null,
+    playinglist: null,
   },
 
   reducers: {
@@ -84,6 +85,9 @@ export const userSlice = createSlice({
     set_artistDetail: (state, action) => {
       state.artistDetail = action.payload;
     },
+    set_playinglist: (state, action) => {
+      state.playinglist = action.payload;
+    },
   },
 });
 
@@ -107,6 +111,7 @@ export const {
   set_searchResult,
   set_artistDetail,
   set_playing,
+  set_playinglist,
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user.user;
@@ -129,5 +134,6 @@ export const selectCategoriesDetail = (state) => state.user.categoryDetail;
 export const selectSearchResult = (state) => state.user.searchResult;
 export const selectArtistDetail = (state) => state.user.artistDetail;
 export const selectPlaying = (state) => state.user.playing;
+export const selectPlayingList = (state) => state.user.playinglist;
 
 export default userSlice.reducer;
