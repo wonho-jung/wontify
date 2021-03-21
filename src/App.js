@@ -26,7 +26,7 @@ import {
   set_categories,
   set_playing,
 } from "./features/userSlice";
-const audio = new Audio();
+
 const spotify = new SpotifyWebApi();
 function App() {
   const dispatch = useDispatch();

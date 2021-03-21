@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import Body from "./Body";
 import Footer from "./Footer";
@@ -13,8 +13,30 @@ import Search from "./Search";
 import SearchCategory from "./SearchCategory";
 import SearchDetail from "./SearchDetail";
 import Artist from "./Artist";
+import { useSelector } from "react-redux";
+import { selectPlaying } from "../features/userSlice";
+import { useState } from "react";
 
 function Player({ spotify }) {
+  const [audioStatus, setAudioStatus] = useState("");
+  console.log("before useEffect", audioStatus);
+  const playing = useSelector(selectPlaying);
+  console.log(playing);
+  var audio;
+  // console.log(playing);
+  useEffect(() => {
+    audio = new Audio(playing?.url);
+    setAudioStatus(playing.url);
+    console.log("after", audio);
+    // audio.play();
+  }, [playing]);
+  // useEffect(() => {
+  //   if (audioStatus !== "") {
+  //     audio.src = "";
+  //     console.log("after not play", audioStatus);
+  //     // audio.play();
+  //   }
+  // }, [playing]);
   return (
     <Router>
       <PlayerContainer>

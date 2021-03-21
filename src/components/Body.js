@@ -20,7 +20,6 @@ function Body({ spotify }) {
   const { playlistid: id } = playlistid;
   const userplaylist = useSelector(selectList);
   const recommended = useSelector(selectRecommended);
-  console.log(recommended);
 
   const [tracksDetail] = useCollection(id && db.collection("tracks").doc(id));
   const [trackItem] = useCollection(
@@ -31,7 +30,6 @@ function Body({ spotify }) {
         .collection("track")
         .orderBy("timestamp", "asc")
   );
-  console.log(userplaylist);
 
   return (
     <BodyContainer>

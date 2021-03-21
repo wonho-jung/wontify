@@ -1,5 +1,5 @@
 import { Button } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { db } from "./firebase";
 import firebase from "firebase";
@@ -14,7 +14,7 @@ import {
 import { Link } from "react-router-dom";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import { TurnedInTwoTone } from "@material-ui/icons";
-
+import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
 function SongRow({
   url,
   track,
@@ -29,7 +29,9 @@ function SongRow({
   time,
   timeRecommend,
 }) {
-  // const [audio, setAudio] = useState();
+  const [audioStatus, setAudioStatus] = useState(false);
+
+  const myRef = useRef();
   const dispatch = useDispatch();
 
   const addList = () => {
@@ -58,22 +60,26 @@ function SongRow({
         });
     });
   };
-  const playingMusic = useSelector(selectPlaying);
-
-  console.log(playingMusic);
 
   const playSong = () => {
-    // if (audio.src === "") {
-    //   audio.src = url;
-    //   audio.play();
-    //   dispatch(
-    //     set_playing({
-    //       playing: true,
-    //       url: url,
-    //     })
-    //   );
-    // }
+    setAudioStatus(true);
+    dispatch(
+      set_playing({
+        playSong: true,
+        url,
+      })
+    );
   };
+  const stopsong = () => {
+    setAudioStatus(false);
+    dispatch(
+      set_playing({
+        playSong: false,
+        url,
+      })
+    );
+  };
+
   const millisToMinutesAndSeconds = (millis) => {
     const minutes = Math.floor(millis / 60000);
     const seconds = ((millis % 60000) / 1000).toFixed(0);
@@ -81,8 +87,21 @@ function SongRow({
   };
 
   return (
-    <SongRowContainer onClick={playSong}>
-      {time && <PlayCircleOutlineIcon className="icon" fontSize="large" />}
+    <SongRowContainer>
+      {time && audioStatus === true && (
+        <PauseCircleOutlineIcon
+          onClick={stopsong}
+          className="icon"
+          fontSize="large"
+        />
+      )}
+      {time && audioStatus === false && (
+        <PlayCircleOutlineIcon
+          onClick={playSong}
+          className="icon"
+          fontSize="large"
+        />
+      )}
 
       {trackNumber && <h5>{trackNumber}</h5>}
       {image && <img src={image} alt="" />}
