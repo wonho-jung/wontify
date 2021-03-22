@@ -25,38 +25,62 @@ import { useRef } from "react";
 
 function Player({ spotify }) {
   const [audioStatus, setAudioStatus] = useState("");
+  const [audio] = useState(new Audio());
   console.log("before useEffect", audioStatus);
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
   const playlisturl = useSelector(selectPlayingList);
   const myRef = useRef();
-  var url;
+  console.log(playlisturl?.playinglist);
+  const audioplay = new Audio();
   const playSongPlayer = () => {
-    // setAudioStatus(true);
-    // dispatch(
-    //   set_playing({
-    //     playSong: true,
-    //   })
-    // );
-
-    myRef.current.play();
+    setAudioStatus(true);
+    dispatch(
+      set_playing({
+        playSong: true,
+      })
+    );
+    setAudioStatus(playlisturl.playlist);
+    audioplay.src = audio;
+    audioplay.play();
+    // myRef.current.play();
   };
   const stopsongPlayer = () => {
     // console.log(myRef);
-
-    // setAudioStatus(false);
-    // dispatch(
-    //   set_playing({
-    //     playSong: false,
-    //   })
-    // );
     myRef.current.pause();
+    setAudioStatus(false);
+    dispatch(
+      set_playing({
+        playSong: false,
+      })
+    );
   };
-  console.log(myRef);
+  // console.log(myRef);
+  console.log(playing.playSong);
+  useEffect(() => {
+    if (playlisturl !== null) {
+      console.log(playlisturl.playinglist);
+      console.log(audio.src);
+      audio.src = playlisturl.playinglist;
+
+      if (playing.playSong === true) {
+        console.log("i'm playing");
+        console.log(audio);
+        audio.play();
+      } else if (playing.playSong === false) {
+        console.log("i'm not playing");
+        audio.pause();
+      }
+      // } else {
+      //   if (playlisturl !== null) {
+      //     audio.pause();
+      //   }
+    }
+  }, [playlisturl]);
   return (
     <Router>
       <PlayerContainer>
-        <audio ref={myRef} src={playlisturl?.playinglist} />
+        {/* <audio ref={myRef} src={audio} /> */}
 
         <PlayerBody>
           <Sidebar spotify={spotify} />

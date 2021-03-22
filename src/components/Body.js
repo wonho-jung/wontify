@@ -54,7 +54,6 @@ function Body({ spotify, songControl, myRef, playSongPlayer, stopsongPlayer }) {
         {userplaylist?.res.tracks.items.map((item, inx) => (
           <SongRow
             myRef={myRef}
-            songControl={songControl}
             key={inx}
             url={item.track.preview_url}
             time={item.track.duration_ms}
@@ -64,7 +63,7 @@ function Body({ spotify, songControl, myRef, playSongPlayer, stopsongPlayer }) {
             artistsName={item.track.artists}
             spotify={spotify}
             playSongPlayer={playSongPlayer}
-            stopsongPlayer={playSongPlayer}
+            stopsongPlayer={stopsongPlayer}
           />
         ))}
 

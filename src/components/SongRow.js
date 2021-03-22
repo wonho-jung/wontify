@@ -30,12 +30,12 @@ function SongRow({
   time,
   timeRecommend,
   songControl,
-  myRef,
+
   playSongPlayer,
   stopsongPlayer,
 }) {
   const [audioStatus, setAudioStatus] = useState(false);
-
+  const myRef = useRef();
   const dispatch = useDispatch();
 
   const addList = () => {
@@ -66,8 +66,9 @@ function SongRow({
   };
 
   const playSong = () => {
-    playSongPlayer();
     setAudioStatus(true);
+    // playSongPlayer();
+
     dispatch(
       set_playing({
         playSong: true,
@@ -84,7 +85,8 @@ function SongRow({
 
   const stopsong = () => {
     // myRef.current.pause();
-    stopsongPlayer();
+    setAudioStatus(false);
+    // stopsongPlayer();
     dispatch(
       set_playing({
         playSong: false,
@@ -96,8 +98,6 @@ function SongRow({
       })
     );
   };
-
-  setAudioStatus(false);
 
   const millisToMinutesAndSeconds = (millis) => {
     const minutes = Math.floor(millis / 60000);
