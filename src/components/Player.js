@@ -31,7 +31,7 @@ function Player({ spotify }) {
   const dispatch = useDispatch();
   const playlisturl = useSelector(selectPlayingList);
   const myRef = useRef();
-  console.log(playlisturl?.playinglist);
+  console.log("first url value ", playlisturl, "first audio value", audio.src);
   const audioplay = new Audio();
   const playSongPlayer = () => {
     setAudioStatus(true);
@@ -59,22 +59,66 @@ function Player({ spotify }) {
   console.log(playing.playSong);
   useEffect(() => {
     if (playlisturl !== null) {
-      console.log(playlisturl.playinglist);
-      console.log(audio.src);
-      audio.src = playlisturl.playinglist;
-
-      if (playing.playSong === true) {
-        console.log("i'm playing");
-        console.log(audio);
+      if (audio.src === "" && playing.playSong === true) {
+        console.log("audio is emtye start song");
+        audio.src = playlisturl.playinglist;
         audio.play();
-      } else if (playing.playSong === false) {
-        console.log("i'm not playing");
-        audio.pause();
       }
-      // } else {
-      //   if (playlisturl !== null) {
+      // if (playlisturl.playinglist !== audio.src) {
+      //   console.log(
+      //     "audio =>",
+      //     audio.src,
+      //     "redux url =>",
+      //     playlisturl.playinglist
+      //   );
+      //   console.log(playlisturl.playinglist);
+      //   console.log(audio.src);
+      //   audio.src = playlisturl.playinglist;
+
+      //   if (playing.playSong === true) {
+      //     console.log("i'm playing");
+      //     console.log(
+      //       "audio =>",
+      //       audio.src,
+      //       "redux url =>",
+      //       playlisturl.playinglist
+      //     );
+      //     audio.play();
+      //   } else if (playing.playSong === false) {
+      //     console.log("i'm not playing");
       //     audio.pause();
       //   }
+      //   // } else {
+      //   //   if (playlisturl !== null) {
+      //   //     audio.pause();
+      //   //   }
+      // }
+      else if (playlisturl.playinglist === audio.src) {
+        if (playing.playSong === true) {
+          console.log(
+            "playlist.url and aduio.src is same and you want start again"
+          );
+          audio.play();
+        } else if (playing.playSong === false) {
+          console.log(
+            "playlist.url and audio.src is same and you want stop tarck"
+          );
+          audio.pause();
+        }
+      } else if (playlisturl.playinglist !== audio.src) {
+        console.log("you play another track");
+
+        if (playing.playSong === true) {
+          audio.pause();
+          console.log(
+            "playlist.url and aduio.src is not same and you want play new song"
+          );
+          audio.src = playlisturl.playinglist;
+          audio.play();
+        } else if (playing.playSong === false) {
+          console.log("?");
+        }
+      }
     }
   }, [playlisturl]);
   return (

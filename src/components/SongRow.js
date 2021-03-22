@@ -94,7 +94,7 @@ function SongRow({
     );
     dispatch(
       set_playinglist({
-        url,
+        playinglist: url,
       })
     );
   };
