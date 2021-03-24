@@ -5,6 +5,7 @@ import { db } from "./firebase";
 import firebase from "firebase";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  selectAudioStatus,
   selectPlaying,
   set_AddItem,
   set_list,
@@ -30,14 +31,16 @@ function SongRow({
   time,
   timeRecommend,
   songControl,
-
+  audio,
   playSongPlayer,
   stopsongPlayer,
 }) {
   const [audioStatus, setAudioStatus] = useState(false);
-  const myRef = useRef();
   const dispatch = useDispatch();
-
+  const audiostate = useSelector(selectAudioStatus);
+  const playing = useSelector(selectPlaying);
+  console.log(audiostate?.audioStatus);
+  console.log(playing);
   const addList = () => {
     db.collection("tracks").doc(id).collection("track").add({
       image,
@@ -108,16 +111,48 @@ function SongRow({
   return (
     <SongRowContainer>
       {/* {time && <audio ref={myRef} src={url} />} */}
-      {time && audioStatus === true && (
+      {/* {time && audioStatus === true && (
         <PauseCircleOutlineIcon
           onClick={stopsong}
           className="icon"
           fontSize="large"
         />
-      )}
-      {time && audioStatus === false && (
+      )} */}
+      {/* {time && audioStatus === false && (
         <PlayCircleOutlineIcon
           onClick={playSong}
+          className="icon"
+          fontSize="large"
+        />
+      )} */}
+      {/* <div onClick={play playSong}>
+
+      </div> */}
+      {/* {audiostate?.audioStatus === url && playing ? (
+        <PauseCircleOutlineIcon
+          onClick={stopsong}
+          className="icon"
+          fontSize="large"
+        />
+      ) : (
+        <PlayCircleOutlineIcon
+        onClick={playSong}
+        className="icon"
+        fontSize="large"
+      />
+      )} */}
+
+      {(time && audiostate?.audioStatus === null) ||
+        (time && audiostate?.audioStatus !== url && (
+          <PlayCircleOutlineIcon
+            onClick={playSong}
+            className="icon"
+            fontSize="large"
+          />
+        ))}
+      {time && audiostate?.audioStatus === url && playing && (
+        <PauseCircleOutlineIcon
+          onClick={stopsong}
           className="icon"
           fontSize="large"
         />

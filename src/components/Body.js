@@ -14,7 +14,14 @@ import SongRow from "./SongRow";
 import { db } from "./firebase";
 import { useCollection } from "react-firebase-hooks/firestore";
 
-function Body({ spotify, songControl, myRef, playSongPlayer, stopsongPlayer }) {
+function Body({
+  spotify,
+  songControl,
+  myRef,
+  playSongPlayer,
+  stopsongPlayer,
+  audio,
+}) {
   const dispatch = useDispatch();
   const playlistid = useSelector(selectPlaylistid);
   const { playlistid: id } = playlistid;
@@ -53,6 +60,7 @@ function Body({ spotify, songControl, myRef, playSongPlayer, stopsongPlayer }) {
 
         {userplaylist?.res.tracks.items.map((item, inx) => (
           <SongRow
+            audio={audio}
             myRef={myRef}
             key={inx}
             url={item.track.preview_url}

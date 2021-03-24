@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectPlaying,
   selectPlayingList,
+  set_audioStatus,
   set_playing,
   set_playinglist,
 } from "../features/userSlice";
@@ -24,31 +25,22 @@ import { useState } from "react";
 import { useRef } from "react";
 
 function Player({ spotify }) {
-  const [audioStatus, setAudioStatus] = useState("");
   const [audio] = useState(new Audio());
-  console.log("before useEffect", audioStatus);
+
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
   const playlisturl = useSelector(selectPlayingList);
   const myRef = useRef();
   console.log("first url value ", playlisturl, "first audio value", audio.src);
-  const audioplay = new Audio();
+
   const playSongPlayer = () => {
-    setAudioStatus(true);
     dispatch(
       set_playing({
         playSong: true,
       })
     );
-    setAudioStatus(playlisturl.playlist);
-    audioplay.src = audio;
-    audioplay.play();
-    // myRef.current.play();
   };
   const stopsongPlayer = () => {
-    // console.log(myRef);
-    myRef.current.pause();
-    setAudioStatus(false);
     dispatch(
       set_playing({
         playSong: false,
@@ -63,6 +55,11 @@ function Player({ spotify }) {
         console.log("audio is emtye start song");
         audio.src = playlisturl.playinglist;
         audio.play();
+        dispatch(
+          set_audioStatus({
+            audioStatus: playlisturl.playinglist,
+          })
+        );
       }
       // if (playlisturl.playinglist !== audio.src) {
       //   console.log(
@@ -98,16 +95,31 @@ function Player({ spotify }) {
           console.log(
             "playlist.url and aduio.src is same and you want start again"
           );
+          dispatch(
+            set_audioStatus({
+              audioStatus: playlisturl.playinglist,
+            })
+          );
           audio.play();
         } else if (playing.playSong === false) {
           console.log(
             "playlist.url and audio.src is same and you want stop tarck"
           );
+
           audio.pause();
+          dispatch(
+            set_audioStatus({
+              audioStatus: "",
+            })
+          );
         }
       } else if (playlisturl.playinglist !== audio.src) {
         console.log("you play another track");
-
+        dispatch(
+          set_audioStatus({
+            audioStatus: playlisturl.playinglist,
+          })
+        );
         if (playing.playSong === true) {
           audio.pause();
           console.log(
@@ -115,8 +127,6 @@ function Player({ spotify }) {
           );
           audio.src = playlisturl.playinglist;
           audio.play();
-        } else if (playing.playSong === false) {
-          console.log("?");
         }
       }
     }
@@ -156,6 +166,7 @@ function Player({ spotify }) {
               <Body
                 spotify={spotify}
                 myRef={myRef}
+                audio={audio.src}
                 playSongPlayer={playSongPlayer}
                 stopsongPlayer={stopsongPlayer}
               />
