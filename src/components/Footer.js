@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
+import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
+
 import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import ShuffleIcon from "@material-ui/icons/Shuffle";
@@ -9,26 +11,51 @@ import { Grid, Slider } from "@material-ui/core";
 import PlaylistPlayIcon from "@material-ui/icons/PlaylistPlay";
 import VolumeDownIcon from "@material-ui/icons/VolumeDown";
 import { useSelector } from "react-redux";
-import { selectUser } from "../features/userSlice";
+import {
+  selectAudioStatus,
+  selectFooteraudioState,
+  selectUser,
+} from "../features/userSlice";
 function Footer() {
+  const footeraudioState = useSelector(selectFooteraudioState);
+  const audiostate = useSelector(selectAudioStatus);
+  console.log(footeraudioState);
+
+  const music = () => {};
   return (
     <FooterContainer>
-      <FooterLeft>
-        <img
-          src="https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=3578146698962030&height=300&width=300&ext=1618755507&hash=AeTR_TP5fNgF16LMd_Y"
-          alt=""
-        />
-        <FooterSongInfo>
-          {/* <h4>songName</h4> */}
-          <p>By won.9 devoloper</p>
-        </FooterSongInfo>
-      </FooterLeft>
+      {footeraudioState ? (
+        <FooterLeft>
+          <img
+            src={footeraudioState.footeraudioState.album.images[0].url}
+            alt=""
+          />
+          <FooterSongInfo>
+            <h4>{footeraudioState.footeraudioState.name}</h4>
+          </FooterSongInfo>
+        </FooterLeft>
+      ) : (
+        <FooterLeft>
+          <img
+            src="https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=3578146698962030&height=300&width=300&ext=1618755507&hash=AeTR_TP5fNgF16LMd_Y"
+            alt=""
+          />
+          <FooterSongInfo>
+            <p>By won.9 devoloper</p>
+          </FooterSongInfo>
+        </FooterLeft>
+      )}
+
       <FooterCenter>
-        <ShuffleIcon style={{ color: "green" }} />
         <SkipPreviousIcon />
-        <PlayCircleOutlineIcon fontSize="large" />
+        {audiostate?.audiostate ===
+        footeraudioState?.footeraudioState.preview_url ? (
+          <PauseCircleOutlineIcon />
+        ) : (
+          <PlayCircleOutlineIcon fontSize="large" />
+        )}
+
         <SkipNextIcon />
-        <RepeatIcon style={{ color: "green" }} />
       </FooterCenter>
       <FooterRight>
         <Grid container spacing={2}>

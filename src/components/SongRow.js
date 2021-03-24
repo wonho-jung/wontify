@@ -8,6 +8,7 @@ import {
   selectAudioStatus,
   selectPlaying,
   set_AddItem,
+  set_footeraudioState,
   set_list,
   set_playing,
   set_playinglist,
@@ -19,7 +20,7 @@ import { TurnedInTwoTone } from "@material-ui/icons";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
 function SongRow({
   url,
-  track,
+  trackInfo,
   image,
   name,
   albumName,
@@ -30,17 +31,11 @@ function SongRow({
   trackNumber,
   time,
   timeRecommend,
-  songControl,
-  audio,
-  playSongPlayer,
-  stopsongPlayer,
 }) {
-  const [audioStatus, setAudioStatus] = useState(false);
   const dispatch = useDispatch();
   const audiostate = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
-  console.log(audiostate?.audioStatus);
-  console.log(playing);
+  console.log(trackInfo);
   const addList = () => {
     db.collection("tracks").doc(id).collection("track").add({
       image,
@@ -69,9 +64,6 @@ function SongRow({
   };
 
   const playSong = () => {
-    setAudioStatus(true);
-    // playSongPlayer();
-
     dispatch(
       set_playing({
         playSong: true,
@@ -82,14 +74,14 @@ function SongRow({
         playinglist: url,
       })
     );
-
-    // myRef.current.play();
+    dispatch(
+      set_footeraudioState({
+        footeraudioState: trackInfo,
+      })
+    );
   };
 
   const stopsong = () => {
-    // myRef.current.pause();
-    setAudioStatus(false);
-    // stopsongPlayer();
     dispatch(
       set_playing({
         playSong: false,
@@ -110,38 +102,6 @@ function SongRow({
 
   return (
     <SongRowContainer>
-      {/* {time && <audio ref={myRef} src={url} />} */}
-      {/* {time && audioStatus === true && (
-        <PauseCircleOutlineIcon
-          onClick={stopsong}
-          className="icon"
-          fontSize="large"
-        />
-      )} */}
-      {/* {time && audioStatus === false && (
-        <PlayCircleOutlineIcon
-          onClick={playSong}
-          className="icon"
-          fontSize="large"
-        />
-      )} */}
-      {/* <div onClick={play playSong}>
-
-      </div> */}
-      {/* {audiostate?.audioStatus === url && playing ? (
-        <PauseCircleOutlineIcon
-          onClick={stopsong}
-          className="icon"
-          fontSize="large"
-        />
-      ) : (
-        <PlayCircleOutlineIcon
-        onClick={playSong}
-        className="icon"
-        fontSize="large"
-      />
-      )} */}
-
       {(time && audiostate?.audioStatus === null) ||
         (time && audiostate?.audioStatus !== url && (
           <PlayCircleOutlineIcon

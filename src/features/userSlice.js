@@ -25,6 +25,7 @@ export const userSlice = createSlice({
     artistDetail: null,
     playinglist: null,
     audioStatus: null,
+    footeraudioState: null,
   },
 
   reducers: {
@@ -92,6 +93,9 @@ export const userSlice = createSlice({
     set_audioStatus: (state, action) => {
       state.audioStatus = action.payload;
     },
+    set_footeraudioState: (state, action) => {
+      state.footeraudioState = action.payload;
+    },
   },
 });
 
@@ -117,6 +121,7 @@ export const {
   set_playing,
   set_playinglist,
   set_audioStatus,
+  set_footeraudioState,
 } = userSlice.actions;
 
 export const selectUser = (state) => state.user.user;
@@ -141,5 +146,6 @@ export const selectArtistDetail = (state) => state.user.artistDetail;
 export const selectPlaying = (state) => state.user.playing;
 export const selectPlayingList = (state) => state.user.playinglist;
 export const selectAudioStatus = (state) => state.user.audioStatus;
+export const selectFooteraudioState = (state) => state.user.footeraudioState;
 
 export default userSlice.reducer;

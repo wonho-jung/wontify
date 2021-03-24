@@ -15,9 +15,11 @@ import SearchDetail from "./SearchDetail";
 import Artist from "./Artist";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  selectFooteraudioState,
   selectPlaying,
   selectPlayingList,
   set_audioStatus,
+  set_footeraudioState,
   set_playing,
   set_playinglist,
 } from "../features/userSlice";
@@ -26,11 +28,10 @@ import { useRef } from "react";
 
 function Player({ spotify }) {
   const [audio] = useState(new Audio());
-
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
   const playlisturl = useSelector(selectPlayingList);
-  const myRef = useRef();
+  const footeraudioStateter = useSelector(selectFooteraudioState);
   console.log("first url value ", playlisturl, "first audio value", audio.src);
 
   const playSongPlayer = () => {
@@ -50,7 +51,7 @@ function Player({ spotify }) {
   // console.log(myRef);
   console.log(playing.playSong);
   useEffect(() => {
-    if (playlisturl !== null) {
+    if (playlisturl) {
       if (audio.src === "" && playing.playSong === true) {
         console.log("audio is emtye start song");
         audio.src = playlisturl.playinglist;
@@ -60,37 +61,7 @@ function Player({ spotify }) {
             audioStatus: playlisturl.playinglist,
           })
         );
-      }
-      // if (playlisturl.playinglist !== audio.src) {
-      //   console.log(
-      //     "audio =>",
-      //     audio.src,
-      //     "redux url =>",
-      //     playlisturl.playinglist
-      //   );
-      //   console.log(playlisturl.playinglist);
-      //   console.log(audio.src);
-      //   audio.src = playlisturl.playinglist;
-
-      //   if (playing.playSong === true) {
-      //     console.log("i'm playing");
-      //     console.log(
-      //       "audio =>",
-      //       audio.src,
-      //       "redux url =>",
-      //       playlisturl.playinglist
-      //     );
-      //     audio.play();
-      //   } else if (playing.playSong === false) {
-      //     console.log("i'm not playing");
-      //     audio.pause();
-      //   }
-      //   // } else {
-      //   //   if (playlisturl !== null) {
-      //   //     audio.pause();
-      //   //   }
-      // }
-      else if (playlisturl.playinglist === audio.src) {
+      } else if (playlisturl.playinglist === audio.src) {
         if (playing.playSong === true) {
           console.log(
             "playlist.url and aduio.src is same and you want start again"
@@ -107,6 +78,7 @@ function Player({ spotify }) {
           );
 
           audio.pause();
+          audio.currentTime = 0;
           dispatch(
             set_audioStatus({
               audioStatus: "",
@@ -163,13 +135,7 @@ function Player({ spotify }) {
               <Library spotify={spotify} />
             </Route>
             <Route path="/:id">
-              <Body
-                spotify={spotify}
-                myRef={myRef}
-                audio={audio.src}
-                playSongPlayer={playSongPlayer}
-                stopsongPlayer={stopsongPlayer}
-              />
+              <Body spotify={spotify} />
             </Route>
             <Route path="/" exact>
               <Home spotify={spotify} />
