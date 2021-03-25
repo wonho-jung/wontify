@@ -49,14 +49,64 @@ function Player({ spotify }) {
       })
     );
   };
-  // console.log(myRef);
+  // const audioTimeStop = setTimeout(() => {
+  //   audio.pause();
+  //   audio.currentTime = 0;
+  //   dispatch(
+  //     set_audioStatus({
+  //       audioStatus: "",
+  //     })
+  //   );
+  // }, 5000);
+
+  // const audioTimeStop = () => {
+  //   return setTimeout(() => {
+  //     console.log("i'm making stop");
+  //     audio.pause();
+  //     audio.currentTime = 0;
+  //     dispatch(
+  //       set_audioStatus({
+  //         audioStatus: "",
+  //       })
+  //     );
+  //   }, 5000);
+  // };
+  // const timeOutStop = () => {
+  //   console.log("i'm making func stop");
+  //   console.log(audioTimeStop);
+  //   clearTimeout(audioTimeStop);
+  // };
+  // const audioTimeStop = () => {
+  //   if (audio.currentTime > 5) {
+  //     console.log(audio.src);
+  //     console.log(audio.currentTime);
+  //     audio.pause();
+  //     audio.currentTime = 0;
+  //     dispatch(
+  //       set_audioStatus({
+  //         audioStatus: "",
+  //       })
+  //     );
+  //   }
+
+  // };
+  // var timeCheck = setInterval(audioTimeStop, 1500);
   console.log(playing.playSong);
+  useEffect(() => {
+    if (audio.currentTime > 3) {
+      console.log(audio.currentTime);
+      // audio.pause();
+      // audio.currentTime = 0;
+      // audio.src = "";
+    }
+  }, [audio.currentTime]);
   useEffect(() => {
     if (playlisturl) {
       if (audio.src === "" && playing.playSong === true) {
         console.log("audio is emtye start song");
         audio.src = playlisturl.playinglist;
         audio.play();
+
         dispatch(
           set_audioStatus({
             audioStatus: playlisturl.playinglist,
@@ -77,7 +127,6 @@ function Player({ spotify }) {
           console.log(
             "playlist.url and audio.src is same and you want stop tarck"
           );
-
           audio.pause();
           audio.currentTime = 0;
           dispatch(
@@ -88,22 +137,23 @@ function Player({ spotify }) {
         }
       } else if (playlisturl.playinglist !== audio.src) {
         console.log("you play another track");
-        dispatch(
-          set_audioStatus({
-            audioStatus: playlisturl.playinglist,
-          })
-        );
+        audio.currentTime = 0;
+
+        audio.pause();
+
         if (playing.playSong === true) {
-          audio.pause();
           console.log(
             "playlist.url and aduio.src is not same and you want play new song"
+          );
+          dispatch(
+            set_audioStatus({
+              audioStatus: playlisturl.playinglist,
+            })
           );
           audio.src = playlisturl.playinglist;
           audio.play();
         }
       }
-    } else if (playlisturl?.playinglist === "no data") {
-      alert("sorry... no data");
     }
   }, [playlisturl]);
   return (
