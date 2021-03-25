@@ -20,7 +20,7 @@ function Body({ spotify }) {
   const { playlistid: id } = playlistid;
   const userplaylist = useSelector(selectList);
   const recommended = useSelector(selectRecommended);
-
+  console.log(recommended);
   const [tracksDetail] = useCollection(id && db.collection("tracks").doc(id));
   const [trackItem] = useCollection(
     id &&
@@ -67,10 +67,18 @@ function Body({ spotify }) {
 
         {tracksDetail &&
           trackItem?.docs.map((doc) => {
-            const { albumName, artistsName, image, name, time } = doc.data();
+            const {
+              albumName,
+              artistsName,
+              image,
+              name,
+              time,
+              url,
+            } = doc.data();
 
             return (
               <SongRow
+                url={url}
                 albumName={albumName}
                 artistsName={artistsName}
                 image={image}
@@ -85,6 +93,7 @@ function Body({ spotify }) {
           <p className="recommend_p">Based on what's in this playlist</p>
           {recommended?.recommended.tracks.map((item) => (
             <SongRow
+              url={item.preview_url}
               id={id}
               track={item}
               spotify={spotify}

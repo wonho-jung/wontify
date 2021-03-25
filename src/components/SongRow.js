@@ -43,6 +43,7 @@ function SongRow({
       albumName,
       artistsName,
       time: timeRecommend,
+      url,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     });
 
@@ -102,15 +103,15 @@ function SongRow({
 
   return (
     <SongRowContainer>
-      {(time && audiostate?.audioStatus === null) ||
-        (time && audiostate?.audioStatus !== url && (
+      {(time && url !== null && audiostate?.audioStatus === null) ||
+        (time && url !== null && audiostate?.audioStatus !== url && (
           <PlayCircleOutlineIcon
             onClick={playSong}
             className="icon"
             fontSize="large"
           />
         ))}
-      {time && audiostate?.audioStatus === url && playing && (
+      {time && url !== null && audiostate?.audioStatus === url && playing && (
         <PauseCircleOutlineIcon
           onClick={stopsong}
           className="icon"

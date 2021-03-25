@@ -66,6 +66,7 @@ function Artist({ spotify }) {
             <h1 className="bodySongTitle">Popular Top 10</h1>
             {artistDetail?.artistDetail.tracks.map((item, inx) => (
               <SongRow
+                url={item.preview_url}
                 key={inx}
                 time={item.duration_ms}
                 image={item.album?.images[0].url}

@@ -19,6 +19,7 @@ function SearchDetail({ spotify }) {
   const dispatch = useDispatch();
   const searchResult = useSelector(selectSearchResult);
   console.log(searchResult);
+
   const sendArtist = () => {
     spotify
       .getArtistTopTracks(searchResult.searchResult.artists.items[0].id, "CA")
@@ -62,8 +63,22 @@ function SearchDetail({ spotify }) {
             <ResultRight>
               <h3>Songs</h3>
               <ResultRightSongcontainer>
-                {searchResult?.searchResult.tracks.items.map((item, idx) => (
+                {searchResult?.searchResult.tracks.items
+                  .filter((url) => url.preview_url !== null)
+                  .map((item, idx) => (
+                    <SongRow
+                      url={item.preview_url}
+                      key={idx}
+                      time={item.duration_ms}
+                      image={item.album.images[0].url}
+                      name={item.name}
+                      albumName={item.album.name}
+                      artistsName={item.artists}
+                    />
+                  ))}
+                {/* {searchResult?.searchResult.tracks.items.map((item, idx) => (
                   <SongRow
+                    url={item.preview_url}
                     key={idx}
                     time={item.duration_ms}
                     image={item.album.images[0].url}
@@ -71,7 +86,7 @@ function SearchDetail({ spotify }) {
                     albumName={item.album.name}
                     artistsName={item.artists}
                   />
-                ))}
+                ))} */}
               </ResultRightSongcontainer>
             </ResultRight>
           </SearchresultContainer>

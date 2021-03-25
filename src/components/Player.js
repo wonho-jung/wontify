@@ -25,6 +25,7 @@ import {
 } from "../features/userSlice";
 import { useState } from "react";
 import { useRef } from "react";
+import { AlbumRounded } from "@material-ui/icons";
 
 function Player({ spotify }) {
   const [audio] = useState(new Audio());
@@ -101,6 +102,8 @@ function Player({ spotify }) {
           audio.play();
         }
       }
+    } else if (playlisturl?.playinglist === "no data") {
+      alert("sorry... no data");
     }
   }, [playlisturl]);
   return (
