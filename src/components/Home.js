@@ -26,6 +26,7 @@ function Home({ spotify }) {
         <PostsContainer>
           {recentlyPlayed?.recentlyPlayed?.map((track, inx) => (
             <Post
+              url={track.track.preview_url}
               spotify={spotify}
               albumId={track.track.album.id}
               key={inx}

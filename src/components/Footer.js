@@ -26,12 +26,12 @@ function Footer() {
     <FooterContainer>
       {footeraudioState ? (
         <FooterLeft>
-          <img
+          {/* <img
             src={footeraudioState.footeraudioState.album.images[0].url}
             alt=""
-          />
+          /> */}
           <FooterSongInfo>
-            <h4>{footeraudioState.footeraudioState.name}</h4>
+            {/* <h4>{footeraudioState.footeraudioState.name}</h4> */}
           </FooterSongInfo>
         </FooterLeft>
       ) : (
@@ -48,12 +48,12 @@ function Footer() {
 
       <FooterCenter>
         <SkipPreviousIcon />
-        {audiostate?.audiostate ===
+        {/* {audiostate?.audiostate ===
         footeraudioState?.footeraudioState.preview_url ? (
           <PauseCircleOutlineIcon />
         ) : (
           <PlayCircleOutlineIcon fontSize="large" />
-        )}
+        )} */}
 
         <SkipNextIcon />
       </FooterCenter>

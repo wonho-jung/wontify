@@ -16,6 +16,7 @@ function DetailPlaylist({ spotify }) {
   const album = useSelector(selectDetailAlbum);
   const detailAlbumTracks = useSelector(selectDetailAlbumTracks);
   const userplaylist = useSelector(selectList);
+  console.log(userplaylist);
   return (
     <BodyContainer>
       <Header spotify={spotify} />
@@ -38,6 +39,7 @@ function DetailPlaylist({ spotify }) {
 
         {userplaylist?.res.tracks.items.map((item, inx) => (
           <SongRow
+            url={item.track.preview_url}
             key={inx}
             time={item.track.duration_ms}
             image={item.track.album?.images[0]?.url}

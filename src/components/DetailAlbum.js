@@ -41,6 +41,7 @@ function DetailAlbum({ spotify }) {
         {detailAlbumTracks &&
           detailAlbumTracks.detailAlbumTracks.items.map((item, inx) => (
             <SongRow
+              url={item.preview_url}
               key={inx}
               trackNumber={inx + 1}
               name={item.name}
