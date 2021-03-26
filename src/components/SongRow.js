@@ -35,7 +35,6 @@ function SongRow({
   const dispatch = useDispatch();
   const audiostate = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
-  console.log(trackInfo);
   const addList = () => {
     db.collection("tracks").doc(id).collection("track").add({
       image,
@@ -118,6 +117,23 @@ function SongRow({
           fontSize="large"
         />
       )}
+
+      {/* {time && url !== null && audiostate?.audioStatus === url && playing ? (
+        <PauseCircleOutlineIcon
+          onClick={stopsong}
+          className="icon"
+          fontSize="large"
+        />
+      ) : (
+        time &&
+        url !== null && (
+          <PlayCircleOutlineIcon
+            onClick={playSong}
+            className="icon"
+            fontSize="large"
+          />
+        )
+      )} */}
 
       {trackNumber && <h5>{trackNumber}</h5>}
       {image && <img src={image} alt="" />}

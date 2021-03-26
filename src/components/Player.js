@@ -28,6 +28,7 @@ import { useRef } from "react";
 import { AlbumRounded } from "@material-ui/icons";
 
 function Player({ spotify }) {
+  const [intervalId, setIntervalId] = useState("");
   const [audio] = useState(new Audio());
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
@@ -91,22 +92,44 @@ function Player({ spotify }) {
 
   // };
   // var timeCheck = setInterval(audioTimeStop, 1500);
-  console.log(playing.playSong);
-  useEffect(() => {
-    if (audio.currentTime > 3) {
+  // console.log(playing.playSong);
+  // useEffect(() => {
+  //   if (audio.currentTime > 3) {
+  //     console.log(audio.currentTime);
+  //     // audio.pause();
+  //     // audio.currentTime = 0;
+  //     // audio.src = "";
+  //   }
+  // }, [audio.currentTime]);
+  const audioChecktime = () => {
+    const intervalId = setInterval(() => {
       console.log(audio.currentTime);
-      // audio.pause();
-      // audio.currentTime = 0;
-      // audio.src = "";
-    }
-  }, [audio.currentTime]);
+      if (Math.ceil(audio.currentTime) === 30) {
+        clearInterval(intervalId);
+        audio.pause();
+        audio.currentTime = 0;
+        dispatch(
+          set_audioStatus({
+            audioStatus: "",
+          })
+        );
+        dispatch(
+          set_playing({
+            playSong: false,
+          })
+        );
+      }
+    }, 1000);
+    setIntervalId(intervalId);
+  };
+
   useEffect(() => {
     if (playlisturl) {
       if (audio.src === "" && playing.playSong === true) {
         console.log("audio is emtye start song");
         audio.src = playlisturl.playinglist;
         audio.play();
-
+        audioChecktime();
         dispatch(
           set_audioStatus({
             audioStatus: playlisturl.playinglist,
@@ -123,10 +146,12 @@ function Player({ spotify }) {
             })
           );
           audio.play();
+          audioChecktime();
         } else if (playing.playSong === false) {
           console.log(
             "playlist.url and audio.src is same and you want stop tarck"
           );
+          clearInterval(intervalId);
           audio.pause();
           audio.currentTime = 0;
           dispatch(
@@ -137,10 +162,9 @@ function Player({ spotify }) {
         }
       } else if (playlisturl.playinglist !== audio.src) {
         console.log("you play another track");
-        audio.currentTime = 0;
 
         audio.pause();
-
+        audio.currentTime = 0;
         if (playing.playSong === true) {
           console.log(
             "playlist.url and aduio.src is not same and you want play new song"
@@ -152,6 +176,8 @@ function Player({ spotify }) {
           );
           audio.src = playlisturl.playinglist;
           audio.play();
+          audioChecktime();
+          clearInterval(intervalId);
         }
       }
     }

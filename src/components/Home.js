@@ -17,8 +17,7 @@ function Home({ spotify }) {
   const workout = useSelector(selectWorkout);
   const party = useSelector(selectParty);
   const mood = useSelector(selectMood);
-  console.log(recentlyPlayed);
-  console.log(workout);
+
   return (
     <HomeContainer>
       <HomeContentContainer>
