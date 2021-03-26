@@ -20,7 +20,6 @@ import { TurnedInTwoTone } from "@material-ui/icons";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
 function SongRow({
   url,
-  trackInfo,
   image,
   name,
   albumName,
@@ -76,7 +75,11 @@ function SongRow({
     );
     dispatch(
       set_footeraudioState({
-        footeraudioState: trackInfo,
+        footeraudioState: {
+          name,
+          url,
+          image,
+        },
       })
     );
   };

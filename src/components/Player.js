@@ -221,7 +221,7 @@ function Player({ spotify }) {
             </Route>
           </Switch>
         </PlayerBody>
-        <Footer />
+        <Footer audio={audio} />
       </PlayerContainer>
     </Router>
   );

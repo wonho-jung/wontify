@@ -20,7 +20,7 @@ function Body({ spotify }) {
   const { playlistid: id } = playlistid;
   const userplaylist = useSelector(selectList);
   const recommended = useSelector(selectRecommended);
-  console.log(recommended);
+  console.log(userplaylist);
   const [tracksDetail] = useCollection(id && db.collection("tracks").doc(id));
   const [trackItem] = useCollection(
     id &&
@@ -53,7 +53,6 @@ function Body({ spotify }) {
 
         {userplaylist?.res.tracks.items.map((item, inx) => (
           <SongRow
-            trackInfo={item.track}
             key={inx}
             url={item.track.preview_url}
             time={item.track.duration_ms}

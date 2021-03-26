@@ -25,7 +25,11 @@ export const userSlice = createSlice({
     artistDetail: null,
     playinglist: null,
     audioStatus: null,
-    footeraudioState: null,
+    footeraudioState: {
+      name: null,
+      image: null,
+      url: null,
+    },
   },
 
   reducers: {

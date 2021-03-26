@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
@@ -7,31 +7,68 @@ import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import ShuffleIcon from "@material-ui/icons/Shuffle";
 import RepeatIcon from "@material-ui/icons/Repeat";
-import { Grid, Slider } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import PlaylistPlayIcon from "@material-ui/icons/PlaylistPlay";
 import VolumeDownIcon from "@material-ui/icons/VolumeDown";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   selectAudioStatus,
   selectFooteraudioState,
-  selectUser,
+  selectPlaying,
+  set_playing,
+  set_playinglist,
 } from "../features/userSlice";
-function Footer() {
+function Footer({ audio }) {
+  const [volume, setVolume] = useState(0);
   const footeraudioState = useSelector(selectFooteraudioState);
   const audiostate = useSelector(selectAudioStatus);
+  const playing = useSelector(selectPlaying);
+  const dispatch = useDispatch();
   console.log(footeraudioState);
+  const volumeControl = (event) => {
+    setVolume(event);
+    audio.volume = volume / 100;
+    if (audio.volume === 0.01) {
+      audio.volume = 0;
+    }
+  };
+  console.log(audio.volume);
 
-  const music = () => {};
+  const playSong = () => {
+    dispatch(
+      set_playing({
+        playSong: true,
+      })
+    );
+    dispatch(
+      set_playinglist({
+        playinglist: footeraudioState.footeraudioState.url,
+      })
+    );
+  };
+
+  const stopsong = () => {
+    dispatch(
+      set_playing({
+        playSong: false,
+      })
+    );
+    dispatch(
+      set_playinglist({
+        playinglist: footeraudioState.footeraudioState.url,
+      })
+    );
+  };
+
   return (
     <FooterContainer>
-      {footeraudioState ? (
+      {footeraudioState.footeraudioState ? (
         <FooterLeft>
-          {/* <img
-            src={footeraudioState.footeraudioState.album.images[0].url}
-            alt=""
-          /> */}
+          {footeraudioState.footeraudioState.image && (
+            <img src={footeraudioState.footeraudioState.image} alt="" />
+          )}
           <FooterSongInfo>
-            {/* <h4>{footeraudioState.footeraudioState.name}</h4> */}
+            <h4>{footeraudioState.footeraudioState.name}</h4>
           </FooterSongInfo>
         </FooterLeft>
       ) : (
@@ -48,27 +85,55 @@ function Footer() {
 
       <FooterCenter>
         <SkipPreviousIcon />
-        {/* {audiostate?.audiostate ===
-        footeraudioState?.footeraudioState.preview_url ? (
-          <PauseCircleOutlineIcon />
+        {/* {audiostate?.audioStatus === null ||
+          (audiostate?.audioStatus !==
+            footeraudioState.footeraudioState?.url && (
+            <PlayCircleOutlineIcon
+              onClick={playSong}
+              className="icon"
+              fontSize="large"
+            />
+          ))}
+        {audiostate?.audioStatus === footeraudioState.footeraudioState?.url &&
+          playing && (
+            <PauseCircleOutlineIcon
+              onClick={stopsong}
+              className="icon"
+              fontSize="large"
+            />
+          )} */}
+        {audiostate?.audioStatus === footeraudioState.footeraudioState?.url &&
+        playing ? (
+          <PauseCircleOutlineIcon
+            onClick={stopsong}
+            className="icon"
+            fontSize="large"
+          />
         ) : (
-          <PlayCircleOutlineIcon fontSize="large" />
-        )} */}
+          <PlayCircleOutlineIcon
+            onClick={playing ? playSong : null}
+            className="icon"
+            fontSize="large"
+          />
+        )}
 
         <SkipNextIcon />
       </FooterCenter>
+
       <FooterRight>
         <Grid container spacing={2}>
           <Grid item>
-            <PlaylistPlayIcon />
-          </Grid>
-          <Grid item>
             <VolumeDownIcon />
           </Grid>
-          <Grid item xs>
-            <Slider />
-          </Grid>
+          <Grid item></Grid>
         </Grid>
+        <input
+          onChange={(event) => volumeControl(event.target.value)}
+          type="range"
+          min="0"
+          max="100"
+          value={volume}
+        />
       </FooterRight>
     </FooterContainer>
   );
@@ -132,5 +197,11 @@ const FooterRight = styled.div`
   padding-right: 40px;
   > * .MuiSlider-root {
     color: green;
+  }
+  input[type="range"] {
+    width: 100%;
+    margin: 13.8px 0;
+    background-color: transparent;
+    -webkit-appearance: none;
   }
 `;
