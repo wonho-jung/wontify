@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
-
+import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
+import SkipNextIcon from "@material-ui/icons/SkipNext";
 import { Grid } from "@material-ui/core";
 import VolumeDownIcon from "@material-ui/icons/VolumeDown";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
+
 import {
   selectAudioStatus,
   selectFooteraudioState,
@@ -79,6 +82,7 @@ function Footer({ audio }) {
       )}
 
       <FooterCenter>
+        <SkipPreviousIcon />
         {audiostate?.audioStatus === footeraudioState.footeraudioState?.url &&
         playing ? (
           <PauseCircleOutlineIcon
@@ -93,6 +97,11 @@ function Footer({ audio }) {
             fontSize="large"
           />
         )}
+        <SkipNextIcon />
+        <ProgressbarContainer>
+          <p>{moment().minute(0).second(3).format("m:ss")}</p>
+          <p>{moment().minute(0).second(3).format("m:ss")}</p>
+        </ProgressbarContainer>
       </FooterCenter>
 
       <FooterRight>
@@ -154,12 +163,13 @@ const FooterCenter = styled.div`
   color: white;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   max-width: 300px;
   > .MuiSvgIcon-root:hover {
     transition: transform 0.2s ease-in-out !important;
     transform: scale(1.2) !important;
   }
+
   .icon {
     font-size: 50px;
     text-justify: center;
@@ -201,3 +211,4 @@ const FooterRight = styled.div`
     }
   }
 `;
+const ProgressbarContainer = styled.div``;
