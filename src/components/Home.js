@@ -21,7 +21,7 @@ function Home({ spotify }) {
   return (
     <HomeContainer>
       <HomeContentContainer>
-        <h1>Recently played</h1>
+        <h1>Recently played Albums</h1>
         <PostsContainer>
           {recentlyPlayed?.recentlyPlayed?.map((track, inx) => (
             <Post

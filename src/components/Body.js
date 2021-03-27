@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import {
   selectList,
@@ -15,12 +15,11 @@ import { db } from "./firebase";
 import { useCollection } from "react-firebase-hooks/firestore";
 
 function Body({ spotify }) {
-  const dispatch = useDispatch();
   const playlistid = useSelector(selectPlaylistid);
   const { playlistid: id } = playlistid;
   const userplaylist = useSelector(selectList);
   const recommended = useSelector(selectRecommended);
-  console.log(userplaylist);
+
   const [tracksDetail] = useCollection(id && db.collection("tracks").doc(id));
   const [trackItem] = useCollection(
     id &&
@@ -33,7 +32,7 @@ function Body({ spotify }) {
 
   return (
     <BodyContainer>
-      <Header spotify={spotify} />
+      <Header />
 
       <BodyInfo>
         <img src={userplaylist?.res.images[0].url} alt="" />
@@ -159,10 +158,6 @@ const BodyIcons = styled.div`
     margin-left: 50px;
     margin-top: 20px;
     margin-bottom: 20px;
-    :hover {
-      transition: 100ms transform ease-in;
-      transform: scale(1.08);
-    }
   }
 `;
 const Recommended = styled.div`

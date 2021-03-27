@@ -104,9 +104,5 @@ const BodyIcons = styled.div`
     margin-left: 50px;
     margin-top: 20px;
     margin-bottom: 20px;
-    :hover {
-      transition: 100ms transform ease-in;
-      transform: scale(1.08);
-    }
   }
 `;

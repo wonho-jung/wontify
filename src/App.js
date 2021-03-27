@@ -61,14 +61,16 @@ function App() {
         );
       });
 
-      spotify.getMyRecentlyPlayedTracks().then((recentlyPlayed) => {
-        dispatch(
-          set_recentlyPlayed({
-            recentlyPlayed: recentlyPlayed.items,
-          })
-        );
-      });
-      spotify.getNewReleases().then((newReleases) => {
+      spotify
+        .getMyRecentlyPlayedTracks({ limit: 16 })
+        .then((recentlyPlayed) => {
+          dispatch(
+            set_recentlyPlayed({
+              recentlyPlayed: recentlyPlayed.items,
+            })
+          );
+        });
+      spotify.getNewReleases({ limit: 16 }).then((newReleases) => {
         dispatch(
           set_newReleases({
             newReleases: newReleases.albums.items,
@@ -76,28 +78,30 @@ function App() {
         );
       });
 
-      spotify.getCategoryPlaylists("toplists").then((topList) => {
-        dispatch(
-          set_topList({
-            topList: topList.playlists.items,
-          })
-        );
-      });
-      spotify.getCategoryPlaylists("workout").then((workout) => {
+      spotify
+        .getCategoryPlaylists("toplists", { limit: 16 })
+        .then((topList) => {
+          dispatch(
+            set_topList({
+              topList: topList.playlists.items,
+            })
+          );
+        });
+      spotify.getCategoryPlaylists("workout", { limit: 16 }).then((workout) => {
         dispatch(
           set_workout({
             workout: workout.playlists.items,
           })
         );
       });
-      spotify.getCategoryPlaylists("mood").then((mood) => {
+      spotify.getCategoryPlaylists("mood", { limit: 16 }).then((mood) => {
         dispatch(
           set_mood({
             mood: mood.playlists.items,
           })
         );
       });
-      spotify.getCategoryPlaylists("party").then((party) => {
+      spotify.getCategoryPlaylists("party", { limit: 16 }).then((party) => {
         dispatch(
           set_party({
             party: party.playlists.items,

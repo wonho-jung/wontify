@@ -1,14 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
 
-import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
-import SkipNextIcon from "@material-ui/icons/SkipNext";
-import ShuffleIcon from "@material-ui/icons/Shuffle";
-import RepeatIcon from "@material-ui/icons/Repeat";
 import { Grid } from "@material-ui/core";
-import PlaylistPlayIcon from "@material-ui/icons/PlaylistPlay";
 import VolumeDownIcon from "@material-ui/icons/VolumeDown";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -19,7 +14,7 @@ import {
   set_playinglist,
 } from "../features/userSlice";
 function Footer({ audio }) {
-  const [volume, setVolume] = useState(0);
+  const [volume, setVolume] = useState(100);
   const footeraudioState = useSelector(selectFooteraudioState);
   const audiostate = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
@@ -84,24 +79,6 @@ function Footer({ audio }) {
       )}
 
       <FooterCenter>
-        <SkipPreviousIcon />
-        {/* {audiostate?.audioStatus === null ||
-          (audiostate?.audioStatus !==
-            footeraudioState.footeraudioState?.url && (
-            <PlayCircleOutlineIcon
-              onClick={playSong}
-              className="icon"
-              fontSize="large"
-            />
-          ))}
-        {audiostate?.audioStatus === footeraudioState.footeraudioState?.url &&
-          playing && (
-            <PauseCircleOutlineIcon
-              onClick={stopsong}
-              className="icon"
-              fontSize="large"
-            />
-          )} */}
         {audiostate?.audioStatus === footeraudioState.footeraudioState?.url &&
         playing ? (
           <PauseCircleOutlineIcon
@@ -116,17 +93,14 @@ function Footer({ audio }) {
             fontSize="large"
           />
         )}
-
-        <SkipNextIcon />
       </FooterCenter>
 
       <FooterRight>
         <Grid container spacing={2}>
-          <Grid item>
-            <VolumeDownIcon />
-          </Grid>
+          <Grid item></Grid>
           <Grid item></Grid>
         </Grid>
+        <VolumeDownIcon />
         <input
           onChange={(event) => volumeControl(event.target.value)}
           type="range"
@@ -144,7 +118,7 @@ export default Footer;
 const FooterContainer = styled.div`
   position: fixed;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   bottom: 0;
   height: 65px;
   width: 100%;
@@ -180,17 +154,23 @@ const FooterCenter = styled.div`
   color: white;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   max-width: 300px;
   > .MuiSvgIcon-root:hover {
     transition: transform 0.2s ease-in-out !important;
     transform: scale(1.2) !important;
+  }
+  .icon {
+    font-size: 50px;
+    text-justify: center;
+    cursor: pointer;
   }
 `;
 
 const FooterRight = styled.div`
   flex: 0.3;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   align-items: center;
   color: white;
@@ -199,9 +179,25 @@ const FooterRight = styled.div`
     color: green;
   }
   input[type="range"] {
-    width: 100%;
-    margin: 13.8px 0;
-    background-color: transparent;
+    width: 150px;
+    background-color: green;
     -webkit-appearance: none;
+    height: 5px;
+    margin: 0;
+    opacity: 0.7;
+    ::-webkit-slider-thumb {
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      background: green;
+      cursor: pointer;
+      border-radius: 99px;
+    }
+    :focus {
+      outline: none;
+    }
+    :hover {
+      opacity: 1;
+    }
   }
 `;

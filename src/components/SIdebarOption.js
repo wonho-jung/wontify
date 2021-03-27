@@ -45,6 +45,7 @@ function SidebarOption({ title, Icon, id, spotify }) {
         .getRecommendations({
           seed_artists: res.tracks.items[0].track.artists[0].id,
           seed_tracks: id,
+          limit: 10,
         })
         .then((recommended) => {
           dispatch(

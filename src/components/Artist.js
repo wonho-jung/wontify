@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { selectArtistDetail } from "../features/userSlice";
-import Header from "./Header";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "./SongRow";
@@ -10,7 +9,6 @@ import { Button } from "@material-ui/core";
 import SearchHeader from "./SearchHeader";
 function Artist({ spotify }) {
   const artistDetail = useSelector(selectArtistDetail);
-  console.log(artistDetail);
   const [followNumber, setFollowNumber] = useState("");
   const [btntext, setBtntext] = useState("Follow");
   useEffect(() => {
@@ -31,16 +29,16 @@ function Artist({ spotify }) {
     }
   };
   return (
-    <BodyContainer>
+    <ArtistContainer>
       <SearchHeader spotify={spotify} />
       {artistDetail?.artistInfo.images[0]?.url &&
       artistDetail?.artistInfo.name &&
       artistDetail?.artistInfo.genres &&
       followNumber ? (
         <>
-          <BodyInfo>
+          <ArtistInfo>
             <img src={artistDetail?.artistInfo.images[0]?.url} alt="" />
-            <BodyInfoText>
+            <ArtistInfoText>
               <strong>ARTIST</strong>
 
               <h2>{artistDetail?.artistInfo.name}</h2>
@@ -54,16 +52,16 @@ function Artist({ spotify }) {
                 </p>
               )}
               <p>Follower: {followNumber}</p>
-            </BodyInfoText>
-          </BodyInfo>
+            </ArtistInfoText>
+          </ArtistInfo>
 
-          <BodySongs>
-            <BodyIcons>
-              <PlayCircleFilledIcon className="body__shuffle" />
+          <ArtistSongs>
+            <ArtistIcons>
+              <PlayCircleFilledIcon className="Artist__shuffle" />
               <Button onClick={followArtist}>{btntext}</Button>
               <MoreHorizIcon />
-            </BodyIcons>
-            <h1 className="bodySongTitle">Popular Top 10</h1>
+            </ArtistIcons>
+            <h1 className="ArtistTitle">Popular Top 10</h1>
             {artistDetail?.artistDetail.tracks.map((item, inx) => (
               <SongRow
                 url={item.preview_url}
@@ -75,17 +73,17 @@ function Artist({ spotify }) {
                 artistsName={item.artists}
               />
             ))}
-          </BodySongs>
+          </ArtistSongs>
         </>
       ) : (
         <h1 style={{ fontSize: "30px" }}>No data sorry :( go back to Search</h1>
       )}
-    </BodyContainer>
+    </ArtistContainer>
   );
 }
 
 export default Artist;
-const BodyContainer = styled.div`
+const ArtistContainer = styled.div`
   padding: 30px;
   padding-bottom: 70px;
   flex: 0.8;
@@ -97,7 +95,7 @@ const BodyContainer = styled.div`
     display: none;
   }
 `;
-const BodyInfo = styled.div`
+const ArtistInfo = styled.div`
   display: flex;
   align-items: flex-end;
   padding: 10px;
@@ -108,7 +106,7 @@ const BodyInfo = styled.div`
     box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);
   }
 `;
-const BodyInfoText = styled.div`
+const ArtistInfoText = styled.div`
   flex: 1;
   > h2 {
     font-size: 150px;
@@ -120,13 +118,13 @@ const BodyInfoText = styled.div`
   }
 `;
 
-const BodySongs = styled.div`
+const ArtistSongs = styled.div`
   margin: 20px -30px;
-  .bodySongTitle {
+  .ArtistSongTitle {
     margin-left: 30px;
   }
 `;
-const BodyIcons = styled.div`
+const ArtistIcons = styled.div`
   display: flex;
   align-items: center;
   button {
@@ -141,14 +139,10 @@ const BodyIcons = styled.div`
   > .MuiSvgIcon-root {
     margin-right: 20px;
   }
-  > .body__shuffle {
+  > .Artist__shuffle {
     font-size: 80px !important;
     margin-left: 50px;
     margin-top: 20px;
     margin-bottom: 20px;
-    :hover {
-      transition: 100ms transform ease-in;
-      transform: scale(1.08);
-    }
   }
 `;
