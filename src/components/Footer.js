@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
@@ -8,21 +8,26 @@ import { Grid } from "@material-ui/core";
 import VolumeDownIcon from "@material-ui/icons/VolumeDown";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import useInterval from "react-useinterval";
 
 import {
   selectAudioStatus,
   selectFooteraudioState,
   selectPlaying,
+  selectTime,
   set_playing,
   set_playinglist,
+  set_time,
 } from "../features/userSlice";
 function Footer({ audio }) {
+  const [timeElapsed, setTimeElapsed] = useState("");
   const [volume, setVolume] = useState(100);
   const footeraudioState = useSelector(selectFooteraudioState);
   const audiostate = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
-  console.log(footeraudioState);
+  const time = useSelector(selectTime);
+
   const volumeControl = (event) => {
     setVolume(event);
     audio.volume = volume / 100;
@@ -30,7 +35,6 @@ function Footer({ audio }) {
       audio.volume = 0;
     }
   };
-  console.log(audio.volume);
 
   const playSong = () => {
     dispatch(
@@ -57,9 +61,36 @@ function Footer({ audio }) {
       })
     );
   };
+  const test = audio;
+  // audio.currentTime = useRef();
+  // console.log(audio);
 
+  // const getcurrentTime = () => {
+  //   const getTime = setInterval(() => {
+  //     if (Math.ceil(audio.currentTime) === 4 || audio.currentTime === 0) {
+  //       clearInterval(getTime);
+  //     } else {
+  //       console.log(Math.ceil(audio.currentTime));
+  //       return <h1>{audio.currentTime}</h1>;
+  //     }
+  //   }, 1000);
+  //   return <h1>{audio.currentTime}</h1>;
+  // };
+  // const gettime = () => {
+  //   testing.innerText = audio.currentTime;
+  // };
+
+  // audio.ontimeupdate = () => {
+  //   gettime();
+  // };
+  // audio.ontimeupdate = gettime();
+  // audio.ontimeupdate = audio.currentTime;
+  // useEffect(() => {
+  //   console.log(audio.currentTime);
+  // }, [audio.currentTime]);
   return (
     <FooterContainer>
+      {/* <div ref={testing}>{testing.current}</div> */}
       {footeraudioState.footeraudioState ? (
         <FooterLeft>
           {footeraudioState.footeraudioState.image && (
@@ -99,8 +130,9 @@ function Footer({ audio }) {
         )}
         <SkipNextIcon />
         <ProgressbarContainer>
-          <p>{moment().minute(0).second(3).format("m:ss")}</p>
-          <p>{moment().minute(0).second(3).format("m:ss")}</p>
+          <p>{moment().minute(0).second(0).format("m:ss")}</p>
+          <Progressbar />
+          <p>{moment().minute(0).second(30).format("m:ss")}</p>
         </ProgressbarContainer>
       </FooterCenter>
 
@@ -211,4 +243,13 @@ const FooterRight = styled.div`
     }
   }
 `;
-const ProgressbarContainer = styled.div``;
+const ProgressbarContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const Progressbar = styled.div`
+  width: 500px;
+  height: 4px;
+  background: rgb(64, 64, 64);
+  border-radius: 4px;
+`;

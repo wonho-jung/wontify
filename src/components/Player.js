@@ -29,6 +29,7 @@ import { AlbumRounded } from "@material-ui/icons";
 
 function Player({ spotify }) {
   const [intervalId, setIntervalId] = useState("");
+
   const [audio] = useState(new Audio());
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
@@ -101,11 +102,32 @@ function Player({ spotify }) {
   //     // audio.src = "";
   //   }
   // }, [audio.currentTime]);
+  // const audioChecktime = () => {
+  //   const intervalId = setInterval(() => {
+  //     // console.log(Math.ceil(audio.currentTime));
+  //     if (Math.ceil(audio.currentTime) === 30) {
+  //       clearInterval(intervalId);
+  //       audio.pause();
+  //       audio.currentTime = 0;
+  //       dispatch(
+  //         set_audioStatus({
+  //           audioStatus: "",
+  //         })
+  //       );
+  //       dispatch(
+  //         set_playing({
+  //           playSong: false,
+  //         })
+  //       );
+  //     }
+  //   }, 1000);
+  //   setIntervalId(intervalId);
+  // };
   const audioChecktime = () => {
-    const intervalId = setInterval(() => {
-      console.log(audio.currentTime);
-      if (Math.ceil(audio.currentTime) === 30) {
-        clearInterval(intervalId);
+    const timeOut = setTimeout(() => {
+      if (Math.ceil(audio.currentTime) === 5) {
+        // console.log(Math.ceil(audio.currentTime));
+        clearTimeout(timeOut);
         audio.pause();
         audio.currentTime = 0;
         dispatch(
@@ -119,9 +141,26 @@ function Player({ spotify }) {
           })
         );
       }
-    }, 1000);
-    setIntervalId(intervalId);
+    }, 5000);
   };
+  let durationTime = 30;
+  // const [startTime, setStartTime] = useState(0);
+  // const timeSetFooter = () => {
+  //   const increase = setInterval(() => {
+  //     if (startTime === 30) {
+  //       clearInterval(increase);
+  //       console.log("time done its 30s");
+  //     } else {
+  //       setStartTime(startTime + 1);
+  //     }
+  //   }, 1000);
+  // };
+  // useEffect(() => {
+  //   setStartTime(startTime);
+  // }, [startTime]);
+  // timeSetFooter();
+
+  // console.log(Math.ceil(audio.currentTime));
 
   useEffect(() => {
     if (playlisturl) {
@@ -151,7 +190,7 @@ function Player({ spotify }) {
           console.log(
             "playlist.url and audio.src is same and you want stop tarck"
           );
-          clearInterval(intervalId);
+          // clearInterval(intervalId);
           audio.pause();
           audio.currentTime = 0;
           dispatch(
@@ -177,11 +216,21 @@ function Player({ spotify }) {
           audio.src = playlisturl.playinglist;
           audio.play();
           audioChecktime();
-          clearInterval(intervalId);
+          // clearInterval(intervalId);
         }
       }
     }
   }, [playlisturl]);
+
+  // const [counter, setCounter] = useState(0);
+  // useEffect(() => {
+  //   if (audio.src !== "") {
+  //     const timer = setInterval(() => {
+  //       setCounter((prevCount) => prevCount + 1); // <-- Change this line!
+  //     }, 1000);
+  //   }
+  // }, [audio.src]); // Pass in empty array to run effect only once!
+
   return (
     <Router>
       <PlayerContainer>
