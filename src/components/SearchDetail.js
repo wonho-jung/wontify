@@ -1,14 +1,7 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import {
-  selectCategories,
-  selectSearchResult,
-  set_artistDetail,
-} from "../features/userSlice";
-import Header from "./Header";
-import SearchPost from "./SearchPost";
+import { selectSearchResult, set_artistDetail } from "../features/userSlice";
 import SearchHeader from "./SearchHeader";
 import SearchArtistPost from "./SearchArtistPost";
 import SongRow from "./SongRow";
@@ -76,17 +69,6 @@ function SearchDetail({ spotify }) {
                       artistsName={item.artists}
                     />
                   ))}
-                {/* {searchResult?.searchResult.tracks.items.map((item, idx) => (
-                  <SongRow
-                    url={item.preview_url}
-                    key={idx}
-                    time={item.duration_ms}
-                    image={item.album.images[0].url}
-                    name={item.name}
-                    albumName={item.album.name}
-                    artistsName={item.artists}
-                  />
-                ))} */}
               </ResultRightSongcontainer>
             </ResultRight>
           </SearchresultContainer>
@@ -124,9 +106,6 @@ const SearchResultContainer = styled.div`
   }
 `;
 
-const CategoryContainer = styled.div`
-  width: 100%;
-`;
 const Test = styled.div`
   display: flex;
   flex-wrap: wrap;

@@ -18,19 +18,19 @@ function SearchPost({ spotify, image, name, id }) {
   };
   return (
     <Link to={`/search/${id}`} style={{ textDecoration: "none" }}>
-      <PostContainer onClick={sendSearchDetail}>
-        <PostContent>
+      <SearchPostContainer onClick={sendSearchDetail}>
+        <SearchPostContent>
           <img src={image} alt="" />
           <p>{name && name}</p>
-        </PostContent>
-      </PostContainer>
+        </SearchPostContent>
+      </SearchPostContainer>
     </Link>
   );
 }
 
 export default SearchPost;
 
-const PostContainer = styled.div`
+const SearchPostContainer = styled.div`
   color: white;
   width: 200px;
   background-color: #181818;
@@ -45,7 +45,7 @@ const PostContainer = styled.div`
     opacity: 1;
   }
 `;
-const PostContent = styled.div`
+const SearchPostContent = styled.div`
   padding-top: 20px;
   padding-bottom: 20px;
   padding-left: 20px;

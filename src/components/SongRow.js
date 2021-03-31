@@ -1,5 +1,5 @@
 import { Button } from "@material-ui/core";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { db } from "./firebase";
 import firebase from "firebase";
@@ -7,16 +7,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectAudioStatus,
   selectPlaying,
-  set_AddItem,
   set_footeraudioState,
-  set_list,
   set_playing,
   set_playinglist,
   set_Recommended,
 } from "../features/userSlice";
-import { Link } from "react-router-dom";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
-import { TurnedInTwoTone } from "@material-ui/icons";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
 function SongRow({
   url,
@@ -79,6 +75,8 @@ function SongRow({
           name,
           url,
           image,
+          artistsName,
+          albumName,
         },
       })
     );
@@ -120,23 +118,6 @@ function SongRow({
           fontSize="large"
         />
       )}
-
-      {/* {time && url !== null && audiostate?.audioStatus === url && playing ? (
-        <PauseCircleOutlineIcon
-          onClick={stopsong}
-          className="icon"
-          fontSize="large"
-        />
-      ) : (
-        time &&
-        url !== null && (
-          <PlayCircleOutlineIcon
-            onClick={playSong}
-            className="icon"
-            fontSize="large"
-          />
-        )
-      )} */}
 
       {trackNumber && <h5>{trackNumber}</h5>}
       {image && <img src={image} alt="" />}

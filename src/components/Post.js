@@ -1,12 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import PlayCircleFilledWhiteIcon from "@material-ui/icons/PlayCircleFilledWhite";
-import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
+
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
-  selectDetailAlbum,
-  selectDetailAlbumTracks,
   set_DetailAlbum,
   set_DetailAlbumTracks,
   set_list,
@@ -23,8 +20,6 @@ function Post({
   playlistId,
 }) {
   const dispatch = useDispatch();
-  const Album = useSelector(selectDetailAlbum);
-  const tracks = useSelector(selectDetailAlbumTracks);
 
   const sendAlbumDetail = () => {
     spotify.getAlbumTracks(albumId).then((res) => {

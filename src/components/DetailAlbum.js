@@ -9,34 +9,31 @@ import { useSelector } from "react-redux";
 import {
   selectDetailAlbum,
   selectDetailAlbumTracks,
-  selectList,
 } from "../features/userSlice";
-import { useEffect } from "react";
-function DetailAlbum({ spotify }) {
+
+function DetailAlbum() {
   const album = useSelector(selectDetailAlbum);
   const detailAlbumTracks = useSelector(selectDetailAlbumTracks);
-  const userplaylist = useSelector(selectList);
 
-  console.log(detailAlbumTracks);
   return (
-    <BodyContainer>
-      <Header spotify={spotify} />
+    <DetailAlbumContainer>
+      <Header />
 
-      <BodyInfo>
+      <DetailInfo>
         <img src={album?.detailAlbum.images[0].url} alt="" />
-        <BodyInfoText>
+        <DetailInfoText>
           <strong>PLAYLIST</strong>
           <h2>{album?.detailAlbum.name}</h2>
           <p>{album?.detailAlbum.description}</p>
-        </BodyInfoText>
-      </BodyInfo>
+        </DetailInfoText>
+      </DetailInfo>
 
-      <BodySongs>
-        <BodyIcons>
+      <DetailSongs>
+        <DetailIcons>
           <PlayCircleFilledIcon className="body__shuffle" />
           <FavoriteIcon fontSize="large" />
           <MoreHorizIcon />
-        </BodyIcons>
+        </DetailIcons>
 
         {detailAlbumTracks &&
           detailAlbumTracks.detailAlbumTracks.items.map((item, inx) => (
@@ -49,13 +46,13 @@ function DetailAlbum({ spotify }) {
               time={item.duration_ms}
             />
           ))}
-      </BodySongs>
-    </BodyContainer>
+      </DetailSongs>
+    </DetailAlbumContainer>
   );
 }
 
 export default DetailAlbum;
-const BodyContainer = styled.div`
+const DetailAlbumContainer = styled.div`
   padding: 30px;
   flex: 0.8;
   height: 100vh;
@@ -66,7 +63,7 @@ const BodyContainer = styled.div`
     display: none;
   }
 `;
-const BodyInfo = styled.div`
+const DetailInfo = styled.div`
   display: flex;
   align-items: flex-end;
   padding: 10px;
@@ -76,7 +73,7 @@ const BodyInfo = styled.div`
     box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);
   }
 `;
-const BodyInfoText = styled.div`
+const DetailInfoText = styled.div`
   flex: 1;
   > h2 {
     font-size: 48px;
@@ -87,11 +84,11 @@ const BodyInfoText = styled.div`
   }
 `;
 
-const BodySongs = styled.div`
+const DetailSongs = styled.div`
   margin: 20px -30px;
   padding-bottom: 80px;
 `;
-const BodyIcons = styled.div`
+const DetailIcons = styled.div`
   display: flex;
   align-items: center;
   > .MuiSvgIcon-root {

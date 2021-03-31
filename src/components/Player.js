@@ -3,9 +3,8 @@ import styled from "styled-components";
 import Body from "./Body";
 import Footer from "./Footer";
 import Sidebar from "./Sidebar";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./Home";
-import Header from "./Header";
 import DetailAlbum from "./DetailAlbum";
 import DetailPlaylist from "./DetailPlaylist";
 import Library from "./Library";
@@ -15,120 +14,24 @@ import SearchDetail from "./SearchDetail";
 import Artist from "./Artist";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  selectFooteraudioState,
   selectPlaying,
   selectPlayingList,
   set_audioStatus,
-  set_footeraudioState,
   set_playing,
-  set_playinglist,
 } from "../features/userSlice";
 import { useState } from "react";
-import { useRef } from "react";
-import { AlbumRounded } from "@material-ui/icons";
-import { current } from "immer";
 
 function Player({ spotify }) {
-  const [intervalId, setIntervalId] = useState("");
   const [currentTime, setCurrentTime] = useState(0);
   const [audio] = useState(new Audio());
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
   const playlisturl = useSelector(selectPlayingList);
-  const footeraudioStateter = useSelector(selectFooteraudioState);
   console.log("first url value ", playlisturl, "first audio value", audio.src);
 
-  const playSongPlayer = () => {
-    dispatch(
-      set_playing({
-        playSong: true,
-      })
-    );
-  };
-  const stopsongPlayer = () => {
-    dispatch(
-      set_playing({
-        playSong: false,
-      })
-    );
-  };
-
-  // const audioTimeStop = setTimeout(() => {
-  //   audio.pause();
-  //   audio.currentTime = 0;
-  //   dispatch(
-  //     set_audioStatus({
-  //       audioStatus: "",
-  //     })
-  //   );
-  // }, 5000);
-
-  // const audioTimeStop = () => {
-  //   return setTimeout(() => {
-  //     console.log("i'm making stop");
-  //     audio.pause();
-  //     audio.currentTime = 0;
-  //     dispatch(
-  //       set_audioStatus({
-  //         audioStatus: "",
-  //       })
-  //     );
-  //   }, 5000);
-  // };
-  // const timeOutStop = () => {
-  //   console.log("i'm making func stop");
-  //   console.log(audioTimeStop);
-  //   clearTimeout(audioTimeStop);
-  // };
-  // const audioTimeStop = () => {
-  //   if (audio.currentTime > 5) {
-  //     console.log(audio.src);
-  //     console.log(audio.currentTime);
-  //     audio.pause();
-  //     audio.currentTime = 0;
-  //     dispatch(
-  //       set_audioStatus({
-  //         audioStatus: "",
-  //       })
-  //     );
-  //   }
-
-  // };
-  // var timeCheck = setInterval(audioTimeStop, 1500);
-  // console.log(playing.playSong);
-  // useEffect(() => {
-  //   if (audio.currentTime > 3) {
-  //     console.log(audio.currentTime);
-  //     // audio.pause();
-  //     // audio.currentTime = 0;
-  //     // audio.src = "";
-  //   }
-  // }, [audio.currentTime]);
-  // const audioChecktime = () => {
-  //   const intervalId = setInterval(() => {
-  //     // console.log(Math.ceil(audio.currentTime));
-  //     if (Math.ceil(audio.currentTime) === 30) {
-  //       clearInterval(intervalId);
-  //       audio.pause();
-  //       audio.currentTime = 0;
-  //       dispatch(
-  //         set_audioStatus({
-  //           audioStatus: "",
-  //         })
-  //       );
-  //       dispatch(
-  //         set_playing({
-  //           playSong: false,
-  //         })
-  //       );
-  //     }
-  //   }, 1000);
-  //   setIntervalId(intervalId);
-  // };
   const audioChecktime = () => {
     const timeOut = setTimeout(() => {
       if (Math.ceil(audio.currentTime) === 30) {
-        // console.log(Math.ceil(audio.currentTime));
         clearTimeout(timeOut);
         audio.pause();
         audio.currentTime = 0;
@@ -145,24 +48,9 @@ function Player({ spotify }) {
       }
     }, 30000);
   };
-  // const [startTime, setStartTime] = useState(0);
-  // const timeSetFooter = () => {
-  //   const increase = setInterval(() => {
-  //     if (startTime === 30) {
-  //       clearInterval(increase);
-  //       console.log("time done its 30s");
-  //     } else {
-  //       setStartTime(startTime + 1);
-  //     }
-  //   }, 1000);
-  // };
-  // useEffect(() => {
-  //   setStartTime(startTime);
-  // }, [startTime]);
-  // timeSetFooter();
-
-  // console.log(Math.ceil(audio.currentTime));
-
+  audio.ontimeupdate = (e) => {
+    setCurrentTime(Math.ceil(e.target.currentTime));
+  };
   useEffect(() => {
     if (playlisturl) {
       if (audio.src === "" && playing.playSong === true) {
@@ -193,7 +81,6 @@ function Player({ spotify }) {
           console.log(
             "playlist.url and audio.src is same and you want stop tarck"
           );
-          // clearInterval(intervalId);
           audio.pause();
           audio.currentTime = 0;
           dispatch(
@@ -220,25 +107,10 @@ function Player({ spotify }) {
           audio.play();
 
           audioChecktime();
-          // clearInterval(intervalId);
         }
       }
     }
   }, [playlisturl]);
-
-  // const [counter, setCounter] = useState(0);
-  // useEffect(() => {
-  //   if (audio.src !== "") {
-  //     const timer = setInterval(() => {
-  //       setCounter((prevCount) => prevCount + 1); // <-- Change this line!
-  //     }, 1000);
-  //   }
-  // }, [audio.src]); // Pass in empty array to run effect only once!
-  audio.ontimeupdate = (e) => {
-    setCurrentTime(Math.ceil(e.target.currentTime));
-    console.log(Math.ceil(currentTime));
-  };
-  console.log(audio.readyState);
 
   return (
     <Router>
@@ -247,10 +119,10 @@ function Player({ spotify }) {
           <Sidebar spotify={spotify} />
           <Switch>
             <Route path="/detail/album/:id">
-              <DetailAlbum spotify={spotify} />
+              <DetailAlbum />
             </Route>
             <Route path="/detail/playlist/:id">
-              <DetailPlaylist spotify={spotify} />
+              <DetailPlaylist />
             </Route>
             <Route path="/search/search/song">
               <SearchDetail spotify={spotify} />

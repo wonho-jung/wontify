@@ -7,35 +7,29 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "./SongRow";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import {
-  selectDetailAlbum,
-  selectDetailAlbumTracks,
-  selectList,
-} from "../features/userSlice";
-function DetailPlaylist({ spotify }) {
-  const album = useSelector(selectDetailAlbum);
-  const detailAlbumTracks = useSelector(selectDetailAlbumTracks);
+import { selectList } from "../features/userSlice";
+function DetailPlaylist() {
   const userplaylist = useSelector(selectList);
-  console.log(userplaylist);
-  return (
-    <BodyContainer>
-      <Header spotify={spotify} />
 
-      <BodyInfo>
+  return (
+    <DetailPlaylistContainer>
+      <Header />
+
+      <DetailInfo>
         <img src={userplaylist?.res.images[0].url} alt="" />
-        <BodyInfoText>
+        <DetailInfoText>
           <strong>PLAYLIST</strong>
           <h2>{userplaylist?.res.name}</h2>
           <p>{userplaylist?.res.description}</p>
-        </BodyInfoText>
-      </BodyInfo>
+        </DetailInfoText>
+      </DetailInfo>
 
-      <BodySongs>
-        <BodyIcons>
+      <DetailSongs>
+        <DetailIcons>
           <PlayCircleFilledIcon className="body__shuffle" />
           <FavoriteIcon fontSize="large" />
           <MoreHorizIcon />
-        </BodyIcons>
+        </DetailIcons>
 
         {userplaylist?.res.tracks.items.map((item, inx) => (
           <SongRow
@@ -48,13 +42,13 @@ function DetailPlaylist({ spotify }) {
             artistsName={item.track.artists}
           />
         ))}
-      </BodySongs>
-    </BodyContainer>
+      </DetailSongs>
+    </DetailPlaylistContainer>
   );
 }
 
 export default DetailPlaylist;
-const BodyContainer = styled.div`
+const DetailPlaylistContainer = styled.div`
   padding: 30px;
   flex: 0.8;
   height: 100vh;
@@ -65,10 +59,7 @@ const BodyContainer = styled.div`
     display: none;
   }
 `;
-const BodyInfo = styled.div`
-  background-size: cover;
-  background-repeat: none;
-  height: 50vh;
+const DetailInfo = styled.div`
   display: flex;
   align-items: flex-end;
   padding: 10px;
@@ -78,7 +69,7 @@ const BodyInfo = styled.div`
     box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);
   }
 `;
-const BodyInfoText = styled.div`
+const DetailInfoText = styled.div`
   flex: 1;
   > h2 {
     font-size: 48px;
@@ -89,11 +80,11 @@ const BodyInfoText = styled.div`
   }
 `;
 
-const BodySongs = styled.div`
+const DetailSongs = styled.div`
   margin: 20px -30px;
   padding-bottom: 80px;
 `;
-const BodyIcons = styled.div`
+const DetailIcons = styled.div`
   display: flex;
   align-items: center;
   > .MuiSvgIcon-root {

@@ -1,32 +1,14 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import {
-  selectList,
-  selectPlaylistid,
   set_list,
   set_playlistid,
   set_Recommended,
 } from "../features/userSlice";
-import { db } from "./firebase";
-import firebase from "firebase";
-import { useCollection } from "react-firebase-hooks/firestore";
 
 function SidebarOption({ title, Icon, id, spotify }) {
-  // const [tracksDetail] = useCollection(id && db.collection("tracks").doc(id));
-  // const [trackItem] = useCollection(
-  //   id &&
-  //     db
-  //       .collection("tracks")
-  //       .doc(id)
-  //       .collection("track")
-  //       .orderBy("timestamp", "asc")
-  // );
-  // const [displayDetail] = useCollection(
-  //   id && db.collection("displays").doc(id)
-  // );
-
   const dispatch = useDispatch();
 
   const click = () => {

@@ -1,23 +1,17 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
-import PlayCircleFilledWhiteIcon from "@material-ui/icons/PlayCircleFilledWhite";
-import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
+
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  selectDetailAlbum,
-  selectDetailAlbumTracks,
   selectUser,
-  set_DetailAlbum,
-  set_DetailAlbumTracks,
   set_list,
   set_playlistid,
   set_Recommended,
 } from "../features/userSlice";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 
-function LibraryPost({ image, name, artistsName, description, id, spotify }) {
+function LibraryPost({ image, name, description, id, spotify }) {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
 

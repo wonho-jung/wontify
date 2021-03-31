@@ -21,7 +21,6 @@ export default Header;
 
 const HeaderContainer = styled.div`
   min-width: 300px;
-  /* margin-bottom: 30px; */
 `;
 
 const HeaderRight = styled.div`

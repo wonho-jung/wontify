@@ -9,6 +9,7 @@ function Login() {
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Spotify_logo_with_text.svg/1200px-Spotify_logo_with_text.svg.png"
         alt=""
       />
+
       <a href={accessUrl}>LOGIN WITH SPOTIFY</a>
     </LoginContainer>
   );
@@ -23,7 +24,10 @@ const LoginContainer = styled.div`
   background-color: black;
 
   > img {
-    width: 100%;
+    width: 50%;
+  }
+  p {
+    color: white;
   }
 
   > a {

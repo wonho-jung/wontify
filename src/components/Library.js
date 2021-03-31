@@ -1,10 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectList, selectPlaylists, selectUser } from "../features/userSlice";
+import { selectPlaylists, selectUser } from "../features/userSlice";
 import LibraryPost from "./LibraryPost";
-import Post from "./Post";
-import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 
 function Library({ spotify }) {
   const myList = useSelector(selectPlaylists);
@@ -13,7 +11,7 @@ function Library({ spotify }) {
   return (
     <LibraryContainer>
       <h1>{`${user?.user.display_name}'s playlists`}</h1>
-      <HomeContentContainer>
+      <LibraryContentContainer>
         <PostsContainer>
           {myList?.playlists?.items?.map((playlist, idx) => (
             <LibraryPost
@@ -26,7 +24,7 @@ function Library({ spotify }) {
             />
           ))}
         </PostsContainer>
-      </HomeContentContainer>
+      </LibraryContentContainer>
     </LibraryContainer>
   );
 }
@@ -41,7 +39,7 @@ const LibraryContainer = styled.div`
   overflow-y: overlay;
   background-color: #121212;
 `;
-const HomeContentContainer = styled.div`
+const LibraryContentContainer = styled.div`
   display: flex;
   padding-top: 20px;
   padding-bottom: 20px;

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
@@ -7,26 +7,20 @@ import SkipNextIcon from "@material-ui/icons/SkipNext";
 import { Grid } from "@material-ui/core";
 import VolumeDownIcon from "@material-ui/icons/VolumeDown";
 import { useDispatch, useSelector } from "react-redux";
-import moment from "moment";
-import useInterval from "react-useinterval";
 
 import {
   selectAudioStatus,
   selectFooteraudioState,
   selectPlaying,
-  selectTime,
   set_playing,
   set_playinglist,
-  set_time,
 } from "../features/userSlice";
 function Footer({ audio, currentTime }) {
-  const [timeElapsed, setTimeElapsed] = useState("");
   const [volume, setVolume] = useState(100);
   const footeraudioState = useSelector(selectFooteraudioState);
   const audiostate = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
-  const time = useSelector(selectTime);
 
   const volumeControl = (event) => {
     setVolume(event);
@@ -61,50 +55,7 @@ function Footer({ audio, currentTime }) {
       })
     );
   };
-  const progressbar = () => {
-    let i = 0;
-    const move = () => {
-      Progressbar.style.div`
-      color:red;
-      `;
-    };
-  };
-  progressbar();
 
-  // audio.currentTime = useRef();
-  // console.log(audio);
-
-  // const getcurrentTime = () => {
-  //   const getTime = setInterval(() => {
-  //     if (Math.ceil(audio.currentTime) === 4 || audio.currentTime === 0) {
-  //       clearInterval(getTime);
-  //     } else {
-  //       console.log(Math.ceil(audio.currentTime));
-  //       return <h1>{audio.currentTime}</h1>;
-  //     }
-  //   }, 1000);
-  //   return <h1>{audio.currentTime}</h1>;
-  // };
-  // const gettime = () => {
-  //   testing.innerText = audio.currentTime;
-  // };
-
-  // audio.ontimeupdate = () => {
-  //   gettime();
-  // };
-  // audio.ontimeupdate = gettime();
-  // audio.ontimeupdate = audio.currentTime;
-  // useEffect(() => {
-  //   console.log(audio.currentTime);
-  // }, [audio.currentTime]);
-  // const test = () => {
-  //   const getTime = setInterval(() => {
-  //     if (audioTime > 0) {
-  //       console.log(audioTime);
-  //     }
-  //   }, 1000);
-  // };
-  // test();
   return (
     <FooterContainer>
       {footeraudioState.footeraudioState ? (
@@ -113,7 +64,14 @@ function Footer({ audio, currentTime }) {
             <img src={footeraudioState.footeraudioState.image} alt="" />
           )}
           <FooterSongInfo>
-            <h4>{footeraudioState.footeraudioState.name}</h4>
+            <h1>{footeraudioState.footeraudioState.name}</h1>
+            <p>
+              {footeraudioState.footeraudioState.artistsName
+                ?.map((artist) => artist.name)
+                .join(", ")}
+              {footeraudioState.footeraudioState.albumName &&
+                `/${footeraudioState.footeraudioState.albumName}`}
+            </p>
           </FooterSongInfo>
         </FooterLeft>
       ) : (
@@ -207,11 +165,13 @@ const FooterLeft = styled.div`
   }
 `;
 const FooterSongInfo = styled.div`
-  h4 > {
-    font-size: 12px;
+  h1 {
+    font-size: 16px;
   }
-  p > {
-    font-size: 12px;
+  p {
+    font-size: 14px;
+    margin-top: 3px;
+    color: gray;
   }
 `;
 
@@ -225,7 +185,7 @@ const FooterCenter = styled.div`
   align-items: center;
   justify-content: space-between;
   max-width: 300px;
-  > .MuiSvgIcon-root:hover {
+  .icon:hover {
     transition: transform 0.2s ease-in-out !important;
     transform: scale(1.2) !important;
   }
@@ -246,11 +206,11 @@ const FooterRight = styled.div`
   color: white;
   padding-right: 40px;
   > * .MuiSlider-root {
-    color: green;
+    color: #1db954;
   }
   input[type="range"] {
     width: 150px;
-    background-color: green;
+    background-color: #1db954;
     -webkit-appearance: none;
     height: 5px;
     margin: 0;
@@ -259,7 +219,7 @@ const FooterRight = styled.div`
       appearance: none;
       width: 15px;
       height: 15px;
-      background: green;
+      background: #1db954;
       cursor: pointer;
       border-radius: 99px;
     }

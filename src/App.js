@@ -5,30 +5,22 @@ import Login from "./components/Login";
 import Player from "./components/Player";
 import { getTokenFromResponse } from "./spotify";
 import SpotifyWebApi from "spotify-web-api-js";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
-  selectUser,
   set_user,
   set_token,
-  selectToken,
   set_playlists,
-  selectPlaylists,
-  set_list,
-  selectList,
   set_recentlyPlayed,
   set_newReleases,
   set_topList,
-  selectTopList,
   set_workout,
-  selectWorkout,
   set_party,
   set_mood,
   set_categories,
-  set_playing,
 } from "./features/userSlice";
 
-const spotify = new SpotifyWebApi();
 function App() {
+  const spotify = new SpotifyWebApi();
   const dispatch = useDispatch();
   const [token, setToken] = useState(null);
 

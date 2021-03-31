@@ -2,14 +2,9 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import SearchIcon from "@material-ui/icons/Search";
 import { Avatar } from "@material-ui/core";
-import {
-  selectPlaylistid,
-  selectUser,
-  set_searchResult,
-} from "../features/userSlice";
+import { selectUser, set_searchResult } from "../features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { db } from "./firebase";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 function SearchHeader({ spotify }) {
   const user = useSelector(selectUser);
   const [input, setInput] = useState("");
@@ -33,8 +28,8 @@ function SearchHeader({ spotify }) {
 
   console.log(input);
   return (
-    <HeaderContainer>
-      <HeaderLeft>
+    <SearchHeaderContainer>
+      <SearchHeaderLeft>
         <SearchIcon />
 
         <form onSubmit={SearchItem}>
@@ -45,25 +40,25 @@ function SearchHeader({ spotify }) {
             type="text"
           />
         </form>
-      </HeaderLeft>
-      <HeaderRight>
+      </SearchHeaderLeft>
+      <SearchHeaderRight>
         <Avatar src={user?.user.images[0]?.url} alt="user" />
         <h4>{user?.user.display_name}</h4>
         <hr />
-      </HeaderRight>
-    </HeaderContainer>
+      </SearchHeaderRight>
+    </SearchHeaderContainer>
   );
 }
 
 export default SearchHeader;
 
-const HeaderContainer = styled.div`
+const SearchHeaderContainer = styled.div`
   min-width: 300px;
   display: flex;
   justify-content: space-between;
   margin-bottom: 30px;
 `;
-const HeaderLeft = styled.div`
+const SearchHeaderLeft = styled.div`
   flex: 0.5;
   min-width: 70px;
   background-color: white;
@@ -78,7 +73,7 @@ const HeaderLeft = styled.div`
     outline-style: none;
   }
 `;
-const HeaderRight = styled.div`
+const SearchHeaderRight = styled.div`
   display: flex;
   align-items: center;
   > h4 {
