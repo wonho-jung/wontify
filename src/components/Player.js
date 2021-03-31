@@ -26,10 +26,11 @@ import {
 import { useState } from "react";
 import { useRef } from "react";
 import { AlbumRounded } from "@material-ui/icons";
+import { current } from "immer";
 
 function Player({ spotify }) {
   const [intervalId, setIntervalId] = useState("");
-
+  const [currentTime, setCurrentTime] = useState(0);
   const [audio] = useState(new Audio());
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
@@ -51,6 +52,7 @@ function Player({ spotify }) {
       })
     );
   };
+
   // const audioTimeStop = setTimeout(() => {
   //   audio.pause();
   //   audio.currentTime = 0;
@@ -125,7 +127,7 @@ function Player({ spotify }) {
   // };
   const audioChecktime = () => {
     const timeOut = setTimeout(() => {
-      if (Math.ceil(audio.currentTime) === 5) {
+      if (Math.ceil(audio.currentTime) === 30) {
         // console.log(Math.ceil(audio.currentTime));
         clearTimeout(timeOut);
         audio.pause();
@@ -141,9 +143,8 @@ function Player({ spotify }) {
           })
         );
       }
-    }, 5000);
+    }, 30000);
   };
-  let durationTime = 30;
   // const [startTime, setStartTime] = useState(0);
   // const timeSetFooter = () => {
   //   const increase = setInterval(() => {
@@ -168,6 +169,7 @@ function Player({ spotify }) {
         console.log("audio is emtye start song");
         audio.src = playlisturl.playinglist;
         audio.play();
+
         audioChecktime();
         dispatch(
           set_audioStatus({
@@ -185,6 +187,7 @@ function Player({ spotify }) {
             })
           );
           audio.play();
+
           audioChecktime();
         } else if (playing.playSong === false) {
           console.log(
@@ -215,6 +218,7 @@ function Player({ spotify }) {
           );
           audio.src = playlisturl.playinglist;
           audio.play();
+
           audioChecktime();
           // clearInterval(intervalId);
         }
@@ -230,12 +234,15 @@ function Player({ spotify }) {
   //     }, 1000);
   //   }
   // }, [audio.src]); // Pass in empty array to run effect only once!
+  audio.ontimeupdate = (e) => {
+    setCurrentTime(Math.ceil(e.target.currentTime));
+    console.log(Math.ceil(currentTime));
+  };
+  console.log(audio.readyState);
 
   return (
     <Router>
       <PlayerContainer>
-        {/* <audio ref={myRef} src={audio} /> */}
-
         <PlayerBody>
           <Sidebar spotify={spotify} />
           <Switch>
@@ -270,7 +277,7 @@ function Player({ spotify }) {
             </Route>
           </Switch>
         </PlayerBody>
-        <Footer audio={audio} />
+        <Footer audio={audio} currentTime={currentTime} />
       </PlayerContainer>
     </Router>
   );

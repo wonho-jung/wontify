@@ -19,7 +19,7 @@ import {
   set_playinglist,
   set_time,
 } from "../features/userSlice";
-function Footer({ audio }) {
+function Footer({ audio, currentTime }) {
   const [timeElapsed, setTimeElapsed] = useState("");
   const [volume, setVolume] = useState(100);
   const footeraudioState = useSelector(selectFooteraudioState);
@@ -61,7 +61,16 @@ function Footer({ audio }) {
       })
     );
   };
-  const test = audio;
+  const progressbar = () => {
+    let i = 0;
+    const move = () => {
+      Progressbar.style.div`
+      color:red;
+      `;
+    };
+  };
+  progressbar();
+
   // audio.currentTime = useRef();
   // console.log(audio);
 
@@ -88,9 +97,16 @@ function Footer({ audio }) {
   // useEffect(() => {
   //   console.log(audio.currentTime);
   // }, [audio.currentTime]);
+  // const test = () => {
+  //   const getTime = setInterval(() => {
+  //     if (audioTime > 0) {
+  //       console.log(audioTime);
+  //     }
+  //   }, 1000);
+  // };
+  // test();
   return (
     <FooterContainer>
-      {/* <div ref={testing}>{testing.current}</div> */}
       {footeraudioState.footeraudioState ? (
         <FooterLeft>
           {footeraudioState.footeraudioState.image && (
@@ -113,26 +129,35 @@ function Footer({ audio }) {
       )}
 
       <FooterCenter>
-        <SkipPreviousIcon />
-        {audiostate?.audioStatus === footeraudioState.footeraudioState?.url &&
-        playing ? (
-          <PauseCircleOutlineIcon
-            onClick={stopsong}
-            className="icon"
-            fontSize="large"
-          />
-        ) : (
-          <PlayCircleOutlineIcon
-            onClick={playing ? playSong : null}
-            className="icon"
-            fontSize="large"
-          />
-        )}
-        <SkipNextIcon />
+        <IconContainer>
+          <SkipPreviousIcon />
+          {audiostate?.audioStatus === footeraudioState.footeraudioState?.url &&
+          playing ? (
+            <PauseCircleOutlineIcon
+              onClick={stopsong}
+              className="icon"
+              fontSize="large"
+            />
+          ) : (
+            <PlayCircleOutlineIcon
+              onClick={playing ? playSong : null}
+              className="icon"
+              fontSize="large"
+            />
+          )}
+          <SkipNextIcon />
+        </IconContainer>
         <ProgressbarContainer>
-          <p>{moment().minute(0).second(0).format("m:ss")}</p>
-          <Progressbar />
-          <p>{moment().minute(0).second(30).format("m:ss")}</p>
+          {currentTime < 10 ? `0:0${currentTime}` : `0:${currentTime}`}
+
+          <Progressbar>
+            <Movingbar style={{ width: currentTime * 16.5 }} />
+          </Progressbar>
+          <p>
+            {currentTime > 20
+              ? `0:0${30 - currentTime}`
+              : `0:${30 - currentTime}`}
+          </p>
         </ProgressbarContainer>
       </FooterCenter>
 
@@ -159,6 +184,7 @@ export default Footer;
 const FooterContainer = styled.div`
   position: fixed;
   display: flex;
+
   justify-content: space-around;
   bottom: 0;
   height: 65px;
@@ -193,7 +219,9 @@ const FooterCenter = styled.div`
   flex: 0.4;
   padding: 0 100px;
   color: white;
+  margin: 0 auto;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
   max-width: 300px;
@@ -252,4 +280,16 @@ const Progressbar = styled.div`
   height: 4px;
   background: rgb(64, 64, 64);
   border-radius: 4px;
+`;
+const Movingbar = styled.div`
+  margin: 0;
+
+  height: 4px;
+  background: #1db954;
+  border-radius: 4px;
+`;
+
+const IconContainer = styled.div`
+  display: flex;
+  align-items: center;
 `;
