@@ -8,41 +8,59 @@ import SongRow from "./SongRow";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { selectList } from "../features/userSlice";
+import Loading from "./Loading";
+import { useState } from "react";
+import { useEffect } from "react";
 function DetailPlaylist() {
   const userplaylist = useSelector(selectList);
-
+  const [loading, setLoading] = useState("true");
+  console.log(userplaylist.res.id);
+  useEffect(() => {
+    if (
+      userplaylist &&
+      userplaylist.res.id === window.location.href.split("/")[5]
+    ) {
+      setLoading(false);
+    }
+  }, [userplaylist]);
   return (
     <DetailPlaylistContainer>
-      <Header />
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <Header />
 
-      <DetailInfo>
-        <img src={userplaylist?.res.images[0].url} alt="" />
-        <DetailInfoText>
-          <strong>PLAYLIST</strong>
-          <h2>{userplaylist?.res.name}</h2>
-          <p>{userplaylist?.res.description}</p>
-        </DetailInfoText>
-      </DetailInfo>
+          <DetailInfo>
+            <img src={userplaylist?.res.images[0].url} alt="" />
+            <DetailInfoText>
+              <strong>PLAYLIST</strong>
+              <h2>{userplaylist?.res.name}</h2>
+              <p>{userplaylist?.res.description}</p>
+            </DetailInfoText>
+          </DetailInfo>
 
-      <DetailSongs>
-        <DetailIcons>
-          <PlayCircleFilledIcon className="body__shuffle" />
-          <FavoriteIcon fontSize="large" />
-          <MoreHorizIcon />
-        </DetailIcons>
+          <DetailSongs>
+            <DetailIcons>
+              <PlayCircleFilledIcon className="body__shuffle" />
+              <FavoriteIcon fontSize="large" />
+              <MoreHorizIcon />
+            </DetailIcons>
 
-        {userplaylist?.res.tracks.items.map((item, inx) => (
-          <SongRow
-            url={item.track.preview_url}
-            key={inx}
-            time={item.track.duration_ms}
-            image={item.track.album?.images[0]?.url}
-            name={item.track.name}
-            albumName={item.track.album.name}
-            artistsName={item.track.artists}
-          />
-        ))}
-      </DetailSongs>
+            {userplaylist?.res.tracks.items.map((item, inx) => (
+              <SongRow
+                url={item.track.preview_url}
+                key={inx}
+                time={item.track.duration_ms}
+                image={item.track.album?.images[0]?.url}
+                name={item.track.name}
+                albumName={item.track.album.name}
+                artistsName={item.track.artists}
+              />
+            ))}
+          </DetailSongs>
+        </>
+      )}
     </DetailPlaylistContainer>
   );
 }
@@ -54,7 +72,7 @@ const DetailPlaylistContainer = styled.div`
   height: 100vh;
   color: white;
   overflow-y: overlay;
-  background: linear-gradient(rgb(91, 87, 115), rgba(0, 0, 0, 1));
+  background: linear-gradient(#ffafbd, #ffc3a0);
   ::-webkit-scrollbar {
     display: none;
   }

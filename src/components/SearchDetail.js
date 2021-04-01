@@ -12,7 +12,6 @@ function SearchDetail({ spotify }) {
   const dispatch = useDispatch();
   const searchResult = useSelector(selectSearchResult);
   console.log(searchResult);
-
   const sendArtist = () => {
     spotify
       .getArtistTopTracks(searchResult.searchResult.artists.items[0].id, "CA")
@@ -29,24 +28,25 @@ function SearchDetail({ spotify }) {
     <SearchResultContainer>
       <SearchHeader spotify={spotify} />
 
-      {searchResult && (
+      {searchResult && searchResult.searchResult?.artists.items.length > 0 ? (
         <>
           <SearchresultContainer>
             <ResultLeft>
               <h3>Top result</h3>
               <Link
-                to={`/artist/${searchResult.searchResult.artists.items[0].id}`}
+                to={`/artist/${searchResult.searchResult?.artists.items[0].id}`}
                 style={{ textDecoration: "none", color: "white" }}
               >
                 <PostContainer onClick={sendArtist}>
                   <PostContent>
                     <img
                       src={
-                        searchResult.searchResult.artists.items[0].images[0].url
+                        searchResult.searchResult.artists?.items[0].images[0]
+                          .url
                       }
                       alt=""
                     />
-                    <h2>{searchResult.searchResult.artists.items[0].name}</h2>
+                    <h2>{searchResult.searchResult.artists?.items[0].name}</h2>
                     <h3>Artist</h3>
                     <PlayCircleOutlineIcon className="icon" fontSize="large" />
                   </PostContent>
@@ -87,6 +87,8 @@ function SearchDetail({ spotify }) {
             ))}
           </Test>
         </>
+      ) : (
+        <h1>No search result!!</h1>
       )}
     </SearchResultContainer>
   );

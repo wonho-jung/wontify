@@ -17,26 +17,31 @@ function SidebarOption({ title, Icon, id, spotify }) {
         playlistid: id,
       })
     );
-    spotify.getPlaylist(id).then((res) => {
-      dispatch(
-        set_list({
-          res,
-        })
-      );
-      spotify
-        .getRecommendations({
-          seed_artists: res.tracks.items[0].track.artists[0].id,
-          seed_tracks: id,
-          limit: 10,
-        })
-        .then((recommended) => {
-          dispatch(
-            set_Recommended({
-              recommended,
-            })
-          );
-        });
-    });
+    spotify
+      .getPlaylist(id)
+      .then((res) => {
+        dispatch(
+          set_list({
+            res,
+          })
+        );
+        spotify
+          .getRecommendations({
+            seed_artists: res.tracks.items[0].track.artists[0].id,
+            seed_tracks: id,
+            limit: 10,
+          })
+          .then((recommended) => {
+            dispatch(
+              set_Recommended({
+                recommended,
+              })
+            );
+          });
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
   };
 
   return (

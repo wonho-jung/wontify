@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import {
   selectList,
+  selectLoading,
   selectPlaylistid,
   selectRecommended,
 } from "../features/userSlice";
@@ -13,13 +14,15 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "./SongRow";
 import { db } from "./firebase";
 import { useCollection } from "react-firebase-hooks/firestore";
+import Loading from "./Loading";
+import { useEffect } from "react";
+import { useState } from "react";
 
 function Body({ spotify }) {
   const playlistid = useSelector(selectPlaylistid);
   const { playlistid: id } = playlistid;
   const userplaylist = useSelector(selectList);
   const recommended = useSelector(selectRecommended);
-
   const [tracksDetail] = useCollection(id && db.collection("tracks").doc(id));
   const [trackItem] = useCollection(
     id &&
@@ -29,82 +32,96 @@ function Body({ spotify }) {
         .collection("track")
         .orderBy("timestamp", "asc")
   );
+  const [loading, setLoading] = useState("true");
 
+  useEffect(() => {
+    if (
+      userplaylist &&
+      userplaylist.res.id === window.location.href.split("/")[3]
+    ) {
+      setLoading(false);
+    }
+  }, [userplaylist]);
   return (
     <BodyContainer>
-      <Header />
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <Header />
+          <BodyInfo>
+            <img src={userplaylist?.res.images[0].url} alt="" />
+            <BodyInfoText>
+              <strong>PLAYLIST</strong>
+              <h2>{userplaylist?.res.name}</h2>
+              <p>{userplaylist?.res.description}</p>
+            </BodyInfoText>
+          </BodyInfo>
 
-      <BodyInfo>
-        <img src={userplaylist?.res.images[0].url} alt="" />
-        <BodyInfoText>
-          <strong>PLAYLIST</strong>
-          <h2>{userplaylist?.res.name}</h2>
-          <p>{userplaylist?.res.description}</p>
-        </BodyInfoText>
-      </BodyInfo>
+          <BodySongs>
+            <BodyIcons>
+              <PlayCircleFilledIcon className="body__shuffle" />
+              <FavoriteIcon fontSize="large" />
+              <MoreHorizIcon />
+            </BodyIcons>
 
-      <BodySongs>
-        <BodyIcons>
-          <PlayCircleFilledIcon className="body__shuffle" />
-          <FavoriteIcon fontSize="large" />
-          <MoreHorizIcon />
-        </BodyIcons>
-
-        {userplaylist?.res.tracks.items.map((item, inx) => (
-          <SongRow
-            key={inx}
-            url={item.track.preview_url}
-            time={item.track.duration_ms}
-            image={item.track.album?.images[0]?.url}
-            name={item.track.name}
-            albumName={item.track.album.name}
-            artistsName={item.track.artists}
-            spotify={spotify}
-          />
-        ))}
-
-        {tracksDetail &&
-          trackItem?.docs.map((doc) => {
-            const {
-              albumName,
-              artistsName,
-              image,
-              name,
-              time,
-              url,
-            } = doc.data();
-
-            return (
+            {userplaylist?.res.tracks.items.map((item, inx) => (
               <SongRow
-                url={url}
-                albumName={albumName}
-                artistsName={artistsName}
-                image={image}
-                name={name}
-                time={time}
+                key={inx}
+                url={item.track.preview_url}
+                time={item.track.duration_ms}
+                image={item.track.album?.images[0]?.url}
+                name={item.track.name}
+                albumName={item.track.album.name}
+                artistsName={item.track.artists}
+                spotify={spotify}
               />
-            );
-          })}
+            ))}
 
-        <Recommended>
-          <h3>Recommended</h3>
-          <p className="recommend_p">Based on what's in this playlist</p>
-          {recommended?.recommended.tracks.map((item) => (
-            <SongRow
-              url={item.preview_url}
-              id={id}
-              track={item}
-              spotify={spotify}
-              image={item.album.images[0]?.url}
-              name={item.name}
-              albumName={item.album.name}
-              artistsName={item.artists}
-              timeRecommend={item.duration_ms}
-              recommended
-            />
-          ))}
-        </Recommended>
-      </BodySongs>
+            {tracksDetail &&
+              trackItem?.docs.map((doc) => {
+                const {
+                  albumName,
+                  artistsName,
+                  image,
+                  name,
+                  time,
+                  url,
+                } = doc.data();
+
+                return (
+                  <SongRow
+                    url={url}
+                    albumName={albumName}
+                    artistsName={artistsName}
+                    image={image}
+                    name={name}
+                    time={time}
+                  />
+                );
+              })}
+
+            <Recommended>
+              <h3>Recommended</h3>
+              <p className="recommend_p">Based on what's in this playlist</p>
+              {recommended?.recommended.tracks.map((item) => (
+                <SongRow
+                  url={item.preview_url}
+                  id={id}
+                  track={item}
+                  spotify={spotify}
+                  image={item.album.images[0]?.url}
+                  name={item.name}
+                  albumName={item.album.name}
+                  artistsName={item.artists}
+                  timeRecommend={item.duration_ms}
+                  recommended
+                />
+              ))}
+            </Recommended>
+          </BodySongs>
+        </>
+      )}
     </BodyContainer>
   );
 }

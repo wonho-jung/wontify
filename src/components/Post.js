@@ -7,6 +7,7 @@ import {
   set_DetailAlbum,
   set_DetailAlbumTracks,
   set_list,
+  set_Loading,
 } from "../features/userSlice";
 import { Link } from "react-router-dom";
 
@@ -22,29 +23,45 @@ function Post({
   const dispatch = useDispatch();
 
   const sendAlbumDetail = () => {
-    spotify.getAlbumTracks(albumId).then((res) => {
-      dispatch(
-        set_DetailAlbumTracks({
-          detailAlbumTracks: res,
-        })
-      );
-    });
-    spotify.getAlbum(albumId).then((res) => {
-      dispatch(
-        set_DetailAlbum({
-          detailAlbum: res,
-        })
-      );
-    });
+    spotify
+      .getAlbumTracks(albumId)
+      .then((res) => {
+        dispatch(
+          set_DetailAlbumTracks({
+            detailAlbumTracks: res,
+          })
+        );
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+
+    spotify
+      .getAlbum(albumId)
+      .then((res) => {
+        dispatch(
+          set_DetailAlbum({
+            detailAlbum: res,
+          })
+        );
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
   };
   const sendPlaylistDetail = () => {
-    spotify.getPlaylist(playlistId).then((res) => {
-      dispatch(
-        set_list({
-          res,
-        })
-      );
-    });
+    spotify
+      .getPlaylist(playlistId)
+      .then((res) => {
+        dispatch(
+          set_list({
+            res,
+          })
+        );
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
   };
 
   return (

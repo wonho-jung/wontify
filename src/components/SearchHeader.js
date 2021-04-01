@@ -12,21 +12,26 @@ function SearchHeader({ spotify }) {
   const history = useHistory();
   const SearchItem = (e) => {
     e.preventDefault();
-    history.push("/search/search/song");
     if (input !== "") {
-      spotify.search(input, ["artist", "track"], { limit: 14 }).then((res) => {
-        dispatch(
-          set_searchResult({
-            searchResult: res,
-          })
-        );
-      });
+      history.push("/search/search/song");
+
+      spotify
+        .search(input, ["artist", "track"], { limit: 14 })
+        .then((res) => {
+          dispatch(
+            set_searchResult({
+              searchResult: res,
+            })
+          );
+        })
+        .catch((err) => {
+          alert(err.message);
+        });
     }
 
     setInput("");
   };
 
-  console.log(input);
   return (
     <SearchHeaderContainer>
       <SearchHeaderLeft>

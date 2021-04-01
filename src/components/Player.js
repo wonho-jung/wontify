@@ -27,7 +27,7 @@ function Player({ spotify }) {
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
   const playlisturl = useSelector(selectPlayingList);
-  console.log("first url value ", playlisturl, "first audio value", audio.src);
+  // console.log("first url value ", playlisturl, "first audio value", audio.src);
 
   const audioChecktime = () => {
     const timeOut = setTimeout(() => {

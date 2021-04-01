@@ -54,6 +54,9 @@ function SongRow({
               recommended,
             })
           );
+        })
+        .catch((err) => {
+          alert(err.message);
         });
     });
   };

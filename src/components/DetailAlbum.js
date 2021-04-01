@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "./Header";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -10,43 +10,56 @@ import {
   selectDetailAlbum,
   selectDetailAlbumTracks,
 } from "../features/userSlice";
+import Loading from "./Loading";
+import { useEffect } from "react";
 
 function DetailAlbum() {
+  const [loading, setLoading] = useState("true");
   const album = useSelector(selectDetailAlbum);
   const detailAlbumTracks = useSelector(selectDetailAlbumTracks);
-
+  useEffect(() => {
+    if (album && album?.detailAlbum.id === window.location.href.split("/")[5]) {
+      setLoading(false);
+    }
+  }, [album]);
   return (
     <DetailAlbumContainer>
-      <Header />
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <Header />
 
-      <DetailInfo>
-        <img src={album?.detailAlbum.images[0].url} alt="" />
-        <DetailInfoText>
-          <strong>PLAYLIST</strong>
-          <h2>{album?.detailAlbum.name}</h2>
-          <p>{album?.detailAlbum.description}</p>
-        </DetailInfoText>
-      </DetailInfo>
+          <DetailInfo>
+            <img src={album?.detailAlbum.images[0].url} alt="" />
+            <DetailInfoText>
+              <strong>PLAYLIST</strong>
+              <h2>{album?.detailAlbum.name}</h2>
+              <p>{album?.detailAlbum.description}</p>
+            </DetailInfoText>
+          </DetailInfo>
 
-      <DetailSongs>
-        <DetailIcons>
-          <PlayCircleFilledIcon className="body__shuffle" />
-          <FavoriteIcon fontSize="large" />
-          <MoreHorizIcon />
-        </DetailIcons>
+          <DetailSongs>
+            <DetailIcons>
+              <PlayCircleFilledIcon className="body__shuffle" />
+              <FavoriteIcon fontSize="large" />
+              <MoreHorizIcon />
+            </DetailIcons>
 
-        {detailAlbumTracks &&
-          detailAlbumTracks.detailAlbumTracks.items.map((item, inx) => (
-            <SongRow
-              url={item.preview_url}
-              key={inx}
-              trackNumber={inx + 1}
-              name={item.name}
-              artistsName={item.artists}
-              time={item.duration_ms}
-            />
-          ))}
-      </DetailSongs>
+            {detailAlbumTracks &&
+              detailAlbumTracks.detailAlbumTracks.items.map((item, inx) => (
+                <SongRow
+                  url={item.preview_url}
+                  key={inx}
+                  trackNumber={inx + 1}
+                  name={item.name}
+                  artistsName={item.artists}
+                  time={item.duration_ms}
+                />
+              ))}
+          </DetailSongs>
+        </>
+      )}
     </DetailAlbumContainer>
   );
 }
@@ -58,7 +71,7 @@ const DetailAlbumContainer = styled.div`
   height: 100vh;
   color: white;
   overflow-y: overlay;
-  background: linear-gradient(rgb(91, 87, 115), rgba(0, 0, 0, 1));
+  background: linear-gradient(#42275a, #734b6d);
   ::-webkit-scrollbar {
     display: none;
   }

@@ -1,31 +1,49 @@
 import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { selectCategoriesDetail } from "../features/userSlice";
+import Loading from "./Loading";
 import Post from "./Post";
 
 function SearchCategory({ spotify }) {
   const categoryDetail = useSelector(selectCategoriesDetail);
-  console.log(categoryDetail);
+  const [loading, setLoading] = useState("true");
+
+  useEffect(() => {
+    if (
+      categoryDetail &&
+      categoryDetail?.id === window.location.href.split("/")[4]
+    ) {
+      setLoading(false);
+    }
+  }, [categoryDetail]);
   return (
     <SearchCategoryContainer>
-      <HomeContentContainer>
-        <h1>{categoryDetail?.id}</h1>
-        <PostsContainer>
-          {categoryDetail?.categoriesDetail.playlists.items.map(
-            (track, inx) => (
-              <Post
-                spotify={spotify}
-                playlistId={track.id}
-                key={inx}
-                image={track.images[0].url}
-                artistsName={track.name}
-                description={track.description}
-              />
-            )
-          )}
-        </PostsContainer>
-      </HomeContentContainer>
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <HomeContentContainer>
+            <h1>{categoryDetail?.id}</h1>
+            <PostsContainer>
+              {categoryDetail?.categoriesDetail.playlists.items.map(
+                (track, inx) => (
+                  <Post
+                    spotify={spotify}
+                    playlistId={track.id}
+                    key={inx}
+                    image={track.images[0].url}
+                    artistsName={track.name}
+                    description={track.description}
+                  />
+                )
+              )}
+            </PostsContainer>
+          </HomeContentContainer>
+        </>
+      )}
     </SearchCategoryContainer>
   );
 }
