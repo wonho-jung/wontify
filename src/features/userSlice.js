@@ -31,6 +31,7 @@ export const userSlice = createSlice({
       url: null,
       artistsName: null,
       albumName: null,
+      audiolist: null,
     },
   },
 

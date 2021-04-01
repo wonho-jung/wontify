@@ -26,6 +26,7 @@ function SongRow({
   trackNumber,
   time,
   timeRecommend,
+  audiolist,
 }) {
   const dispatch = useDispatch();
   const audiostate = useSelector(selectAudioStatus);
@@ -80,6 +81,7 @@ function SongRow({
           image,
           artistsName,
           albumName,
+          audiolist,
         },
       })
     );

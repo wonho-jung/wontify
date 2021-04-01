@@ -61,7 +61,7 @@ function Artist({ spotify }) {
               <Button onClick={followArtist}>{btntext}</Button>
               <MoreHorizIcon />
             </ArtistIcons>
-            <h1 className="ArtistTitle">Popular Top 10</h1>
+            <h1 className="artistTitle">Popular Top 10</h1>
             {artistDetail?.artistDetail.tracks.map((item, inx) => (
               <SongRow
                 url={item.preview_url}
@@ -90,7 +90,7 @@ const ArtistContainer = styled.div`
   height: 100vh;
   color: white;
   overflow-y: overlay;
-  background: linear-gradient(rgb(91, 87, 115), rgba(0, 0, 0, 1));
+  background: linear-gradient(#ed4264, #ffedbc);
   ::-webkit-scrollbar {
     display: none;
   }
@@ -120,7 +120,7 @@ const ArtistInfoText = styled.div`
 
 const ArtistSongs = styled.div`
   margin: 20px -30px;
-  .ArtistSongTitle {
+  .artistTitle {
     margin-left: 30px;
   }
 `;
@@ -129,11 +129,11 @@ const ArtistIcons = styled.div`
   align-items: center;
   button {
     margin-right: 20px;
-    border: 1px solid gray;
+    border: 1px solid white;
     padding: 10px;
     color: white;
     :hover {
-      border: 1.5px solid white;
+      border: 3px solid green;
     }
   }
   > .MuiSvgIcon-root {

@@ -16,12 +16,15 @@ import {
   set_playinglist,
 } from "../features/userSlice";
 function Footer({ audio, currentTime }) {
+  // const [filterList, setFilterList] = useState("");
+  // const [current, setCurrent] = useState("");
   const [volume, setVolume] = useState(100);
   const footeraudioState = useSelector(selectFooteraudioState);
   const audiostate = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
-
+  console.log(footeraudioState.footeraudioState?.audiolist.res.tracks.items);
+  console.log(footeraudioState.footeraudioState?.url);
   const volumeControl = (event) => {
     setVolume(event);
     audio.volume = volume / 100;
@@ -55,7 +58,34 @@ function Footer({ audio, currentTime }) {
       })
     );
   };
+  const getFilterList = () => {
+    const filterUrl = footeraudioState.footeraudioState?.audiolist.res.tracks.items.filter(
+      (item) => item.track?.preview_url !== null
+    );
+    console.log(filterUrl);
+  };
+  const getCurrentIndex = () => {
+    const currentIndex = footeraudioState.footeraudioState?.audiolist.res.tracks.items
+      .filter((item) => item.track?.preview_url !== null)
+      .map((item, index) => {
+        if (item.track?.preview_url === footeraudioState.footeraudioState.url) {
+          return index;
+        } else {
+          return undefined;
+        }
+      })
+      .filter((item) => {
+        return item !== undefined;
+      });
+    console.log(currentIndex);
+  };
 
+  const nextSong = () => {
+    const currentIndex = getCurrentIndex();
+    const filterList = getFilterList();
+
+    currentIndex === filterList.length -1 ? 
+  };
   return (
     <FooterContainer>
       {footeraudioState.footeraudioState ? (
