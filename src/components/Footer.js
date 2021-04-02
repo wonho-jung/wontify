@@ -12,6 +12,7 @@ import {
   selectAudioStatus,
   selectFooteraudioState,
   selectPlaying,
+  set_footeraudioState,
   set_playing,
   set_playinglist,
 } from "../features/userSlice";
@@ -23,8 +24,8 @@ function Footer({ audio, currentTime }) {
   const audiostate = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
-  console.log(footeraudioState.footeraudioState?.audiolist.res.tracks.items);
-  console.log(footeraudioState.footeraudioState?.url);
+  console.log(footeraudioState?.footeraudioState?.audiolist?.res.tracks.items);
+  console.log(footeraudioState?.footeraudioState?.url);
   const volumeControl = (event) => {
     setVolume(event);
     audio.volume = volume / 100;
@@ -59,16 +60,17 @@ function Footer({ audio, currentTime }) {
     );
   };
   const getFilterList = () => {
-    const filterUrl = footeraudioState.footeraudioState?.audiolist.res.tracks.items.filter(
+    let filterUrl = footeraudioState.footeraudioState.audiolist.res.tracks.items.filter(
       (item) => item.track?.preview_url !== null
     );
-    console.log(filterUrl);
+    return filterUrl;
   };
+
   const getCurrentIndex = () => {
-    const currentIndex = footeraudioState.footeraudioState?.audiolist.res.tracks.items
-      .filter((item) => item.track?.preview_url !== null)
+    let currentIndex = footeraudioState.footeraudioState.audiolist.res.tracks.items
+      .filter((item) => item.track.preview_url !== null)
       .map((item, index) => {
-        if (item.track?.preview_url === footeraudioState.footeraudioState.url) {
+        if (item.track.preview_url === footeraudioState.footeraudioState.url) {
           return index;
         } else {
           return undefined;
@@ -76,15 +78,62 @@ function Footer({ audio, currentTime }) {
       })
       .filter((item) => {
         return item !== undefined;
-      });
+      })[0];
     console.log(currentIndex);
+    return currentIndex;
   };
 
-  const nextSong = () => {
-    const currentIndex = getCurrentIndex();
-    const filterList = getFilterList();
-
-    currentIndex === filterList.length -1 ? 
+  const nextSong = async () => {
+    let currentIndex = await getCurrentIndex();
+    let filterList = await getFilterList();
+    console.log(filterList[0].track.preview_url);
+    if (currentIndex === filterList.length - 1) {
+      dispatch(
+        set_playing({
+          playSong: true,
+        })
+      );
+      dispatch(
+        set_playinglist({
+          playinglist: filterList[0].track.preview_url,
+        })
+      );
+      dispatch(
+        set_footeraudioState({
+          footeraudioState: {
+            name: filterList[0].track.name,
+            url: filterList[0].track.preview_url,
+            image: filterList[0].track.album.images[0].url,
+            albumName: filterList[0].track.album.name,
+            artistsName: filterList[0].track.artists,
+            audiolist: { res: { tracks: { items: filterList } } },
+          },
+        })
+      );
+    } else {
+      dispatch(
+        set_playing({
+          playSong: true,
+        })
+      );
+      dispatch(
+        set_playinglist({
+          playinglist: filterList[currentIndex + 1].track.preview_url,
+        })
+      );
+      dispatch(
+        set_footeraudioState({
+          footeraudioState: {
+            name: filterList[currentIndex + 1].track.name,
+            url: filterList[currentIndex + 1].track.preview_url,
+            image: filterList[currentIndex + 1].track.album.images[0].url,
+            albumName: filterList[currentIndex + 1].track.album.name,
+            artistsName: filterList[currentIndex + 1].track.artists,
+            audiolist: { res: { tracks: { items: filterList } } },
+          },
+        })
+      );
+    }
   };
   return (
     <FooterContainer>
@@ -133,7 +182,10 @@ function Footer({ audio, currentTime }) {
               fontSize="large"
             />
           )}
-          <SkipNextIcon />
+          <SkipNextIcon
+            onClick={audiostate ? nextSong : null}
+            className="icon"
+          />
         </IconContainer>
         <ProgressbarContainer>
           {currentTime < 10 ? `0:0${currentTime}` : `0:${currentTime}`}
