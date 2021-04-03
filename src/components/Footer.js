@@ -24,7 +24,7 @@ function Footer({ audio, currentTime }) {
   const audiostate = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
-  console.log(footeraudioState?.footeraudioState?.audiolist);
+  // console.log(footeraudioState?.footeraudioState?.audiolist);
   // console.log(footeraudioState?.footeraudioState?.audiolist?.res.tracks.items);
   // console.log(footeraudioState?.footeraudioState?.url);
   const volumeControl = (event) => {
@@ -153,8 +153,7 @@ function Footer({ audio, currentTime }) {
             footeraudioState: {
               name: filterList[filterList.length - 1].name,
               url: filterList[filterList.length - 1].preview_url,
-              // image: filterList[filterList.length - 1].album.images[0].url,
-              // albumName: filterList[filterList.length - 1].album.name,
+
               artistsName: filterList[filterList.length - 1].artists,
               audiolist: filterList,
             },
@@ -255,8 +254,7 @@ function Footer({ audio, currentTime }) {
             footeraudioState: {
               name: filterList[0].name,
               url: filterList[0].preview_url,
-              // image: filterList[0].album.images[0].url,
-              // albumName: filterList[0].album.name,
+
               artistsName: filterList[0].artists,
               audiolist: filterList,
             },
@@ -303,8 +301,7 @@ function Footer({ audio, currentTime }) {
             footeraudioState: {
               name: filterList[currentIndex + 1].name,
               url: filterList[currentIndex + 1].preview_url,
-              // image: filterList[currentIndex + 1].album.images[0].url,
-              // albumName: filterList[currentIndex + 1].album.name,
+
               artistsName: filterList[currentIndex + 1].artists,
               audiolist: filterList,
             },

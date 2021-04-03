@@ -8,12 +8,14 @@ import {
   selectAudioStatus,
   selectPlaying,
   set_footeraudioState,
+  set_list,
   set_playing,
   set_playinglist,
   set_Recommended,
 } from "../features/userSlice";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
+
 function SongRow({
   url,
   image,
@@ -27,20 +29,41 @@ function SongRow({
   time,
   timeRecommend,
   audiolist,
+  track,
 }) {
   const dispatch = useDispatch();
   const audiostate = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
+
+  // console.log(track);
   const addList = () => {
-    db.collection("tracks").doc(id).collection("track").add({
-      image,
-      name,
-      albumName,
-      artistsName,
-      time: timeRecommend,
-      url,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    });
+    spotify
+      .addTracksToPlaylist(id, [track.uri])
+      .then(
+        spotify.getPlaylist(id).then((res) => {
+          dispatch(
+            set_list({
+              res,
+            })
+          );
+        })
+      )
+      .catch((err) => alert(err.message))
+      .finally(
+        alert(
+          "it's added on your real spotify. Click your playlist again then you will see what you added"
+        )
+      );
+
+    // db.collection("tracks").doc(id).collection("track").add({
+    //   image,
+    //   name,
+    //   albumName,
+    //   artistsName,
+    //   time: timeRecommend,
+    //   url,
+    //   timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    // });
 
     spotify.getPlaylist(id).then((res) => {
       spotify

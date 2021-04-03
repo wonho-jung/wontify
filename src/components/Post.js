@@ -7,7 +7,6 @@ import {
   set_DetailAlbum,
   set_DetailAlbumTracks,
   set_list,
-  set_Loading,
 } from "../features/userSlice";
 import { Link } from "react-router-dom";
 

@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import {
   selectList,
-  selectLoading,
   selectPlaylistid,
   selectRecommended,
 } from "../features/userSlice";
@@ -23,15 +22,15 @@ function Body({ spotify }) {
   const { playlistid: id } = playlistid;
   const userplaylist = useSelector(selectList);
   const recommended = useSelector(selectRecommended);
-  const [tracksDetail] = useCollection(id && db.collection("tracks").doc(id));
-  const [trackItem] = useCollection(
-    id &&
-      db
-        .collection("tracks")
-        .doc(id)
-        .collection("track")
-        .orderBy("timestamp", "asc")
-  );
+  // const [tracksDetail] = useCollection(id && db.collection("tracks").doc(id));
+  // const [trackItem] = useCollection(
+  //   id &&
+  //     db
+  //       .collection("tracks")
+  //       .doc(id)
+  //       .collection("track")
+  //       .orderBy("timestamp", "asc")
+  // );
   const [loading, setLoading] = useState("true");
 
   useEffect(() => {
@@ -41,7 +40,7 @@ function Body({ spotify }) {
     ) {
       setLoading(false);
     }
-  }, [userplaylist]);
+  }, [userplaylist, recommended]);
   return (
     <BodyContainer>
       {loading ? (
@@ -79,7 +78,7 @@ function Body({ spotify }) {
               />
             ))}
 
-            {tracksDetail &&
+            {/* {tracksDetail &&
               trackItem?.docs.map((doc) => {
                 const {
                   albumName,
@@ -100,7 +99,7 @@ function Body({ spotify }) {
                     time={time}
                   />
                 );
-              })}
+              })} */}
 
             <Recommended>
               <h3>Recommended</h3>
