@@ -24,8 +24,9 @@ function Footer({ audio, currentTime }) {
   const audiostate = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
-  console.log(footeraudioState?.footeraudioState?.audiolist?.res.tracks.items);
-  console.log(footeraudioState?.footeraudioState?.url);
+  console.log(footeraudioState?.footeraudioState?.audiolist);
+  // console.log(footeraudioState?.footeraudioState?.audiolist?.res.tracks.items);
+  // console.log(footeraudioState?.footeraudioState?.url);
   const volumeControl = (event) => {
     setVolume(event);
     audio.volume = volume / 100;
@@ -60,79 +61,256 @@ function Footer({ audio, currentTime }) {
     );
   };
   const getFilterList = () => {
-    let filterUrl = footeraudioState.footeraudioState.audiolist.res.tracks.items.filter(
-      (item) => item.track?.preview_url !== null
-    );
-    return filterUrl;
+    if (footeraudioState.footeraudioState.audiolist[0].track) {
+      let filterUrl = footeraudioState.footeraudioState.audiolist.filter(
+        (item) => item.track?.preview_url !== null
+      );
+      return filterUrl;
+    } else {
+      let filterUrl = footeraudioState.footeraudioState.audiolist.filter(
+        (item) => item.preview_url !== null
+      );
+      return filterUrl;
+    }
   };
 
   const getCurrentIndex = () => {
-    let currentIndex = footeraudioState.footeraudioState.audiolist.res.tracks.items
-      .filter((item) => item.track.preview_url !== null)
-      .map((item, index) => {
-        if (item.track.preview_url === footeraudioState.footeraudioState.url) {
-          return index;
-        } else {
-          return undefined;
-        }
-      })
-      .filter((item) => {
-        return item !== undefined;
-      })[0];
-    console.log(currentIndex);
-    return currentIndex;
+    if (footeraudioState.footeraudioState.audiolist[0].track) {
+      let currentIndex = footeraudioState.footeraudioState.audiolist
+        .filter((item) => item.track?.preview_url !== null)
+        .map((item, index) => {
+          if (
+            item.track?.preview_url === footeraudioState.footeraudioState.url
+          ) {
+            return index;
+          } else {
+            return undefined;
+          }
+        })
+        .filter((item) => {
+          return item !== undefined;
+        })[0];
+      console.log(currentIndex);
+      return currentIndex;
+    } else {
+      let currentIndex = footeraudioState.footeraudioState.audiolist
+        .filter((item) => item.preview_url !== null)
+        .map((item, index) => {
+          if (item.preview_url === footeraudioState.footeraudioState.url) {
+            return index;
+          } else {
+            return undefined;
+          }
+        })
+        .filter((item) => {
+          return item !== undefined;
+        })[0];
+      console.log(currentIndex);
+      return currentIndex;
+    }
   };
-
+  const prevSong = async () => {
+    let currentIndex = await getCurrentIndex();
+    let filterList = await getFilterList();
+    if (currentIndex === 0) {
+      if (filterList[0].track) {
+        dispatch(
+          set_playinglist({
+            playinglist: filterList[filterList.length - 1].track.preview_url,
+          })
+        );
+        dispatch(
+          set_playing({
+            playSong: true,
+          })
+        );
+        dispatch(
+          set_footeraudioState({
+            footeraudioState: {
+              name: filterList[filterList.length - 1].track.name,
+              url: filterList[filterList.length - 1].track.preview_url,
+              image:
+                filterList[filterList.length - 1].track.album.images[0].url,
+              albumName: filterList[filterList.length - 1].track.album.name,
+              artistsName: filterList[filterList.length - 1].track.artists,
+              audiolist: filterList,
+            },
+          })
+        );
+      } else {
+        dispatch(
+          set_playinglist({
+            playinglist: filterList[filterList.length - 1].preview_url,
+          })
+        );
+        dispatch(
+          set_playing({
+            playSong: true,
+          })
+        );
+        dispatch(
+          set_footeraudioState({
+            footeraudioState: {
+              name: filterList[filterList.length - 1].name,
+              url: filterList[filterList.length - 1].preview_url,
+              // image: filterList[filterList.length - 1].album.images[0].url,
+              // albumName: filterList[filterList.length - 1].album.name,
+              artistsName: filterList[filterList.length - 1].artists,
+              audiolist: filterList,
+            },
+          })
+        );
+      }
+    } else {
+      if (filterList[0].track) {
+        dispatch(
+          set_playinglist({
+            playinglist: filterList[currentIndex - 1].track.preview_url,
+          })
+        );
+        dispatch(
+          set_playing({
+            playSong: true,
+          })
+        );
+        dispatch(
+          set_footeraudioState({
+            footeraudioState: {
+              name: filterList[currentIndex - 1].track.name,
+              url: filterList[currentIndex - 1].track.preview_url,
+              image: filterList[currentIndex - 1].track.album.images[0].url,
+              albumName: filterList[currentIndex - 1].track.album.name,
+              artistsName: filterList[currentIndex - 1].track.artists,
+              audiolist: filterList,
+            },
+          })
+        );
+      } else {
+        dispatch(
+          set_playinglist({
+            playinglist: filterList[currentIndex - 1].preview_url,
+          })
+        );
+        dispatch(
+          set_playing({
+            playSong: true,
+          })
+        );
+        dispatch(
+          set_footeraudioState({
+            footeraudioState: {
+              name: filterList[currentIndex - 1].name,
+              url: filterList[currentIndex - 1].preview_url,
+              image: filterList[currentIndex - 1].album.images[0].url,
+              albumName: filterList[currentIndex - 1].album.name,
+              artistsName: filterList[currentIndex - 1].artists,
+              audiolist: filterList,
+            },
+          })
+        );
+      }
+    }
+  };
   const nextSong = async () => {
     let currentIndex = await getCurrentIndex();
     let filterList = await getFilterList();
-    console.log(filterList[0].track.preview_url);
+    // console.log(filterList[0].track.preview_url);
     if (currentIndex === filterList.length - 1) {
-      dispatch(
-        set_playing({
-          playSong: true,
-        })
-      );
-      dispatch(
-        set_playinglist({
-          playinglist: filterList[0].track.preview_url,
-        })
-      );
-      dispatch(
-        set_footeraudioState({
-          footeraudioState: {
-            name: filterList[0].track.name,
-            url: filterList[0].track.preview_url,
-            image: filterList[0].track.album.images[0].url,
-            albumName: filterList[0].track.album.name,
-            artistsName: filterList[0].track.artists,
-            audiolist: { res: { tracks: { items: filterList } } },
-          },
-        })
-      );
+      if (filterList[0].track) {
+        dispatch(
+          set_playing({
+            playSong: true,
+          })
+        );
+        dispatch(
+          set_playinglist({
+            playinglist: filterList[0].track.preview_url,
+          })
+        );
+        dispatch(
+          set_footeraudioState({
+            footeraudioState: {
+              name: filterList[0].track.name,
+              url: filterList[0].track.preview_url,
+              image: filterList[0].track.album.images[0].url,
+              albumName: filterList[0].track.album.name,
+              artistsName: filterList[0].track.artists,
+              audiolist: filterList,
+            },
+          })
+        );
+      } else {
+        dispatch(
+          set_playing({
+            playSong: true,
+          })
+        );
+        dispatch(
+          set_playinglist({
+            playinglist: filterList[0].preview_url,
+          })
+        );
+        dispatch(
+          set_footeraudioState({
+            footeraudioState: {
+              name: filterList[0].name,
+              url: filterList[0].preview_url,
+              // image: filterList[0].album.images[0].url,
+              // albumName: filterList[0].album.name,
+              artistsName: filterList[0].artists,
+              audiolist: filterList,
+            },
+          })
+        );
+      }
     } else {
-      dispatch(
-        set_playing({
-          playSong: true,
-        })
-      );
-      dispatch(
-        set_playinglist({
-          playinglist: filterList[currentIndex + 1].track.preview_url,
-        })
-      );
-      dispatch(
-        set_footeraudioState({
-          footeraudioState: {
-            name: filterList[currentIndex + 1].track.name,
-            url: filterList[currentIndex + 1].track.preview_url,
-            image: filterList[currentIndex + 1].track.album.images[0].url,
-            albumName: filterList[currentIndex + 1].track.album.name,
-            artistsName: filterList[currentIndex + 1].track.artists,
-            audiolist: { res: { tracks: { items: filterList } } },
-          },
-        })
-      );
+      if (filterList[0].track) {
+        dispatch(
+          set_playing({
+            playSong: true,
+          })
+        );
+        dispatch(
+          set_playinglist({
+            playinglist: filterList[currentIndex + 1].track.preview_url,
+          })
+        );
+        dispatch(
+          set_footeraudioState({
+            footeraudioState: {
+              name: filterList[currentIndex + 1].track.name,
+              url: filterList[currentIndex + 1].track.preview_url,
+              image: filterList[currentIndex + 1].track.album.images[0].url,
+              albumName: filterList[currentIndex + 1].track.album.name,
+              artistsName: filterList[currentIndex + 1].track.artists,
+              audiolist: filterList,
+            },
+          })
+        );
+      } else {
+        dispatch(
+          set_playing({
+            playSong: true,
+          })
+        );
+        dispatch(
+          set_playinglist({
+            playinglist: filterList[currentIndex + 1].preview_url,
+          })
+        );
+        dispatch(
+          set_footeraudioState({
+            footeraudioState: {
+              name: filterList[currentIndex + 1].name,
+              url: filterList[currentIndex + 1].preview_url,
+              // image: filterList[currentIndex + 1].album.images[0].url,
+              // albumName: filterList[currentIndex + 1].album.name,
+              artistsName: filterList[currentIndex + 1].artists,
+              audiolist: filterList,
+            },
+          })
+        );
+      }
     }
   };
   return (
@@ -167,7 +345,10 @@ function Footer({ audio, currentTime }) {
 
       <FooterCenter>
         <IconContainer>
-          <SkipPreviousIcon />
+          <SkipPreviousIcon
+            className="icon"
+            onClick={audiostate ? prevSong : null}
+          />
           {audiostate?.audioStatus === footeraudioState.footeraudioState?.url &&
           playing ? (
             <PauseCircleOutlineIcon
@@ -273,7 +454,6 @@ const FooterCenter = styled.div`
   }
 
   .icon {
-    font-size: 50px;
     text-justify: center;
     cursor: pointer;
   }

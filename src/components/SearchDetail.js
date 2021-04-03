@@ -60,6 +60,7 @@ function SearchDetail({ spotify }) {
                   .filter((url) => url.preview_url !== null)
                   .map((item, idx) => (
                     <SongRow
+                      audiolist={searchResult.searchResult.tracks.items}
                       url={item.preview_url}
                       key={idx}
                       time={item.duration_ms}

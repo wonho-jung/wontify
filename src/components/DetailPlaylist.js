@@ -49,6 +49,7 @@ function DetailPlaylist() {
 
             {userplaylist?.res.tracks.items.map((item, inx) => (
               <SongRow
+                audiolist={userplaylist.res.tracks.items}
                 url={item.track.preview_url}
                 key={inx}
                 time={item.track.duration_ms}

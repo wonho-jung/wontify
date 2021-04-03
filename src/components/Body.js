@@ -67,7 +67,7 @@ function Body({ spotify }) {
 
             {userplaylist?.res.tracks.items.map((item, inx) => (
               <SongRow
-                audiolist={userplaylist}
+                audiolist={userplaylist.res.tracks.items}
                 key={inx}
                 url={item.track.preview_url}
                 time={item.track.duration_ms}

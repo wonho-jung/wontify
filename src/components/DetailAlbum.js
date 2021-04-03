@@ -49,6 +49,7 @@ function DetailAlbum() {
             {detailAlbumTracks &&
               detailAlbumTracks.detailAlbumTracks.items.map((item, inx) => (
                 <SongRow
+                  audiolist={detailAlbumTracks.detailAlbumTracks.items}
                   url={item.preview_url}
                   key={inx}
                   trackNumber={inx + 1}

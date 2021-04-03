@@ -11,6 +11,7 @@ function Artist({ spotify }) {
   const artistDetail = useSelector(selectArtistDetail);
   const [followNumber, setFollowNumber] = useState("");
   const [btntext, setBtntext] = useState("Follow");
+  console.log(artistDetail);
   useEffect(() => {
     if (artistDetail) {
       setFollowNumber(artistDetail.artistInfo.followers.total);
@@ -64,6 +65,7 @@ function Artist({ spotify }) {
             <h1 className="artistTitle">Popular Top 10</h1>
             {artistDetail?.artistDetail.tracks.map((item, inx) => (
               <SongRow
+                audiolist={artistDetail.artistDetail.tracks}
                 url={item.preview_url}
                 key={inx}
                 time={item.duration_ms}
