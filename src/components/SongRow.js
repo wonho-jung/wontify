@@ -1,8 +1,7 @@
 import { Button } from "@material-ui/core";
 import React from "react";
 import styled from "styled-components";
-import { db } from "./firebase";
-import firebase from "firebase";
+
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectAudioStatus,
@@ -35,7 +34,6 @@ function SongRow({
   const audiostate = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
 
-  // console.log(track);
   const addList = () => {
     spotify
       .addTracksToPlaylist(id, [track.uri])
@@ -54,16 +52,6 @@ function SongRow({
           "it's added on your real spotify. Click your playlist again then you will see what you added"
         )
       );
-
-    // db.collection("tracks").doc(id).collection("track").add({
-    //   image,
-    //   name,
-    //   albumName,
-    //   artistsName,
-    //   time: timeRecommend,
-    //   url,
-    //   timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    // });
 
     spotify.getPlaylist(id).then((res) => {
       spotify

@@ -17,16 +17,12 @@ import {
   set_playinglist,
 } from "../features/userSlice";
 function Footer({ audio, currentTime }) {
-  // const [filterList, setFilterList] = useState("");
-  // const [current, setCurrent] = useState("");
   const [volume, setVolume] = useState(100);
   const footeraudioState = useSelector(selectFooteraudioState);
   const audiostate = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
-  // console.log(footeraudioState?.footeraudioState?.audiolist);
-  // console.log(footeraudioState?.footeraudioState?.audiolist?.res.tracks.items);
-  // console.log(footeraudioState?.footeraudioState?.url);
+
   const volumeControl = (event) => {
     setVolume(event);
     audio.volume = volume / 100;
@@ -213,7 +209,6 @@ function Footer({ audio, currentTime }) {
   const nextSong = async () => {
     let currentIndex = await getCurrentIndex();
     let filterList = await getFilterList();
-    // console.log(filterList[0].track.preview_url);
     if (currentIndex === filterList.length - 1) {
       if (filterList[0].track) {
         dispatch(

@@ -11,8 +11,7 @@ import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "./SongRow";
-import { db } from "./firebase";
-import { useCollection } from "react-firebase-hooks/firestore";
+
 import Loading from "./Loading";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -22,15 +21,7 @@ function Body({ spotify }) {
   const { playlistid: id } = playlistid;
   const userplaylist = useSelector(selectList);
   const recommended = useSelector(selectRecommended);
-  // const [tracksDetail] = useCollection(id && db.collection("tracks").doc(id));
-  // const [trackItem] = useCollection(
-  //   id &&
-  //     db
-  //       .collection("tracks")
-  //       .doc(id)
-  //       .collection("track")
-  //       .orderBy("timestamp", "asc")
-  // );
+
   const [loading, setLoading] = useState("true");
 
   useEffect(() => {
@@ -77,29 +68,6 @@ function Body({ spotify }) {
                 spotify={spotify}
               />
             ))}
-
-            {/* {tracksDetail &&
-              trackItem?.docs.map((doc) => {
-                const {
-                  albumName,
-                  artistsName,
-                  image,
-                  name,
-                  time,
-                  url,
-                } = doc.data();
-
-                return (
-                  <SongRow
-                    url={url}
-                    albumName={albumName}
-                    artistsName={artistsName}
-                    image={image}
-                    name={name}
-                    time={time}
-                  />
-                );
-              })} */}
 
             <Recommended>
               <h3>Recommended</h3>
