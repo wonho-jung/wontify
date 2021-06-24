@@ -14,7 +14,6 @@ import { useEffect } from "react";
 function DetailPlaylist() {
   const userplaylist = useSelector(selectList);
   const [loading, setLoading] = useState("true");
-  console.log(userplaylist.res.id);
   useEffect(() => {
     if (
       userplaylist &&
