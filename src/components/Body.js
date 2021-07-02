@@ -22,6 +22,7 @@ function Body({ spotify }) {
   const userplaylist = useSelector(selectList);
   const recommended = useSelector(selectRecommended);
 
+  // why "true" is a string here, I suggest to use boolean
   const [loading, setLoading] = useState("true");
 
   useEffect(() => {
@@ -32,6 +33,7 @@ function Body({ spotify }) {
       setLoading(false);
     }
   }, [userplaylist, recommended]);
+
   return (
     <BodyContainer>
       {loading ? (
@@ -54,7 +56,8 @@ function Body({ spotify }) {
               <FavoriteIcon fontSize="large" />
               <MoreHorizIcon />
             </BodyIcons>
-
+            {/* Paths to data are too long, it would be better to change its structure
+            in the place you get it like instead of userplaylist?.res.tracks.items, userPlaylist.tracks */}
             {userplaylist?.res.tracks.items.map((item, inx) => (
               <SongRow
                 audiolist={userplaylist.res.tracks.items}
@@ -68,7 +71,8 @@ function Body({ spotify }) {
                 spotify={spotify}
               />
             ))}
-
+            {/* I think you really need to make small components for such places
+            so it would be just <Recommended tracks={tracksData} /> */}
             <Recommended>
               <h3>Recommended</h3>
               <p className="recommend_p">Based on what's in this playlist</p>

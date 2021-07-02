@@ -7,7 +7,6 @@ import SkipNextIcon from "@material-ui/icons/SkipNext";
 import { Grid } from "@material-ui/core";
 import VolumeDownIcon from "@material-ui/icons/VolumeDown";
 import { useDispatch, useSelector } from "react-redux";
-
 import {
   selectAudioStatus,
   selectFooteraudioState,
@@ -16,13 +15,14 @@ import {
   set_playing,
   set_playinglist,
 } from "../features/userSlice";
+
 function Footer({ audio, currentTime }) {
   const [volume, setVolume] = useState(100);
   const footeraudioState = useSelector(selectFooteraudioState);
   const audiostate = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
-  console.log(currentTime);
+
   const volumeControl = (event) => {
     setVolume(event);
     audio.volume = volume / 100;
@@ -31,6 +31,8 @@ function Footer({ audio, currentTime }) {
     }
   };
 
+  // this whole structure here with dispatches looks hard to read,
+  // I don't have enough time to check it, but it's better to keep it in separate file
   const playSong = () => {
     dispatch(
       set_playing({
@@ -56,6 +58,7 @@ function Footer({ audio, currentTime }) {
       })
     );
   };
+
   const getFilterList = () => {
     if (footeraudioState.footeraudioState[0].track) {
       let filterUrl = footeraudioState.footeraudioState.audiolist.filter(
@@ -86,7 +89,6 @@ function Footer({ audio, currentTime }) {
         .filter((item) => {
           return item !== undefined;
         })[0];
-      console.log(currentIndex);
       return currentIndex;
     } else {
       let currentIndex = footeraudioState.footeraudioState.audiolist
@@ -101,7 +103,6 @@ function Footer({ audio, currentTime }) {
         .filter((item) => {
           return item !== undefined;
         })[0];
-      console.log(currentIndex);
       return currentIndex;
     }
   };

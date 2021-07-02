@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import SidebarOption from "./SidebarOption";
+// project didn't compile because you have a typo here
+import SidebarOption from "./SIdebarOption";
 import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
 import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";

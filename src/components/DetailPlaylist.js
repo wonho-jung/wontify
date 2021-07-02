@@ -11,9 +11,11 @@ import { selectList } from "../features/userSlice";
 import Loading from "./Loading";
 import { useState } from "react";
 import { useEffect } from "react";
+
 function DetailPlaylist() {
   const userplaylist = useSelector(selectList);
   const [loading, setLoading] = useState("true");
+  
   useEffect(() => {
     if (
       userplaylist &&
@@ -22,6 +24,7 @@ function DetailPlaylist() {
       setLoading(false);
     }
   }, [userplaylist]);
+
   return (
     <DetailPlaylistContainer>
       {loading ? (

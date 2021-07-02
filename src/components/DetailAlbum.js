@@ -14,14 +14,19 @@ import Loading from "./Loading";
 import { useEffect } from "react";
 
 function DetailAlbum() {
+  // non-empty string are true, yes, but as I said, better to keep it just true as a boolean
   const [loading, setLoading] = useState("true");
   const album = useSelector(selectDetailAlbum);
   const detailAlbumTracks = useSelector(selectDetailAlbumTracks);
+
   useEffect(() => {
+    // const idFromUrl = window.location.href.split("/")[5] - is easier to read
+    // album?.detailAlbum is the same as album && album.detailAlbum
     if (album && album?.detailAlbum.id === window.location.href.split("/")[5]) {
       setLoading(false);
     }
   }, [album]);
+
   return (
     <DetailAlbumContainer>
       {loading ? (

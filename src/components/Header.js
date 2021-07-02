@@ -9,6 +9,8 @@ function Header() {
   return (
     <HeaderContainer>
       <HeaderRight>
+        {/* What is this user?.user.images[0]?.url = undefined? 
+        there will be a broken image, I suggest having default values */}
         <Avatar src={user?.user.images[0]?.url} alt="user" />
         <h4>{user?.user.display_name}</h4>
         <hr />
