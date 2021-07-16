@@ -1,29 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import Post from "./Post";
-import {
-  selectMood,
-  selectNewReleases,
-  selectParty,
-  selectRecentlyPlayed,
-  selectTopList,
-  selectWorkout,
-} from "../features/userSlice";
-import { useSelector } from "react-redux";
-function Home({ spotify }) {
-  const recentlyPlayed = useSelector(selectRecentlyPlayed);
-  const newReleases = useSelector(selectNewReleases);
-  const topList = useSelector(selectTopList);
-  const workout = useSelector(selectWorkout);
-  const party = useSelector(selectParty);
-  const mood = useSelector(selectMood);
+import {connect} from "dva";
+
+function Home({ spotify, recentlyPlayed, newReleases, topList, workout, party, mood}) {
 
   return (
     <HomeContainer>
       <HomeContentContainer>
         <h1>Recently played Albums</h1>
         <PostsContainer>
-          {recentlyPlayed?.recentlyPlayed?.map((track, inx) => (
+          {recentlyPlayed?.map((track, inx) => (
             <Post
               url={track.track.preview_url}
               spotify={spotify}
@@ -40,7 +27,7 @@ function Home({ spotify }) {
       <HomeContentContainer>
         <h1>New Releases</h1>
         <PostsContainer>
-          {newReleases?.newReleases?.map((track, inx) => (
+          {newReleases?.map((track, inx) => (
             <Post
               spotify={spotify}
               key={inx}
@@ -56,7 +43,7 @@ function Home({ spotify }) {
       <HomeContentContainer>
         <h1>Top play lists</h1>
         <PostsContainer>
-          {topList?.topList?.map((track, inx) => (
+          {topList?.map((track, inx) => (
             <Post
               spotify={spotify}
               playlistId={track.id}
@@ -72,7 +59,7 @@ function Home({ spotify }) {
       <HomeContentContainer>
         <h1>Work out</h1>
         <PostsContainer>
-          {workout?.workout?.map((track, inx) => (
+          {workout?.map((track, inx) => (
             <Post
               spotify={spotify}
               playlistId={track.id}
@@ -87,7 +74,7 @@ function Home({ spotify }) {
       <HomeContentContainer>
         <h1>Mood</h1>
         <PostsContainer>
-          {mood?.mood?.map((track, inx) => (
+          {mood?.map((track, inx) => (
             <Post
               spotify={spotify}
               playlistId={track.id}
@@ -103,7 +90,7 @@ function Home({ spotify }) {
       <HomeContentContainer>
         <h1>Party</h1>
         <PostsContainer>
-          {party?.party?.map((track, inx) => (
+          {party?.map((track, inx) => (
             <Post
               spotify={spotify}
               playlistId={track.id}
@@ -119,7 +106,7 @@ function Home({ spotify }) {
   );
 }
 
-export default Home;
+export default connect(({global}) => ({...global}))(Home);
 
 const HomeContainer = styled.div`
   padding-top: 80px;

@@ -2,13 +2,11 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import SearchIcon from "@material-ui/icons/Search";
 import { Avatar } from "@material-ui/core";
-import { selectUser, set_searchResult } from "../features/userSlice";
-import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-function SearchHeader({ spotify }) {
-  const user = useSelector(selectUser);
+import {connect} from "dva";
+
+function SearchHeader({ spotify, user, dispatch }) {
   const [input, setInput] = useState("");
-  const dispatch = useDispatch();
   const history = useHistory();
   const SearchItem = (e) => {
     e.preventDefault();
@@ -18,11 +16,12 @@ function SearchHeader({ spotify }) {
       spotify
         .search(input, ["artist", "track"], { limit: 14 })
         .then((res) => {
-          dispatch(
-            set_searchResult({
-              searchResult: res,
-            })
-          );
+          dispatch({
+              type: 'global/save',
+              payload: {
+                  searchResult: res,
+              }
+          })
         })
         .catch((err) => {
           alert(err.message);
@@ -47,15 +46,15 @@ function SearchHeader({ spotify }) {
         </form>
       </SearchHeaderLeft>
       <SearchHeaderRight>
-        <Avatar src={user?.user.images[0]?.url} alt="user" />
-        <h4>{user?.user.display_name}</h4>
+        <Avatar src={user?.images[0]?.url} alt="user" />
+        <h4>{user?.display_name}</h4>
         <hr />
       </SearchHeaderRight>
     </SearchHeaderContainer>
   );
 }
 
-export default SearchHeader;
+export default connect(({global}) => ({...global}))(SearchHeader);
 
 const SearchHeaderContainer = styled.div`
   min-width: 300px;

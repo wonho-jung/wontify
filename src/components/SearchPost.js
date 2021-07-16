@@ -1,19 +1,20 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { set_categoriesDetail } from "../features/userSlice";
+import {connect} from "dva";
 
-function SearchPost({ spotify, image, name, id }) {
-  const dispatch = useDispatch();
+function SearchPost({ spotify, image, name, id, dispatch }) {
   const sendSearchDetail = () => {
     spotify.getCategoryPlaylists(id, { limit: 10 }).then((res) => {
-      dispatch(
-        set_categoriesDetail({
-          categoriesDetail: res,
-          id: id,
-        })
-      );
+      dispatch({
+          type: 'global/save',
+          payload: {
+              categoryDetail: {
+                  id,
+                  ...res
+              }
+          }
+      });
     });
   };
   return (
@@ -28,7 +29,7 @@ function SearchPost({ spotify, image, name, id }) {
   );
 }
 
-export default SearchPost;
+export default connect(({}) => ({}))(SearchPost);
 
 const SearchPostContainer = styled.div`
   color: white;

@@ -1,14 +1,12 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectCategoriesDetail } from "../features/userSlice";
 import Loading from "./Loading";
 import Post from "./Post";
+import {connect} from "dva";
 
-function SearchCategory({ spotify }) {
-  const categoryDetail = useSelector(selectCategoriesDetail);
+function SearchCategory({ spotify, categoryDetail }) {
   const [loading, setLoading] = useState("true");
 
   useEffect(() => {
@@ -28,7 +26,7 @@ function SearchCategory({ spotify }) {
           <HomeContentContainer>
             <h1>{categoryDetail?.id}</h1>
             <PostsContainer>
-              {categoryDetail?.categoriesDetail.playlists.items.map(
+              {categoryDetail?.playlists.items.map(
                 (track, inx) => (
                   <Post
                     spotify={spotify}
@@ -48,7 +46,7 @@ function SearchCategory({ spotify }) {
   );
 }
 
-export default SearchCategory;
+export default connect(({global}) => ({...global}))(SearchCategory);
 const SearchCategoryContainer = styled.div`
   padding-top: 80px;
   padding-left: 30px;

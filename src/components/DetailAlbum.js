@@ -5,20 +5,14 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "./SongRow";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
-import {
-  selectDetailAlbum,
-  selectDetailAlbumTracks,
-} from "../features/userSlice";
 import Loading from "./Loading";
 import { useEffect } from "react";
+import {connect} from "dva";
 
-function DetailAlbum() {
+function DetailAlbum({detailAlbum: album, detailAlbumTracks}) {
   const [loading, setLoading] = useState("true");
-  const album = useSelector(selectDetailAlbum);
-  const detailAlbumTracks = useSelector(selectDetailAlbumTracks);
   useEffect(() => {
-    if (album && album?.detailAlbum.id === window.location.href.split("/")[5]) {
+    if (album && album?.id === window.location.href.split("/")[5]) {
       setLoading(false);
     }
   }, [album]);
@@ -47,9 +41,9 @@ function DetailAlbum() {
             </DetailIcons>
 
             {detailAlbumTracks &&
-              detailAlbumTracks.detailAlbumTracks.items.map((item, inx) => (
+              detailAlbumTracks.items.map((item, inx) => (
                 <SongRow
-                  audiolist={detailAlbumTracks.detailAlbumTracks.items}
+                  audiolist={detailAlbumTracks.items}
                   url={item.preview_url}
                   key={inx}
                   trackNumber={inx + 1}
@@ -65,7 +59,7 @@ function DetailAlbum() {
   );
 }
 
-export default DetailAlbum;
+export default connect(({global}) => ({...global}))(DetailAlbum);
 const DetailAlbumContainer = styled.div`
   padding: 30px;
   flex: 0.8;

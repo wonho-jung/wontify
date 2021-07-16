@@ -1,43 +1,37 @@
 import React from "react";
 import styled from "styled-components";
-
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  selectUser,
-  set_list,
-  set_playlistid,
-  set_Recommended,
-} from "../features/userSlice";
 import { Link } from "react-router-dom";
+import {connect} from "dva";
 
-function LibraryPost({ image, name, description, id, spotify }) {
-  const dispatch = useDispatch();
-  const user = useSelector(selectUser);
+function LibraryPost({ image, name, description, id, spotify, user, dispatch }) {
 
   const click = () => {
-    dispatch(
-      set_playlistid({
+    dispatch({
+      type: 'global/save',
+      payload: {
         playlistid: id,
-      })
-    );
+      }
+    });
     spotify.getPlaylist(id).then((res) => {
-      dispatch(
-        set_list({
-          res,
-        })
-      );
+      dispatch({
+        type: 'global/save',
+        payload: {
+          userplaylist: res,
+        }
+      });
       spotify
         .getRecommendations({
           seed_artists: res.tracks.items[0].track.artists[0].id,
           seed_tracks: id,
         })
         .then((recommended) => {
-          dispatch(
-            set_Recommended({
-              recommended,
-            })
-          );
+          dispatch({
+            type: 'global/save',
+            payload: {
+              recommended
+            }
+          });
         });
     });
   };
@@ -48,7 +42,7 @@ function LibraryPost({ image, name, description, id, spotify }) {
         <PostContent onClick={click}>
           <img src={image} alt="" />
           <p>{name && name}</p>
-          <p>{description ? description : `by ${user?.user.display_name}`}</p>
+          <p>{description ? description : `by ${user?.display_name}`}</p>
         </PostContent>
         <PlayCircleOutlineIcon className="icon" fontSize="large" />
       </Link>
@@ -56,7 +50,7 @@ function LibraryPost({ image, name, description, id, spotify }) {
   );
 }
 
-export default LibraryPost;
+export default connect(({global}) => ({...global}))(LibraryPost);
 
 const PostContainer = styled.div`
   width: 300px;

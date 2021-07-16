@@ -12,22 +12,13 @@ import Search from "./Search";
 import SearchCategory from "./SearchCategory";
 import SearchDetail from "./SearchDetail";
 import Artist from "./Artist";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  selectPlaying,
-  selectPlayingList,
-  set_audioStatus,
-  set_playing,
-} from "../features/userSlice";
 import { useState } from "react";
+import {connect} from "dva";
 
-function Player({ spotify }) {
+function Player({ spotify, dispatch, playing, playinglist }) {
   const [currentTime, setCurrentTime] = useState(0);
   const [audio] = useState(new Audio());
-  const playing = useSelector(selectPlaying);
-  const dispatch = useDispatch();
-  const playlisturl = useSelector(selectPlayingList);
-  console.log("first url value ", playlisturl, "first audio value", audio.src);
+  console.log("first url value ", playinglist, "first audio value", audio.src);
 
   const audioChecktime = () => {
     const timeOut = setTimeout(() => {
@@ -35,16 +26,15 @@ function Player({ spotify }) {
         clearTimeout(timeOut);
         audio.pause();
         audio.currentTime = 0;
-        dispatch(
-          set_audioStatus({
+        dispatch({
+          type: 'global/save',
+          payload: {
             audioStatus: "",
-          })
-        );
-        dispatch(
-          set_playing({
-            playSong: false,
-          })
-        );
+            playing: {
+              playSong: false
+            },
+          }
+        })
       }
     }, 30000);
   };
@@ -52,28 +42,30 @@ function Player({ spotify }) {
     setCurrentTime(Math.ceil(e.target.currentTime));
   };
   useEffect(() => {
-    if (playlisturl) {
+    if (playinglist) {
       if (audio.src === "" && playing.playSong === true) {
         console.log("audio is emtye start song");
-        audio.src = playlisturl.playinglist;
+        audio.src = playinglist;
         audio.play();
 
         audioChecktime();
-        dispatch(
-          set_audioStatus({
-            audioStatus: playlisturl.playinglist,
-          })
-        );
-      } else if (playlisturl.playinglist === audio.src) {
+        dispatch({
+          type: 'global/save',
+          payload: {
+            audioStatus: playinglist,
+          }
+        })
+      } else if (playinglist === audio.src) {
         if (playing.playSong === true) {
           console.log(
             "playlist.url and aduio.src is same and you want start again"
           );
-          dispatch(
-            set_audioStatus({
-              audioStatus: playlisturl.playinglist,
-            })
-          );
+          dispatch({
+            type: 'global/save',
+            payload: {
+              audioStatus: playinglist,
+            }
+          })
           audio.play();
 
           audioChecktime();
@@ -83,13 +75,14 @@ function Player({ spotify }) {
           );
           audio.pause();
           audio.currentTime = 0;
-          dispatch(
-            set_audioStatus({
-              audioStatus: "",
-            })
-          );
+          dispatch({
+            type: 'global/save',
+            payload: {
+              audioStatus: ""
+            }
+          })
         }
-      } else if (playlisturl.playinglist !== audio.src) {
+      } else if (playinglist !== audio.src) {
         console.log("you play another track");
 
         audio.pause();
@@ -98,19 +91,20 @@ function Player({ spotify }) {
           console.log(
             "playlist.url and aduio.src is not same and you want play new song"
           );
-          dispatch(
-            set_audioStatus({
-              audioStatus: playlisturl.playinglist,
-            })
-          );
-          audio.src = playlisturl.playinglist;
+          dispatch({
+            type: 'global/save',
+            payload: {
+              audioStatus: playinglist,
+            }
+          });
+          audio.src = playinglist;
           audio.play();
 
           audioChecktime();
         }
       }
     }
-  }, [playlisturl]);
+  }, [playinglist]);
 
   return (
     <Router>
@@ -155,7 +149,7 @@ function Player({ spotify }) {
   );
 }
 
-export default Player;
+export default connect(({global}) => ({...global}))(Player);
 
 const PlayerContainer = styled.div``;
 

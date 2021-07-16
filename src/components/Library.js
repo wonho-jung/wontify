@@ -1,19 +1,16 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectPlaylists, selectUser } from "../features/userSlice";
 import LibraryPost from "./LibraryPost";
+import {connect} from "dva";
 
-function Library({ spotify }) {
-  const myList = useSelector(selectPlaylists);
-  const user = useSelector(selectUser);
+function Library({ spotify, user, playlists }) {
 
   return (
     <LibraryContainer>
-      <h1>{`${user?.user.display_name}'s playlists`}</h1>
+      <h1>{`${user?.display_name}'s playlists`}</h1>
       <LibraryContentContainer>
         <PostsContainer>
-          {myList?.playlists?.items?.map((playlist, idx) => (
+          {playlists?.items?.map((playlist, idx) => (
             <LibraryPost
               image={playlist.images[0].url}
               spotify={spotify}
@@ -29,7 +26,7 @@ function Library({ spotify }) {
   );
 }
 
-export default Library;
+export default connect(({global}) => ({...global}))(Library);
 const LibraryContainer = styled.div`
   padding-top: 80px;
   padding-left: 30px;

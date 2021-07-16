@@ -1,21 +1,19 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { set_artistDetail } from "../features/userSlice";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
+import {connect} from "dva";
 
-function SearchArtistPost({ spotify, image, name, id, artistInfo }) {
-  const dispatch = useDispatch();
-  console.log(artistInfo);
+function SearchArtistPost({ spotify, image, name, id, artistInfo, dispatch }) {
   const sendToArtis = () => {
     spotify.getArtistTopTracks(id, "CA").then((res) => {
-      dispatch(
-        set_artistDetail({
+      dispatch({
+        type: 'global/save',
+        payload: {
           artistDetail: res,
           artistInfo: artistInfo,
-        })
-      );
+        }
+      })
     });
   };
   return (
@@ -35,7 +33,7 @@ function SearchArtistPost({ spotify, image, name, id, artistInfo }) {
   );
 }
 
-export default SearchArtistPost;
+export default connect(({}) => ({}))(SearchArtistPost);
 
 const PostContainer = styled.div`
   color: white;

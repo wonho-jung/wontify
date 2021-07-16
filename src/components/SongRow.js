@@ -1,19 +1,9 @@
 import { Button } from "@material-ui/core";
 import React from "react";
 import styled from "styled-components";
-
-import { useDispatch, useSelector } from "react-redux";
-import {
-  selectAudioStatus,
-  selectPlaying,
-  set_footeraudioState,
-  set_list,
-  set_playing,
-  set_playinglist,
-  set_Recommended,
-} from "../features/userSlice";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
+import {connect} from "dva";
 
 function SongRow({
   url,
@@ -26,24 +16,24 @@ function SongRow({
   id,
   trackNumber,
   time,
-  timeRecommend,
   audiolist,
   track,
+  audioStatus,
+  playing,
+  dispatch
 }) {
-  const dispatch = useDispatch();
-  const audiostate = useSelector(selectAudioStatus);
-  const playing = useSelector(selectPlaying);
 
   const addList = () => {
     spotify
       .addTracksToPlaylist(id, [track.uri])
       .then(
         spotify.getPlaylist(id).then((res) => {
-          dispatch(
-            set_list({
-              res,
-            })
-          );
+          dispatch({
+            type: 'global/save',
+            payload: {
+              userplaylist: res
+            }
+          });
         })
       )
       .catch((err) => alert(err.message))
@@ -61,11 +51,12 @@ function SongRow({
         })
 
         .then((recommended) => {
-          dispatch(
-            set_Recommended({
-              recommended,
-            })
-          );
+          dispatch({
+            type: 'global/save',
+            payload: {
+              recommended
+            }
+          })
         })
         .catch((err) => {
           alert(err.message);
@@ -74,18 +65,11 @@ function SongRow({
   };
 
   const playSong = () => {
-    dispatch(
-      set_playing({
+    dispatch({
+      type: 'global/save',
+      payload: {
         playSong: true,
-      })
-    );
-    dispatch(
-      set_playinglist({
         playinglist: url,
-      })
-    );
-    dispatch(
-      set_footeraudioState({
         footeraudioState: {
           name,
           url,
@@ -94,21 +78,18 @@ function SongRow({
           albumName,
           audiolist,
         },
-      })
-    );
+      }
+    });
   };
 
   const stopsong = () => {
-    dispatch(
-      set_playing({
+    dispatch({
+      type: 'global/save',
+      payload: {
         playSong: false,
-      })
-    );
-    dispatch(
-      set_playinglist({
         playinglist: url,
-      })
-    );
+      }
+    })
   };
 
   const millisToMinutesAndSeconds = (millis) => {
@@ -119,15 +100,15 @@ function SongRow({
 
   return (
     <SongRowContainer>
-      {(time && url !== null && audiostate?.audioStatus === null) ||
-        (time && url !== null && audiostate?.audioStatus !== url && (
+      {(time && url !== null && audioStatus === null) ||
+        (time && url !== null && audioStatus !== url && (
           <PlayCircleOutlineIcon
             onClick={playSong}
             className="icon"
             fontSize="large"
           />
         ))}
-      {time && url !== null && audiostate?.audioStatus === url && playing && (
+      {time && url !== null && audioStatus === url && playing && (
         <PauseCircleOutlineIcon
           onClick={stopsong}
           className="icon"
@@ -152,7 +133,7 @@ function SongRow({
   );
 }
 
-export default SongRow;
+export default connect(({global}) => ({...global}))(SongRow);
 
 const SongRowContainer = styled.div`
   position: relative;

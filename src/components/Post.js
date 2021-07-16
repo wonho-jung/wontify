@@ -1,14 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
-import { useDispatch } from "react-redux";
-import {
-  set_DetailAlbum,
-  set_DetailAlbumTracks,
-  set_list,
-} from "../features/userSlice";
 import { Link } from "react-router-dom";
+import {connect} from "dva";
 
 function Post({
   image,
@@ -18,18 +12,19 @@ function Post({
   albumId,
   spotify,
   playlistId,
+  dispatch
 }) {
-  const dispatch = useDispatch();
 
   const sendAlbumDetail = () => {
     spotify
       .getAlbumTracks(albumId)
       .then((res) => {
-        dispatch(
-          set_DetailAlbumTracks({
-            detailAlbumTracks: res,
-          })
-        );
+          dispatch({
+              type: 'global/save',
+              payload: {
+                  detailAlbumTracks: res,
+              }
+          });
       })
       .catch((err) => {
         alert(err.message);
@@ -38,11 +33,12 @@ function Post({
     spotify
       .getAlbum(albumId)
       .then((res) => {
-        dispatch(
-          set_DetailAlbum({
-            detailAlbum: res,
-          })
-        );
+        dispatch({
+            type: 'global/save',
+            payload: {
+                detailAlbum: res,
+            }
+        });
       })
       .catch((err) => {
         alert(err.message);
@@ -52,11 +48,12 @@ function Post({
     spotify
       .getPlaylist(playlistId)
       .then((res) => {
-        dispatch(
-          set_list({
-            res,
-          })
-        );
+          dispatch({
+              type: 'global/save',
+              payload: {
+                  userplaylist: res,
+              }
+          });
       })
       .catch((err) => {
         alert(err.message);
@@ -85,7 +82,7 @@ function Post({
   );
 }
 
-export default Post;
+export default connect(({}) => ({}))(Post);
 const PostContainer = styled.div`
   max-width: 180px;
   background-color: #181818;

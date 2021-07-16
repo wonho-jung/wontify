@@ -1,30 +1,26 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import {
-  set_list,
-  set_playlistid,
-  set_Recommended,
-} from "../features/userSlice";
+import {connect} from "dva";
 
-function SidebarOption({ title, Icon, id, spotify }) {
-  const dispatch = useDispatch();
+function SidebarOption({ title, Icon, id, spotify, dispatch }) {
 
   const click = () => {
-    dispatch(
-      set_playlistid({
-        playlistid: id,
-      })
-    );
+    dispatch({
+        type: 'global/save',
+        payload: {
+            playlistid: id,
+        }
+    });
     spotify
       .getPlaylist(id)
       .then((res) => {
-        dispatch(
-          set_list({
-            res,
-          })
-        );
+        dispatch({
+            type: 'global/save',
+            payload: {
+                userplaylist: res
+            }
+        });
         spotify
           .getRecommendations({
             seed_artists: res.tracks.items[0].track.artists[0].id,
@@ -32,11 +28,12 @@ function SidebarOption({ title, Icon, id, spotify }) {
             limit: 10,
           })
           .then((recommended) => {
-            dispatch(
-              set_Recommended({
-                recommended,
-              })
-            );
+            dispatch({
+                type: 'global/save',
+                payload: {
+                    recommended
+                }
+            });
           });
       })
       .catch((err) => {
@@ -63,7 +60,7 @@ function SidebarOption({ title, Icon, id, spotify }) {
   );
 }
 
-export default SidebarOption;
+export default connect(({}) => ({}))(SidebarOption);
 
 const SidebarOptionContainer = styled.div`
   color: gray;

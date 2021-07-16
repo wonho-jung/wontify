@@ -4,11 +4,10 @@ import SidebarOption from "./SidebarOption";
 import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
 import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
-import { useSelector } from "react-redux";
-import { selectPlaylists } from "../features/userSlice";
 import { Link } from "react-router-dom";
-function Sidebar({ spotify }) {
-  const myList = useSelector(selectPlaylists);
+import {connect} from "dva";
+
+function Sidebar({ spotify, playlists }) {
   return (
     <SidebarContainer>
       <img
@@ -27,7 +26,7 @@ function Sidebar({ spotify }) {
       <br />
       <strong>PLAYLISTS</strong>
       <hr />
-      {myList?.playlists?.items?.map((playlist, idx) => (
+      {playlists?.items?.map((playlist, idx) => (
         <SidebarOption
           spotify={spotify}
           key={idx}
@@ -39,7 +38,7 @@ function Sidebar({ spotify }) {
   );
 }
 
-export default Sidebar;
+export default connect(({global}) => ({...global}))(Sidebar);
 
 const SidebarContainer = styled.div`
   overflow-y: overlay;

@@ -1,27 +1,24 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectSearchResult, set_artistDetail } from "../features/userSlice";
 import SearchHeader from "./SearchHeader";
 import SearchArtistPost from "./SearchArtistPost";
 import SongRow from "./SongRow";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import { Link } from "react-router-dom";
+import {connect} from "dva";
 
-function SearchDetail({ spotify }) {
-  const dispatch = useDispatch();
-  const searchResult = useSelector(selectSearchResult);
-  console.log(searchResult);
+function SearchDetail({ spotify, searchResult, dispatch }) {
   const sendArtist = () => {
     spotify
       .getArtistTopTracks(searchResult.searchResult.artists.items[0].id, "CA")
       .then((res) => {
-        dispatch(
-          set_artistDetail({
-            artistDetail: res,
-            artistInfo: searchResult.searchResult.artists.items[0],
-          })
-        );
+        dispatch({
+            type: 'global/save',
+            payload: {
+                artistDetail: res,
+                artistInfo: searchResult.searchResult.artists.items[0],
+            }
+        });
       });
   };
   return (
@@ -95,7 +92,7 @@ function SearchDetail({ spotify }) {
   );
 }
 
-export default SearchDetail;
+export default connect(({global}) => ({...global}))(SearchDetail);
 const SearchResultContainer = styled.div`
   padding: 30px;
   flex: 0.8;

@@ -1,11 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
-import {
-  selectList,
-  selectPlaylistid,
-  selectRecommended,
-} from "../features/userSlice";
 import Header from "./Header";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -15,19 +9,16 @@ import SongRow from "./SongRow";
 import Loading from "./Loading";
 import { useEffect } from "react";
 import { useState } from "react";
+import { connect } from "dva";
 
-function Body({ spotify }) {
-  const playlistid = useSelector(selectPlaylistid);
-  const { playlistid: id } = playlistid;
-  const userplaylist = useSelector(selectList);
-  const recommended = useSelector(selectRecommended);
+function Body({ spotify, playlistid:id, userplaylist, recommended }) {
 
   const [loading, setLoading] = useState("true");
 
   useEffect(() => {
     if (
       userplaylist &&
-      userplaylist.res.id === window.location.href.split("/")[3]
+      userplaylist.id === window.location.href.split("/")[3]
     ) {
       setLoading(false);
     }
@@ -72,7 +63,7 @@ function Body({ spotify }) {
             <Recommended>
               <h3>Recommended</h3>
               <p className="recommend_p">Based on what's in this playlist</p>
-              {recommended?.recommended.tracks.map((item) => (
+              {recommended?.tracks.map((item) => (
                 <SongRow
                   url={item.preview_url}
                   id={id}
@@ -94,7 +85,7 @@ function Body({ spotify }) {
   );
 }
 
-export default Body;
+export default connect(({global}) => ({...global}))(Body);
 
 const BodyContainer = styled.div`
   padding: 30px;
