@@ -40,7 +40,7 @@ function Body({ spotify }) {
         <>
           <Header />
           <BodyInfo>
-            <img src={userplaylist?.res.images[0].url} alt="" />
+            <img src={userplaylist?.res.images[0]?.url} alt="" />
             <BodyInfoText>
               <strong>PLAYLIST</strong>
               <h2>{userplaylist?.res.name}</h2>

@@ -1,5 +1,6 @@
 export const authEndpoint = "https://accounts.spotify.com/authorize";
-const redirectUri = "https://spotify-clone-c80b5.web.app/";
+// const redirectUrl = "https://spotify-clone-c80b5.web.app/";
+const redirectUrl = "http://localhost:3002/";
 const clientId = "0bddb0bd65e7460b8c9e2ece59e974e3";
 
 const scopes = [
@@ -25,6 +26,6 @@ export const getTokenFromResponse = () => {
       return initial;
     }, {});
 };
-export const accessUrl = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
+export const accessUrl = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUrl}&scope=${scopes.join(
   "%20"
 )}&response_type=token&show_dialog=true`;

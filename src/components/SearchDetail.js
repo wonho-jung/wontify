@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 function SearchDetail({ spotify }) {
   const dispatch = useDispatch();
   const searchResult = useSelector(selectSearchResult);
-  console.log(searchResult);
   const sendArtist = () => {
     spotify
       .getArtistTopTracks(searchResult.searchResult.artists.items[0].id, "CA")

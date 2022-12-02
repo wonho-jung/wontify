@@ -7,7 +7,6 @@ import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 
 function SearchArtistPost({ spotify, image, name, id, artistInfo }) {
   const dispatch = useDispatch();
-  console.log(artistInfo);
   const sendToArtis = () => {
     spotify.getArtistTopTracks(id, "CA").then((res) => {
       dispatch(

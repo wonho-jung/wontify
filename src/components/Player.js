@@ -27,7 +27,7 @@ function Player({ spotify }) {
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
   const playlisturl = useSelector(selectPlayingList);
-  console.log("first url value ", playlisturl, "first audio value", audio.src);
+  // console.log("first url value ", playlisturl, "first audio value", audio.src);
 
   const audioChecktime = () => {
     const timeOut = setTimeout(() => {
@@ -54,7 +54,7 @@ function Player({ spotify }) {
   useEffect(() => {
     if (playlisturl) {
       if (audio.src === "" && playing.playSong === true) {
-        console.log("audio is emtye start song");
+        // console.log("audio is emtye start song");
         audio.src = playlisturl.playinglist;
         audio.play();
 
@@ -66,9 +66,9 @@ function Player({ spotify }) {
         );
       } else if (playlisturl.playinglist === audio.src) {
         if (playing.playSong === true) {
-          console.log(
-            "playlist.url and aduio.src is same and you want start again"
-          );
+          // console.log(
+          //   "playlist.url and aduio.src is same and you want start again"
+          // );
           dispatch(
             set_audioStatus({
               audioStatus: playlisturl.playinglist,
@@ -78,9 +78,9 @@ function Player({ spotify }) {
 
           audioChecktime();
         } else if (playing.playSong === false) {
-          console.log(
-            "playlist.url and audio.src is same and you want stop tarck"
-          );
+          // console.log(
+          //   "playlist.url and audio.src is same and you want stop tarck"
+          // );
           audio.pause();
           audio.currentTime = 0;
           dispatch(
@@ -90,14 +90,14 @@ function Player({ spotify }) {
           );
         }
       } else if (playlisturl.playinglist !== audio.src) {
-        console.log("you play another track");
+        // console.log("you play another track");
 
         audio.pause();
         audio.currentTime = 0;
         if (playing.playSong === true) {
-          console.log(
-            "playlist.url and aduio.src is not same and you want play new song"
-          );
+          // console.log(
+          //   "playlist.url and aduio.src is not same and you want play new song"
+          // );
           dispatch(
             set_audioStatus({
               audioStatus: playlisturl.playinglist,

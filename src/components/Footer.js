@@ -22,7 +22,6 @@ function Footer({ audio, currentTime }) {
   const audiostate = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
-  console.log(currentTime);
   const volumeControl = (event) => {
     setVolume(event);
     audio.volume = volume / 100;
@@ -57,9 +56,9 @@ function Footer({ audio, currentTime }) {
     );
   };
   const getFilterList = () => {
-    if (footeraudioState.footeraudioState[0].track) {
+    if (!!footeraudioState.footeraudioState[0].track) {
       let filterUrl = footeraudioState.footeraudioState.audiolist.filter(
-        (item) => item.track?.preview_url !== null
+        (item) => item.track.preview_url !== null
       );
       return filterUrl;
     } else {
@@ -86,7 +85,6 @@ function Footer({ audio, currentTime }) {
         .filter((item) => {
           return item !== undefined;
         })[0];
-      console.log(currentIndex);
       return currentIndex;
     } else {
       let currentIndex = footeraudioState.footeraudioState.audiolist
@@ -101,7 +99,6 @@ function Footer({ audio, currentTime }) {
         .filter((item) => {
           return item !== undefined;
         })[0];
-      console.log(currentIndex);
       return currentIndex;
     }
   };
