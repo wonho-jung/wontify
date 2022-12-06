@@ -28,7 +28,6 @@ function App() {
     const hash = getTokenFromResponse();
     window.location.hash = "";
     let _token = hash.access_token;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     if (_token) {
       dispatch(
         set_token({

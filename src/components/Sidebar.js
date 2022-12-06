@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import SidebarOption from "./SidebarOption";
 import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
 import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
 import { useSelector } from "react-redux";
 import { selectPlaylists } from "../features/userSlice";
 import { Link } from "react-router-dom";
+import SidebarOption from "./SidebarOption";
 function Sidebar({ spotify }) {
   const myList = useSelector(selectPlaylists);
   return (
