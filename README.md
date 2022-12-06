@@ -18,21 +18,6 @@
 - Preview songs from recently played albums, new releases, top playlists, workout, mood, and other genres
 
 
-## Development
-
-_Easily set up a local development environment!_
-
-Build project and start storybook on [localhost](http://localhost:9009):
-
-- clone
-- `npm install`
-- `npm start`
-
-**Start coding!** 🎉
-
-
-
-
 ## API Verbs
 getUserPlaylists -[v] getMyRecentlyPlayedTracks -[v]  getNewReleases-[v]  getCategoryPlaylists -[v]  getCategories -[v] addTracksToPlaylist -[v]  getPlaylist -[v] getRecommendations -[v] getAlbumTracks -[v]  getAlbum -[v] search -[v]  getCategoryPlaylists -[v] 
 
