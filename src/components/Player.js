@@ -110,6 +110,7 @@ function Player({ spotify }) {
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playlisturl]);
 
   return (
