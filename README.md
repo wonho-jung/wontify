@@ -2,7 +2,7 @@
 
 
 
-## [See the Wonify💥](https://subtle-jalebi-49df22.netlify.app/)
+## [Demo💥](https://subtle-jalebi-49df22.netlify.app/)
 
 ## Preview
 <img src="https://user-images.githubusercontent.com/62073233/113490736-18fc6280-949a-11eb-8e08-a2220442dc36.PNG"/>
