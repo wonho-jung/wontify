@@ -8,6 +8,7 @@
 <img src="https://user-images.githubusercontent.com/62073233/113490736-18fc6280-949a-11eb-8e08-a2220442dc36.PNG"/>
 <img src="https://user-images.githubusercontent.com/62073233/113491063-f3705880-949b-11eb-807c-26beb47e26b5.PNG"/>
 <img width="100%" src="https://user-images.githubusercontent.com/62073233/113491761-0e919700-94a1-11eb-8ad5-bf2752040ac3.gif"/>
+<img width="100%" src="https://user-images.githubusercontent.com/62073233/206039196-26160688-af31-47a3-92e7-d9485ade301d.gif"/>
 
 ## Features
 
@@ -27,3 +28,4 @@ getUserPlaylists -[v] getMyRecentlyPlayedTracks -[v]  getNewReleases-[v]  getCat
 
  
  
+
