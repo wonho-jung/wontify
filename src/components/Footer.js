@@ -56,7 +56,7 @@ function Footer({ audio, currentTime }) {
     );
   };
   const getFilterList = () => {
-    if (!!footeraudioState.footeraudioState[0].track) {
+    if (!!footeraudioState.footeraudioState.audiolist[0].track) {
       let filterUrl = footeraudioState.footeraudioState.audiolist.filter(
         (item) => item.track.preview_url !== null
       );
@@ -323,11 +323,11 @@ function Footer({ audio, currentTime }) {
       ) : (
         <FooterLeft>
           <img
-            src="https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=3578146698962030&height=300&width=300&ext=1618755507&hash=AeTR_TP5fNgF16LMd_Y"
+            src="https://avatars.githubusercontent.com/u/62073233?s=400&u=3de8c98fc486dcaa0469a9d1be5f37133bf92aa1&v=4"
             alt=""
           />
           <FooterSongInfo>
-            <p>By won.9 devoloper</p>
+            <p>By Sam dev</p>
           </FooterSongInfo>
         </FooterLeft>
       )}

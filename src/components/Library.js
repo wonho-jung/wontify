@@ -15,7 +15,7 @@ function Library({ spotify }) {
         <PostsContainer>
           {myList?.playlists?.items?.map((playlist, idx) => (
             <LibraryPost
-              image={playlist.images[0].url}
+              image={playlist?.images[0]?.url}
               spotify={spotify}
               key={idx}
               id={playlist.id}

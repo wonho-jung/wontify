@@ -29,7 +29,7 @@ function LibraryPost({ image, name, description, id, spotify }) {
       );
       spotify
         .getRecommendations({
-          seed_artists: res.tracks.items[0].track.artists[0].id,
+          seed_artists: res?.tracks?.items[0]?.track.artists[0].id,
           seed_tracks: id,
         })
         .then((recommended) => {
