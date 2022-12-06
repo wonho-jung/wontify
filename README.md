@@ -28,18 +28,18 @@
 
 
 ## API Verbs
-getUserPlaylists          -[v] <br/>
-getMyRecentlyPlayedTracks -[v] <br/>
-getNewReleases            -[v] <br/> 
-getCategoryPlaylists      -[v] <br/>
-getCategories             -[v] <br/>
-addTracksToPlaylist       -[v] <br/> 
-getPlaylist               -[v] <br/>
-getRecommendations        -[v] <br/>
-getAlbumTracks            -[v] <br/>
-getAlbum                  -[v] <br/>
-search                    -[v] <br/>
-getCategoryPlaylists      -[v] <br/>
+- getUserPlaylists          -[v] 
+- getMyRecentlyPlayedTracks -[v] 
+- getNewReleases            -[v]  
+- getCategoryPlaylists      -[v] 
+- getCategories             -[v] 
+- addTracksToPlaylist       -[v]  
+- getPlaylist               -[v] 
+- getRecommendations        -[v] 
+- getAlbumTracks            -[v] 
+- getAlbum                  -[v] 
+- search                    -[v] 
+- getCategoryPlaylists      -[v]
 
 
 
