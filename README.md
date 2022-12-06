@@ -17,6 +17,15 @@
 - Select tracks to add to your existing Spotify playlist
 - Preview songs from recently played albums, new releases, top playlists, workout, mood, and other genres
 
+## Pages
+
+- Login
+- Home
+- Search
+- Searh detail
+- Your Library
+- Playlits
+
 
 ## API Verbs
 getUserPlaylists          -[v] <br/>
