@@ -8,7 +8,7 @@ import {
   set_Recommended,
 } from "../features/userSlice";
 
-function SidebarOption({ title, Icon, id, spotify }) {
+function SidebarOptions({ title, Icon, id, spotify }) {
   const dispatch = useDispatch();
 
   const click = () => {
@@ -63,7 +63,7 @@ function SidebarOption({ title, Icon, id, spotify }) {
   );
 }
 
-export default SidebarOption;
+export default SidebarOptions;
 
 const SidebarOptionContainer = styled.div`
   color: gray;
