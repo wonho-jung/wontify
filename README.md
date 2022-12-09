@@ -67,7 +67,8 @@ npm start
 yarn start
 ```
 
-Chnage clientId and redirectUrl in the spotify.js
+## Chnage clientId and redirectUrl in the spotify.js
+
  ```bash
 const redirectUrl = "Your URL";
 const clientId = "Your ID";
