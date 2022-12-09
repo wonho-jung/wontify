@@ -44,7 +44,33 @@
 
 
 
+## Installation
 
- 
+```bash
+git clone https://github.com/wonho-jung/wontify.git
+```
+
+Go to the project directory
+
+```bash
+npm install
+# or
+yarn install
+```
+
+
+## Getting Started
+
+```bash
+npm start 
+# or
+yarn start
+```
+
+Chnage clientId and redirectUrl in the spotify.js
+ ```bash
+const redirectUrl = "Your URL";
+const clientId = "Your ID";
+```
  
 
