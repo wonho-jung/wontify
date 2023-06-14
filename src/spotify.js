@@ -1,5 +1,5 @@
 export const authEndpoint = "https://accounts.spotify.com/authorize";
-const redirectUrl = "http://localhost:3000";
+const redirectUrl = "https://master--glistening-froyo-372771.netlify.app";
 const clientId = "6fe9d104a0a44968a3ff7b3b842ed9f9";
 
 const scopes = [
