@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import {
@@ -13,8 +13,6 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "./SongRow";
 
 import Loading from "./Loading";
-import { useEffect } from "react";
-import { useState } from "react";
 
 function Body({ spotify }) {
   const playlistid = useSelector(selectPlaylistid);

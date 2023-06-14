@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import Header from "./Header";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
@@ -9,8 +9,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { selectList } from "../features/userSlice";
 import Loading from "./Loading";
-import { useState } from "react";
-import { useEffect } from "react";
+
 function DetailPlaylist() {
   const userplaylist = useSelector(selectList);
   const [loading, setLoading] = useState("true");

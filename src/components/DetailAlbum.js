@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -11,7 +11,6 @@ import {
   selectDetailAlbumTracks,
 } from "../features/userSlice";
 import Loading from "./Loading";
-import { useEffect } from "react";
 
 function DetailAlbum() {
   const [loading, setLoading] = useState("true");
