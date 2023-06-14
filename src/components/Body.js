@@ -72,8 +72,9 @@ function Body({ spotify }) {
             <Recommended>
               <h3>Recommended</h3>
               <p className="recommend_p">Based on what's in this playlist</p>
-              {recommended?.recommended.tracks.map((item) => (
+              {recommended?.recommended.tracks.map((item, idx) => (
                 <SongRow
+                  key={idx}
                   url={item.preview_url}
                   id={id}
                   track={item}
