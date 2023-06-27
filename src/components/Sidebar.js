@@ -43,11 +43,10 @@ export default Sidebar;
 
 const SidebarContainer = styled.div`
   overflow-y: overlay;
-
+  min-height: 100vh;
   flex: 0.2;
   background-color: #040404;
   color: white;
-  height: 100vh;
   min-width: 230px;
   padding-left: 10px;
   padding-right: 10px;

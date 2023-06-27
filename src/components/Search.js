@@ -38,7 +38,7 @@ const SearchContainer = styled.div`
   flex: 0.8;
   height: 100vh;
   color: white;
-
+  margin-bottom: 75px;
   overflow: auto;
   background-color: #121212;
   ::-webkit-scrollbar {

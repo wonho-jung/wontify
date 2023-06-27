@@ -394,9 +394,8 @@ export default Footer;
 const FooterContainer = styled.div`
   position: fixed;
   display: flex;
-
   justify-content: space-around;
-  bottom: 0;
+  bottom: 0px;
   height: 65px;
   width: 100%;
   background-color: #282828;
