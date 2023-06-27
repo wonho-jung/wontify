@@ -73,7 +73,7 @@ const clientId = process.env.REACT_APP_CLIENT_ID;
 const clientSecret = process.env.REACT_APP_CLIENT_SECRET_KEY;
 ```
 
-## Update / News
+## Update / News (26/06/2023)
 You can't let the user sign in/up to get a token to call API anymore in the Development mode.
 Spotify Dashboard role is changed. The user needs to be added to the Spotify dashboard user setting to get the right token to call API. Such as getPlaylist(), getMyRecentlyPlayedTracks()..
  
