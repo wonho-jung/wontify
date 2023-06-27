@@ -97,6 +97,7 @@ function Player({ spotify }) {
         }
       }
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playlisturl]);
 
@@ -129,7 +130,7 @@ function Player({ spotify }) {
             <Route path="/library">
               <Library spotify={spotify} />
             </Route>
-            <Route path="/:id">
+            <Route path="/playlist">
               <Body spotify={spotify} />
             </Route>
             <Route path="/" exact>

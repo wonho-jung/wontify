@@ -5,13 +5,13 @@ import {
   selectMood,
   selectNewReleases,
   selectParty,
-  selectRecentlyPlayed,
+  // selectRecentlyPlayed,
   selectTopList,
   selectWorkout,
 } from "../features/userSlice";
 import { useSelector } from "react-redux";
 function Home({ spotify }) {
-  const recentlyPlayed = useSelector(selectRecentlyPlayed);
+  // const recentlyPlayed = useSelector(selectRecentlyPlayed);
   const newReleases = useSelector(selectNewReleases);
   const topList = useSelector(selectTopList);
   const workout = useSelector(selectWorkout);
@@ -20,7 +20,7 @@ function Home({ spotify }) {
 
   return (
     <HomeContainer>
-      <HomeContentContainer>
+      {/* <HomeContentContainer>
         <h1>Recently played Albums</h1>
         <PostsContainer>
           {recentlyPlayed?.recentlyPlayed?.map((track, inx) => (
@@ -35,7 +35,7 @@ function Home({ spotify }) {
             />
           ))}
         </PostsContainer>
-      </HomeContentContainer>
+      </HomeContentContainer> */}
 
       <HomeContentContainer>
         <h1>New Releases</h1>

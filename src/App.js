@@ -1,16 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import "./App.css";
-import Login from "./components/Login";
 import Player from "./components/Player";
-import { getTokenFromResponse } from "./spotify";
+import { _getToken } from "./spotify";
 import SpotifyWebApi from "spotify-web-api-js";
 import { useDispatch } from "react-redux";
 import {
-  set_user,
-  set_token,
-  set_playlists,
-  set_recentlyPlayed,
   set_newReleases,
   set_topList,
   set_workout,
@@ -22,46 +17,47 @@ import {
 function App() {
   const spotify = new SpotifyWebApi();
   const dispatch = useDispatch();
-  const [token, setToken] = useState(null);
-
   useEffect(() => {
-    const hash = getTokenFromResponse();
-    window.location.hash = "";
-    let _token = hash.access_token;
-    if (_token) {
-      dispatch(
-        set_token({
-          _token,
-        })
-      );
-      setToken(_token);
+    _getToken().then((res) => {
+      spotify.setAccessToken(res);
+      // spotify
+      //   .getMe()
+      //   .then((user) => {
+      //     dispatch(
+      //       set_user({
+      //         user,
+      //       })
+      //     );
+      //   })
+      //   .catch((err) => {
+      //     console.log("getMe", err);
+      //   });
+      // spotify
+      //   .getUserPlaylists()
+      //   .then((playlists) => {
+      //     dispatch(
+      //       set_playlists({
+      //         playlists,
+      //       })
+      //     );
+      //   })
+      //   .catch((err) => {
+      //     console.log("getUserPlaylists", err);
+      //   });
 
-      spotify.setAccessToken(_token);
-      spotify.getMe().then((user) => {
-        dispatch(
-          set_user({
-            user,
-          })
-        );
-      });
-      spotify.getUserPlaylists().then((playlists) => {
-        dispatch(
-          set_playlists({
-            playlists,
-          })
-        );
-      });
-
-      spotify
-        .getMyRecentlyPlayedTracks({ limit: 16 })
-        .then((recentlyPlayed) => {
-          dispatch(
-            set_recentlyPlayed({
-              recentlyPlayed: recentlyPlayed.items,
-            })
-          );
-        });
-      spotify.getNewReleases({ limit: 16 }).then((newReleases) => {
+      // spotify
+      //   .getMyRecentlyPlayedTracks({ limit: 16 })
+      //   .then((recentlyPlayed) => {
+      //     dispatch(
+      //       set_recentlyPlayed({
+      //         recentlyPlayed: recentlyPlayed.items,
+      //       })
+      //     );
+      //   })
+      //   .catch((err) => {
+      //     console.log("getUserPlaylists", err);
+      //   });
+      spotify.getNewReleases({ limit: 10 }).then((newReleases) => {
         dispatch(
           set_newReleases({
             newReleases: newReleases.albums.items,
@@ -70,7 +66,7 @@ function App() {
       });
 
       spotify
-        .getCategoryPlaylists("toplists", { limit: 16 })
+        .getCategoryPlaylists("toplists", { limit: 10 })
         .then((topList) => {
           dispatch(
             set_topList({
@@ -78,21 +74,21 @@ function App() {
             })
           );
         });
-      spotify.getCategoryPlaylists("workout", { limit: 16 }).then((workout) => {
+      spotify.getCategoryPlaylists("workout", { limit: 10 }).then((workout) => {
         dispatch(
           set_workout({
             workout: workout.playlists.items,
           })
         );
       });
-      spotify.getCategoryPlaylists("mood", { limit: 16 }).then((mood) => {
+      spotify.getCategoryPlaylists("mood", { limit: 10 }).then((mood) => {
         dispatch(
           set_mood({
             mood: mood.playlists.items,
           })
         );
       });
-      spotify.getCategoryPlaylists("party", { limit: 16 }).then((party) => {
+      spotify.getCategoryPlaylists("party", { limit: 10 }).then((party) => {
         dispatch(
           set_party({
             party: party.playlists.items,
@@ -107,13 +103,13 @@ function App() {
           })
         );
       });
-    }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div className="app">
-      {token ? <Player spotify={spotify} /> : <Login />}
+      <Player spotify={spotify} />
     </div>
   );
 }

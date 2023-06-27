@@ -10,7 +10,6 @@ import {
 
 function SidebarOptions({ title, Icon, id, spotify }) {
   const dispatch = useDispatch();
-
   const click = () => {
     dispatch(
       set_playlistid({
@@ -47,7 +46,11 @@ function SidebarOptions({ title, Icon, id, spotify }) {
   return (
     <>
       {id ? (
-        <Link to={`/${id}`} onClick={click} style={{ textDecoration: "none" }}>
+        <Link
+          to={`/playlist`}
+          onClick={click}
+          style={{ textDecoration: "none" }}
+        >
           <SidebarOptionContainer>
             {Icon && <Icon />}
             {Icon ? <h4>{title}</h4> : <p>{title}</p>}

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import SearchIcon from "@material-ui/icons/Search";
-import { Avatar } from "@material-ui/core";
-import { selectUser, set_searchResult } from "../features/userSlice";
-import { useDispatch, useSelector } from "react-redux";
+// import { Avatar } from "@material-ui/core";
+import { set_searchResult } from "../features/userSlice";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 function SearchHeader({ spotify }) {
-  const user = useSelector(selectUser);
+  // const user = useSelector(selectUser);
   const [input, setInput] = useState("");
   const dispatch = useDispatch();
   const history = useHistory();
@@ -46,11 +46,11 @@ function SearchHeader({ spotify }) {
           />
         </form>
       </SearchHeaderLeft>
-      <SearchHeaderRight>
+      {/* <SearchHeaderRight>
         <Avatar src={user?.user.images[0]?.url} alt="user" />
         <h4>{user?.user.display_name}</h4>
         <hr />
-      </SearchHeaderRight>
+      </SearchHeaderRight> */}
     </SearchHeaderContainer>
   );
 }
@@ -78,10 +78,10 @@ const SearchHeaderLeft = styled.div`
     outline-style: none;
   }
 `;
-const SearchHeaderRight = styled.div`
-  display: flex;
-  align-items: center;
-  > h4 {
-    margin-left: 10px;
-  }
-`;
+// const SearchHeaderRight = styled.div`
+//   display: flex;
+//   align-items: center;
+//   > h4 {
+//     margin-left: 10px;
+//   }
+// `;

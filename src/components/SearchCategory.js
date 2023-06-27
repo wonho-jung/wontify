@@ -9,13 +9,10 @@ import Post from "./Post";
 
 function SearchCategory({ spotify }) {
   const categoryDetail = useSelector(selectCategoriesDetail);
-  const [loading, setLoading] = useState("true");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (
-      categoryDetail &&
-      categoryDetail?.id === window.location.href.split("/")[4]
-    ) {
+    if (categoryDetail) {
       setLoading(false);
     }
   }, [categoryDetail]);
@@ -26,20 +23,18 @@ function SearchCategory({ spotify }) {
       ) : (
         <>
           <HomeContentContainer>
-            <h1>{categoryDetail?.id}</h1>
+            <h1>{categoryDetail?.name}</h1>
             <PostsContainer>
-              {categoryDetail?.categoriesDetail.playlists.items.map(
-                (track, inx) => (
-                  <Post
-                    spotify={spotify}
-                    playlistId={track.id}
-                    key={inx}
-                    image={track.images[0].url}
-                    artistsName={track.name}
-                    description={track.description}
-                  />
-                )
-              )}
+              {categoryDetail?.playListItem.map((track, inx) => (
+                <Post
+                  spotify={spotify}
+                  playlistId={track.id}
+                  key={inx}
+                  image={track.images[0].url}
+                  artistsName={track.name}
+                  description={track.description}
+                />
+              ))}
             </PostsContainer>
           </HomeContentContainer>
         </>

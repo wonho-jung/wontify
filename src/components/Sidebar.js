@@ -2,13 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
-import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
-import { useSelector } from "react-redux";
-import { selectPlaylists } from "../features/userSlice";
+// import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
+// import { useSelector } from "react-redux";
+// import { selectPlaylists } from "../features/userSlice";
 import { Link } from "react-router-dom";
 import SidebarOptions from "./SidebarOptions";
 function Sidebar({ spotify }) {
-  const myList = useSelector(selectPlaylists);
+  // const myList = useSelector(selectPlaylists);
   return (
     <SidebarContainer>
       <img
@@ -21,10 +21,10 @@ function Sidebar({ spotify }) {
       <Link to="/search" style={{ textDecoration: "none" }}>
         <SidebarOptions title="Search" Icon={SearchIcon} />
       </Link>
-      <Link to="/library" style={{ textDecoration: "none" }}>
+      {/* <Link to="/library" style={{ textDecoration: "none" }}>
         <SidebarOptions title="Your Library" Icon={LibraryMusicIcon} />
-      </Link>
-      <br />
+      </Link> */}
+      {/* <br />
       <strong>PLAYLISTS</strong>
       <hr />
       {myList?.playlists?.items?.map((playlist, idx) => (
@@ -34,7 +34,7 @@ function Sidebar({ spotify }) {
           id={playlist.id}
           title={playlist.name}
         />
-      ))}
+      ))} */}
     </SidebarContainer>
   );
 }

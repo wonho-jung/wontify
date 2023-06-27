@@ -20,13 +20,10 @@ function Body({ spotify }) {
   const userplaylist = useSelector(selectList);
   const recommended = useSelector(selectRecommended);
 
-  const [loading, setLoading] = useState("true");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (
-      userplaylist &&
-      userplaylist.res.id === window.location.href.split("/")[3]
-    ) {
+    if (userplaylist) {
       setLoading(false);
     }
   }, [userplaylist, recommended]);

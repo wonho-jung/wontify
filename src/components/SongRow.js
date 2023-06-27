@@ -46,12 +46,7 @@ function SongRow({
           );
         })
       )
-      .catch((err) => alert(err.message))
-      .finally(
-        alert(
-          "it's added on your real spotify. Click your playlist again then you will see what you added"
-        )
-      );
+      .catch((err) => alert(err.message));
 
     spotify.getPlaylist(id).then((res) => {
       spotify

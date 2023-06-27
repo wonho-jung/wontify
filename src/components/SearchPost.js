@@ -8,16 +8,22 @@ function SearchPost({ spotify, image, name, id }) {
   const dispatch = useDispatch();
   const sendSearchDetail = () => {
     spotify.getCategoryPlaylists(id, { limit: 10 }).then((res) => {
+      //SpotifyWebApi sent null value in array need to filter.
+      const playListItem = res.playlists.items.filter((item) => {
+        return item !== null;
+      });
+
       dispatch(
         set_categoriesDetail({
-          categoriesDetail: res,
+          playListItem,
           id: id,
+          name: name,
         })
       );
     });
   };
   return (
-    <Link to={`/search/${id}`} style={{ textDecoration: "none" }}>
+    <Link to={`/search/${name}`} style={{ textDecoration: "none" }}>
       <SearchPostContainer onClick={sendSearchDetail}>
         <SearchPostContent>
           <img src={image} alt="" />

@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { accessUrl } from "../spotify";
 
 function Login() {
   return (
@@ -9,8 +8,6 @@ function Login() {
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Spotify_logo_with_text.svg/1200px-Spotify_logo_with_text.svg.png"
         alt=""
       />
-
-      <a href={accessUrl}>LOGIN WITH SPOTIFY</a>
     </LoginContainer>
   );
 }
