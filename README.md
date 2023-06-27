@@ -22,9 +22,8 @@
 - Login
 - Home
 - Search
-- Searh detail
-- Your Library
-- Playlits
+- Search detail
+- Playlists
 
 
 ## API Verbs
@@ -50,7 +49,7 @@
 git clone https://github.com/wonho-jung/wontify.git
 ```
 
-Go to the project directory
+Go to the project directory.
 
 ```bash
 npm install
@@ -67,11 +66,15 @@ npm start
 yarn start
 ```
 
-## Chnage client ID and redirect URL in the spotify.js
+## Make a .env file to get your clientId and clientSecret
 
  ```bash
-const redirectUrl = "Your URL";
-const clientId = "Your ID";
+const clientId = process.env.REACT_APP_CLIENT_ID;
+const clientSecret = process.env.REACT_APP_CLIENT_SECRET_KEY;
 ```
+
+## Update / News
+You can't let the user sign in/up to get a token to call API anymore in the Development mode.
+Spotify Dashboard role is changed. The user needs to be added to the Spotify dashboard user setting to get the right token to call API. Such as getPlaylist(), getMyRecentlyPlayedTracks()..
  
 
