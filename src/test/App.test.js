@@ -4,33 +4,33 @@ import "jsdom-global/register";
 
 const spotify = new SpotifyWebApi();
 
-const testGetCategoryPlaylists = (category) => {
-  it(`should get a ${category} playlists`, () => {
-    return _getToken().then((res) => {
-      spotify.setAccessToken(res);
-      return spotify
-        .getCategoryPlaylists(category, { limit: 10 })
-        .then((res) => {
-          expect(res).not.toBeUndefined();
-        });
-    });
-  });
-};
+describe("Spotify API Unit Tests", () => {
+  let accessToken;
 
-const testGetCategoriesPlaylists = () => {
-  it("should get Categories playlists", () => {
-    return _getToken().then((res) => {
-      spotify.setAccessToken(res);
-      return spotify.getCategories().then((res) => {
-        expect(res).not.toBeUndefined();
+  beforeAll(async () => {
+    accessToken = await _getToken();
+    spotify.setAccessToken(accessToken);
+  });
+
+  describe("Get Category Playlists", () => {
+    const categories = ["toplists", "workout", "party", "mood"];
+
+    categories.forEach((category) => {
+      it(`should get ${category} playlists`, async () => {
+        const playlists = await spotify.getCategoryPlaylists(category, {
+          limit: 10,
+        });
+        expect(playlists).toBeDefined();
+        // Additional assertions can be added to validate the received data
       });
     });
   });
-};
 
-testGetCategoryPlaylists("toplists");
-testGetCategoryPlaylists("workout");
-testGetCategoryPlaylists("party");
-testGetCategoryPlaylists("mood");
-
-testGetCategoriesPlaylists();
+  describe("Get Categories Playlists", () => {
+    it("should get Categories playlists", async () => {
+      const categories = await spotify.getCategories();
+      expect(categories).toBeDefined();
+      // Additional assertions can be added to validate the received data
+    });
+  });
+});
