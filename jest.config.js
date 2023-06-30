@@ -6,4 +6,5 @@ module.exports = {
     "\\.(css|less|scss|sass)$": "identity-obj-proxy",
   },
   setupFiles: ["dotenv/config"],
+  // testEnvironment: "jest-environment-jsdom",
 };

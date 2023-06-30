@@ -1,15 +1,36 @@
 import { _getToken } from "../spotify";
-import SpotifyWebApi from "spotify-web-api-node";
+import SpotifyWebApi from "spotify-web-api-js";
+import "jsdom-global/register";
 
-it("should get playlists for a category", async () => {
-  const spotify = new SpotifyWebApi();
+const spotify = new SpotifyWebApi();
 
-  const token = await _getToken();
-  spotify.setAccessToken(token);
-
-  const playlists = await spotify.getPlaylistsForCategory("party", {
-    limit: 10,
+const testGetCategoryPlaylists = (category) => {
+  it(`should get a ${category} playlists`, () => {
+    return _getToken().then((res) => {
+      spotify.setAccessToken(res);
+      return spotify
+        .getCategoryPlaylists(category, { limit: 10 })
+        .then((res) => {
+          expect(res).not.toBeUndefined();
+        });
+    });
   });
+};
 
-  expect(playlists.body).toBeDefined();
-});
+const testGetCategoriesPlaylists = () => {
+  it("should get Categories playlists", () => {
+    return _getToken().then((res) => {
+      spotify.setAccessToken(res);
+      return spotify.getCategories().then((res) => {
+        expect(res).not.toBeUndefined();
+      });
+    });
+  });
+};
+
+testGetCategoryPlaylists("toplists");
+testGetCategoryPlaylists("workout");
+testGetCategoryPlaylists("party");
+testGetCategoryPlaylists("mood");
+
+testGetCategoriesPlaylists();
