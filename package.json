@@ -9,6 +9,8 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "dotenv": "^16.3.1",
+    "dotenv-expand": "^10.0.0",
     "firebase-tools": "^11.17.0",
     "moment": "^2.29.1",
     "react": "^17.0.1",
@@ -20,12 +22,13 @@
     "react-spinkit": "^3.0.0",
     "react-useinterval": "^1.0.2",
     "spotify-web-api-js": "^1.5.1",
+    "spotify-web-api-node": "^5.0.2",
     "styled-components": "^5.2.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest --coverage",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -45,5 +48,16 @@
   },
   "resolutions": {
     "styled-components": "^5"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.22.5",
+    "@babel/preset-react": "^7.22.5",
+    "babel-jest": "^29.5.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "jsdom": "^22.1.0",
+    "jsdom-global": "^3.0.2",
+    "react-test-renderer": "^18.2.0"
   }
 }

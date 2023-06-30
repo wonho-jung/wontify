@@ -1,7 +1,6 @@
 // export const authEndpoint = "https://accounts.spotify.com/authorize";
 // const redirectUrl = process.env.REACT_APP_REDIRECT_URL;
-const clientId = process.env.REACT_APP_CLIENT_ID;
-const clientSecret = process.env.REACT_APP_CLIENT_SECRET_KEY;
+
 // const scopes = [
 //   "playlist-read-private",
 //   "user-read-currently-playing",
@@ -14,18 +13,6 @@ const clientSecret = process.env.REACT_APP_CLIENT_SECRET_KEY;
 //   "playlist-modify-public",
 //   "playlist-modify-private",
 // ];
-export const _getToken = async () => {
-  const response = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: "Basic " + btoa(clientId + ":" + clientSecret),
-    },
-    body: "grant_type=client_credentials",
-  });
-  const data = await response.json();
-  return data.access_token;
-};
 
 // export const getTokenFromResponse = () => {
 //   return window.location.hash
@@ -42,3 +29,19 @@ export const _getToken = async () => {
 // export const accessUrl = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUrl}&scope=${scopes.join(
 //   "%20"
 // )}&response_type=token&show_dialog=true`;
+
+export const _getToken = async () => {
+  const clientId = process.env.REACT_APP_CLIENT_ID;
+  const clientSecret = process.env.REACT_APP_CLIENT_SECRET_KEY;
+
+  const response = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: "Basic " + btoa(clientId + ":" + clientSecret),
+    },
+    body: "grant_type=client_credentials",
+  });
+  const data = await response.json();
+  return data.access_token;
+};

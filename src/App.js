@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-
-import "./App.css";
 import Player from "./components/Player";
 import { _getToken } from "./spotify";
 import SpotifyWebApi from "spotify-web-api-js";
@@ -13,50 +11,15 @@ import {
   set_mood,
   set_categories,
 } from "./features/userSlice";
+import "./App.css";
 
 function App() {
   const spotify = new SpotifyWebApi();
   const dispatch = useDispatch();
+
   useEffect(() => {
     _getToken().then((res) => {
       spotify.setAccessToken(res);
-      // spotify
-      //   .getMe()
-      //   .then((user) => {
-      //     dispatch(
-      //       set_user({
-      //         user,
-      //       })
-      //     );
-      //   })
-      //   .catch((err) => {
-      //     console.log("getMe", err);
-      //   });
-      // spotify
-      //   .getUserPlaylists()
-      //   .then((playlists) => {
-      //     dispatch(
-      //       set_playlists({
-      //         playlists,
-      //       })
-      //     );
-      //   })
-      //   .catch((err) => {
-      //     console.log("getUserPlaylists", err);
-      //   });
-
-      // spotify
-      //   .getMyRecentlyPlayedTracks({ limit: 16 })
-      //   .then((recentlyPlayed) => {
-      //     dispatch(
-      //       set_recentlyPlayed({
-      //         recentlyPlayed: recentlyPlayed.items,
-      //       })
-      //     );
-      //   })
-      //   .catch((err) => {
-      //     console.log("getUserPlaylists", err);
-      //   });
       spotify.getNewReleases({ limit: 10 }).then((newReleases) => {
         dispatch(
           set_newReleases({
