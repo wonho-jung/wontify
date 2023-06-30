@@ -12,12 +12,21 @@ import {
   set_categories,
 } from "./features/userSlice";
 import "./App.css";
+import { testAPI, getCampaigns } from "./backend/test";
 
 function App() {
   const spotify = new SpotifyWebApi();
   const dispatch = useDispatch();
 
   useEffect(() => {
+    getCampaigns()
+      .then((data) => {
+        console.log(data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     _getToken().then((res) => {
       spotify.setAccessToken(res);
       spotify.getNewReleases({ limit: 10 }).then((newReleases) => {
