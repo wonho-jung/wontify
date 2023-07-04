@@ -57,7 +57,6 @@ function Footer({ audio, currentTime }) {
   };
   const getFilterList = () => {
     const audiolist = footeraudioState.footeraudioState.audiolist;
-    console.log("audiolist", audiolist);
     const filterUrl = audiolist.filter((item) =>
       item.track ? item.track.preview_url !== null : item.preview_url !== null
     );
@@ -84,7 +83,6 @@ function Footer({ audio, currentTime }) {
   };
 
   const updateAudioState = (currentIndex, filterList) => {
-    console.log("filterList", filterList);
     const isTrack = !!filterList[currentIndex]?.track;
 
     const updateState = {

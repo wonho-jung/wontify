@@ -23,16 +23,16 @@ export function getplaylistDetails(id) {
   return apiServer.get(`/playlist/${id}`);
 }
 
-wsServer.onopen = () => {
-  console.log("WebSocket connection established");
+// wsServer.onopen = () => {
+//   console.log("WebSocket connection established");
 
-  // Example: Sending a WebSocket message
-  wsServer.send("Hello WebSocket server!");
-};
+//   // Example: Sending a WebSocket message
+//   wsServer.send("Hello WebSocket server!");
+// };
 
-wsServer.onmessage = (event) => {
-  console.log("Received WebSocket message:", event.data);
+// wsServer.onmessage = (event) => {
+//   console.log("Received WebSocket message:", event.data);
 
-  const message = event.data;
-  console.log("Received a message:", message);
-};
+//   const message = event.data;
+//   console.log("Received a message:", message);
+// };

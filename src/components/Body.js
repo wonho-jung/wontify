@@ -28,8 +28,10 @@ function Body({ spotify }) {
   useEffect(() => {
     getplaylistDetails(lastPathSegment)
       .then((res) => {
-        console.log(res.data);
-        const songUrlArray = res.data.songs.map((item, index) => {
+        if (!res.data.songs) {
+          return;
+        }
+        const songUrlArray = res.data?.songs.map((item, index) => {
           return {
             preview_url: item.url,
             name: item.name,

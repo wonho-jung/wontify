@@ -10,10 +10,11 @@ import {
   set_footeraudioState,
   set_playing,
   set_playinglist,
+  set_playlists,
 } from "../features/userSlice";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
-import { addSongToPlaylist } from "../backend";
+import { addSongToPlaylist, getPlaylists } from "../backend";
 import FormDialog from "./designSystem";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
@@ -36,7 +37,6 @@ function SongRow({
   const audiostate = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
   const { playlists } = useSelector(selectPlaylists);
-  console.log("playlists", playlists);
   const [addSongDialogOpen, setaddSongDialogOpen] = useState(false);
   const [userPlaylistId, setUserPlaylistId] = useState("");
 
@@ -44,6 +44,7 @@ function SongRow({
     setaddSongDialogOpen(true);
   };
   const dialogCloseHandler = () => {
+    setUserPlaylistId("");
     setaddSongDialogOpen(false);
   };
 
@@ -61,10 +62,20 @@ function SongRow({
       id: userPlaylistId,
     })
       .then((res) => {
-        console.log(res);
+        getPlaylists()
+          .then((res) => {
+            dispatch(
+              set_playlists({
+                playlists: res.data,
+              })
+            );
+          })
+          .catch((err) => {
+            console.log("getPlaylists", err);
+          });
       })
       .catch((err) => {
-        console.log(err);
+        console.log("addSongToPlaylist", err);
       });
   };
 
@@ -180,13 +191,12 @@ function SongRow({
                     setUserPlaylistId(e.target.value);
                   }}
                 >
-                  {playlists?.map((playlist) => (
+                  {playlists?.map((playlist, index) => (
                     <MenuItem
+                      key={index}
                       disabled={playlist.songs?.some((obj) => obj.url === url)}
                       value={playlist._id}
                     >
-                      {console.log(playlist.songs)}
-
                       {playlist.name}
                     </MenuItem>
                   ))}

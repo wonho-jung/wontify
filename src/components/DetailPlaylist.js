@@ -27,8 +27,6 @@ function DetailPlaylist() {
         <Loading />
       ) : (
         <>
-          <Header />
-
           <DetailInfo>
             <img src={userplaylist?.res.images[0].url} alt="" />
             <DetailInfoText>

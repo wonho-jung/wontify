@@ -17,14 +17,12 @@ function Sidebar({ spotify }) {
   const [playlistName, setPlaylistName] = useState("");
   const dispatch = useDispatch();
   const { playlists } = useSelector(selectPlaylists);
-
   const dialogOpenHandler = () => {
     setCreatePlaylistDialogOpen(true);
   };
   const reloadGetPlaylists = () => {
     return getPlaylists()
       .then((res) => {
-        console.log("loaded Data", res.data);
         dispatch(
           set_playlists({
             playlists: res.data,
@@ -36,18 +34,10 @@ function Sidebar({ spotify }) {
       });
   };
   const dialogCloseHandler = () => {
-    reloadGetPlaylists()
-      .then((res) => {
-        console.log("loaded");
-      })
-      .catch((err) => {
-        console.log("getPlaylists", err);
-      })
-      .finally(() => {
-        console.log("finally");
-        setCreatePlaylistDialogOpen(false);
-        setPlaylistName("");
-      });
+    reloadGetPlaylists().finally(() => {
+      setCreatePlaylistDialogOpen(false);
+      setPlaylistName("");
+    });
   };
   const dialogSubmitHandler = () => {
     createPlaylist({ name: playlistName });
@@ -72,7 +62,10 @@ function Sidebar({ spotify }) {
 
       <AddPlayListContainer>
         <strong>PLAYLISTS</strong>
-        <IconButton onClick={dialogOpenHandler}>
+        <IconButton
+          disabled={playlists && playlists.length > 5}
+          onClick={dialogOpenHandler}
+        >
           <AddIcon sx={{ color: "#ffffff" }} />
         </IconButton>
       </AddPlayListContainer>
