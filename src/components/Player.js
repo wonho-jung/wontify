@@ -130,7 +130,7 @@ function Player({ spotify }) {
             <Route path="/library">
               <Library spotify={spotify} />
             </Route>
-            <Route path="/playlist">
+            <Route path="/playlist/:id">
               <Body spotify={spotify} />
             </Route>
             <Route path="/" exact>

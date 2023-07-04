@@ -8,49 +8,11 @@ import {
   set_Recommended,
 } from "../features/userSlice";
 
-function SidebarOptions({ title, Icon, id, spotify }) {
-  const dispatch = useDispatch();
-  const click = () => {
-    dispatch(
-      set_playlistid({
-        playlistid: id,
-      })
-    );
-    spotify
-      .getPlaylist(id)
-      .then((res) => {
-        dispatch(
-          set_list({
-            res,
-          })
-        );
-        spotify
-          .getRecommendations({
-            seed_artists: res.tracks.items[0].track.artists[0].id,
-            seed_tracks: id,
-            limit: 10,
-          })
-          .then((recommended) => {
-            dispatch(
-              set_Recommended({
-                recommended,
-              })
-            );
-          });
-      })
-      .catch((err) => {
-        alert(err.message);
-      });
-  };
-
+function SidebarOptions({ title, Icon, id }) {
   return (
     <>
       {id ? (
-        <Link
-          to={`/playlist`}
-          onClick={click}
-          style={{ textDecoration: "none" }}
-        >
+        <Link to={`/playlist/${id}`} style={{ textDecoration: "none" }}>
           <SidebarOptionContainer>
             {Icon && <Icon />}
             {Icon ? <h4>{title}</h4> : <p>{title}</p>}

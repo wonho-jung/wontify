@@ -5,7 +5,7 @@ export const userSlice = createSlice({
   initialState: {
     user: null,
     token: null,
-    playlists: null,
+    playlists: [],
     playing: false,
     item: null,
     userplaylist: null,

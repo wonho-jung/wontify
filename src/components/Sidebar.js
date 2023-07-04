@@ -1,14 +1,62 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
-// import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
-// import { useSelector } from "react-redux";
-// import { selectPlaylists } from "../features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectPlaylists } from "../features/userSlice";
 import { Link } from "react-router-dom";
 import SidebarOptions from "./SidebarOptions";
+import AddIcon from "@mui/icons-material/Add";
+import { IconButton, TextField } from "@mui/material";
+import { createPlaylist, getPlaylists } from "../backend";
+import FormDialog from "./designSystem";
+import { set_playlists } from "../features/userSlice";
 function Sidebar({ spotify }) {
-  // const myList = useSelector(selectPlaylists);
+  const [createPlaylistDialogOpen, setCreatePlaylistDialogOpen] =
+    useState(false);
+  const [playlistName, setPlaylistName] = useState("");
+  const dispatch = useDispatch();
+  const { playlists } = useSelector(selectPlaylists);
+
+  const dialogOpenHandler = () => {
+    setCreatePlaylistDialogOpen(true);
+  };
+  const reloadGetPlaylists = () => {
+    return getPlaylists()
+      .then((res) => {
+        console.log("loaded Data", res.data);
+        dispatch(
+          set_playlists({
+            playlists: res.data,
+          })
+        );
+      })
+      .catch((err) => {
+        console.log("getPlaylists", err);
+      });
+  };
+  const dialogCloseHandler = () => {
+    reloadGetPlaylists()
+      .then((res) => {
+        console.log("loaded");
+      })
+      .catch((err) => {
+        console.log("getPlaylists", err);
+      })
+      .finally(() => {
+        console.log("finally");
+        setCreatePlaylistDialogOpen(false);
+        setPlaylistName("");
+      });
+  };
+  const dialogSubmitHandler = () => {
+    createPlaylist({ name: playlistName });
+  };
+
+  useEffect(() => {
+    reloadGetPlaylists();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <SidebarContainer>
       <img
@@ -21,20 +69,64 @@ function Sidebar({ spotify }) {
       <Link to="/search" style={{ textDecoration: "none" }}>
         <SidebarOptions title="Search" Icon={SearchIcon} />
       </Link>
-      {/* <Link to="/library" style={{ textDecoration: "none" }}>
-        <SidebarOptions title="Your Library" Icon={LibraryMusicIcon} />
-      </Link> */}
-      {/* <br />
-      <strong>PLAYLISTS</strong>
-      <hr />
-      {myList?.playlists?.items?.map((playlist, idx) => (
-        <SidebarOptions
-          spotify={spotify}
-          key={idx}
-          id={playlist.id}
-          title={playlist.name}
+
+      <AddPlayListContainer>
+        <strong>PLAYLISTS</strong>
+        <IconButton onClick={dialogOpenHandler}>
+          <AddIcon sx={{ color: "#ffffff" }} />
+        </IconButton>
+      </AddPlayListContainer>
+      <FormDialog
+        dialogTitle="Create Playlist"
+        dialogContentText="Enter a name for your new playlist."
+        open={createPlaylistDialogOpen}
+        handleClose={dialogCloseHandler}
+        handleSubmit={dialogSubmitHandler}
+        buttonText="Create"
+      >
+        <TextField
+          sx={{
+            //Change Label color
+            "& label.Mui-focused": {
+              color: "#1db954",
+            },
+            //Change Border color
+            "& .MuiInput-underline:after": {
+              borderBottomColor: "#1db954",
+            },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "white",
+              },
+              "&:hover fieldset": {
+                borderColor: "white",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#1db954",
+              },
+            },
+          }}
+          value={playlistName}
+          onChange={(e) => setPlaylistName(e.target.value)}
+          autoFocus
+          margin="dense"
+          id="name"
+          label="Playlist Name"
+          type="text"
+          fullWidth
+          variant="standard"
         />
-      ))} */}
+      </FormDialog>
+      {!!playlists &&
+        playlists.length > 0 &&
+        playlists.map((playlist, idx) => (
+          <SidebarOptions
+            spotify={spotify}
+            key={idx}
+            id={playlist._id}
+            title={playlist.name}
+          />
+        ))}
     </SidebarContainer>
   );
 }
@@ -56,7 +148,7 @@ const SidebarContainer = styled.div`
     margin-right: auto;
   }
 
-  > strong {
+  > div > strong {
     margin-left: 10px;
     padding: 5px;
     font-size: 12px;
@@ -66,4 +158,10 @@ const SidebarContainer = styled.div`
     width: 90%;
     margin: 10px auto;
   }
+`;
+const AddPlayListContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
 `;

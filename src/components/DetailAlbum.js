@@ -21,6 +21,7 @@ function DetailAlbum() {
       setLoading(false);
     }
   }, [album]);
+
   return (
     <DetailAlbumContainer>
       {loading ? (

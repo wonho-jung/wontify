@@ -1,91 +1,80 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import {
-  selectList,
-  selectPlaylistid,
-  selectRecommended,
-} from "../features/userSlice";
-import Header from "./Header";
+import { selectPlaylists } from "../features/userSlice";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "./SongRow";
+import { useLocation } from "react-router-dom";
+import { getplaylistDetails } from "../backend";
 
-import Loading from "./Loading";
+// import Loading from "./Loading";
 
 function Body({ spotify }) {
-  const playlistid = useSelector(selectPlaylistid);
-  const { playlistid: id } = playlistid;
-  const userplaylist = useSelector(selectList);
-  const recommended = useSelector(selectRecommended);
-
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(false);
+  const [songlists, setSonglists] = useState([]);
+  const [userAudioList, setUserAudioList] = useState([]);
+  const { playlists } = useSelector(selectPlaylists);
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const lastPathSegment = currentPath.substring(
+    currentPath.lastIndexOf("/") + 1
+  );
+  const playlistName = playlists?.find(
+    (item) => item._id === lastPathSegment
+  )?.name;
 
   useEffect(() => {
-    if (userplaylist) {
-      setLoading(false);
-    }
-  }, [userplaylist, recommended]);
+    getplaylistDetails(lastPathSegment)
+      .then((res) => {
+        console.log(res.data);
+        const songUrlArray = res.data.songs.map((item, index) => {
+          return {
+            preview_url: item.url,
+            name: item.name,
+            album: { images: [{ url: item.image }], name: item.albumName },
+            artists: item.artistsName,
+          };
+        });
+
+        setUserAudioList(songUrlArray);
+        setSonglists(res.data.songs);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [lastPathSegment]);
   return (
     <BodyContainer>
-      {loading ? (
-        <Loading />
-      ) : (
-        <>
-          <Header />
-          <BodyInfo>
-            <img src={userplaylist?.res.images[0]?.url} alt="" />
-            <BodyInfoText>
-              <strong>PLAYLIST</strong>
-              <h2>{userplaylist?.res.name}</h2>
-              <p>{userplaylist?.res.description}</p>
-            </BodyInfoText>
-          </BodyInfo>
+      <BodyInfo>
+        <BodyInfoText>
+          <strong>PLAYLIST</strong>
+          <h2>{playlistName}</h2>
+        </BodyInfoText>
+      </BodyInfo>
+      <BodySongs>
+        <BodyIcons>
+          <PlayCircleFilledIcon className="body__shuffle" />
+          <FavoriteIcon fontSize="large" />
+          <MoreHorizIcon />
+        </BodyIcons>
 
-          <BodySongs>
-            <BodyIcons>
-              <PlayCircleFilledIcon className="body__shuffle" />
-              <FavoriteIcon fontSize="large" />
-              <MoreHorizIcon />
-            </BodyIcons>
-
-            {userplaylist?.res.tracks.items.map((item, inx) => (
-              <SongRow
-                audiolist={userplaylist.res.tracks.items}
-                key={inx}
-                url={item.track.preview_url}
-                time={item.track.duration_ms}
-                image={item.track.album?.images[0]?.url}
-                name={item.track.name}
-                albumName={item.track.album.name}
-                artistsName={item.track.artists}
-                spotify={spotify}
-              />
-            ))}
-
-            <Recommended>
-              <h3>Recommended</h3>
-              <p className="recommend_p">Based on what's in this playlist</p>
-              {recommended?.recommended.tracks.map((item, idx) => (
-                <SongRow
-                  key={idx}
-                  url={item.preview_url}
-                  id={id}
-                  track={item}
-                  spotify={spotify}
-                  image={item.album.images[0]?.url}
-                  name={item.name}
-                  albumName={item.album.name}
-                  artistsName={item.artists}
-                  timeRecommend={item.duration_ms}
-                  recommended
-                />
-              ))}
-            </Recommended>
-          </BodySongs>
-        </>
-      )}
+        {songlists?.map((item, inx) => (
+          <SongRow
+            audiolist={userAudioList}
+            key={inx}
+            url={item.url}
+            time={item.time}
+            image={item.image}
+            name={item.name}
+            albumName={item.albumName}
+            artistsName={item.artistsName}
+            spotify={spotify}
+            isUserPlaylist={true}
+          />
+        ))}
+      </BodySongs>
     </BodyContainer>
   );
 }
@@ -141,12 +130,12 @@ const BodyIcons = styled.div`
     margin-bottom: 20px;
   }
 `;
-const Recommended = styled.div`
-  margin-top: 50px;
-  h3,
-  .recommend_p {
-    padding-left: 30px;
-  }
-  padding-top: 10px;
-  padding-bottom: 200px;
-`;
+// const Recommended = styled.div`
+//   margin-top: 50px;
+//   h3,
+//   .recommend_p {
+//     padding-left: 30px;
+//   }
+//   padding-top: 10px;
+//   padding-bottom: 200px;
+// `;
