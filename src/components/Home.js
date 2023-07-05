@@ -5,14 +5,12 @@ import {
   selectMood,
   selectNewReleases,
   selectParty,
-  // selectRecentlyPlayed,
   selectTopList,
   selectWorkout,
 } from "../features/userSlice";
 import { useSelector } from "react-redux";
 import Loading from "./Loading";
 function Home({ spotify }) {
-  // const recentlyPlayed = useSelector(selectRecentlyPlayed);
   const [isLoaded, setIsLoaded] = useState(false);
   const newReleases = useSelector(selectNewReleases);
   const topList = useSelector(selectTopList);
@@ -44,22 +42,6 @@ function Home({ spotify }) {
     <HomeContainer>
       {isLoaded ? (
         <>
-          {/* <HomeContentContainer>
-        <h1>Recently played Albums</h1>
-        <PostsContainer>
-          {recentlyPlayed?.recentlyPlayed?.map((track, inx) => (
-            <Post
-              url={track.track.preview_url}
-              spotify={spotify}
-              albumId={track.track.album.id}
-              key={inx}
-              image={track.track.album.images[0].url}
-              artistsName={track.track.artists[0].name}
-              name={track.track.name}
-            />
-          ))}
-        </PostsContainer>
-      </HomeContentContainer> */}
           <HomeContentContainer>
             <h1>New Releases</h1>
             <PostsContainer>

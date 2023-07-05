@@ -1,71 +1,82 @@
 import { Button } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectAudioStatus,
   selectPlaying,
+  selectPlaylists,
   set_footeraudioState,
-  set_list,
   set_playing,
   set_playinglist,
-  set_Recommended,
+  set_playlists,
 } from "../features/userSlice";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
+import { addSongToPlaylist, getPlaylists } from "../backend";
+import FormDialog from "./designSystem";
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
 function SongRow({
   url,
   image,
   name,
   albumName,
-  recommended,
   artistsName,
-  spotify,
-  id,
   trackNumber,
   time,
-  timeRecommend,
   audiolist,
-  track,
+  isUserPlaylist = false,
 }) {
   const dispatch = useDispatch();
   const audiostate = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
+  const { playlists } = useSelector(selectPlaylists);
+  const [addSongDialogOpen, setaddSongDialogOpen] = useState(false);
+  const [userPlaylistId, setUserPlaylistId] = useState("");
 
-  const addList = () => {
-    spotify
-      .addTracksToPlaylist(id, [track.uri])
-      .then(
-        spotify.getPlaylist(id).then((res) => {
-          dispatch(
-            set_list({
-              res,
-            })
-          );
-        })
-      )
-      .catch((err) => alert(err.message));
+  const dialogOpenHandler = () => {
+    setaddSongDialogOpen(true);
+  };
+  const dialogCloseHandler = () => {
+    setUserPlaylistId("");
+    setaddSongDialogOpen(false);
+  };
 
-    spotify.getPlaylist(id).then((res) => {
-      spotify
-        .getRecommendations({
-          seed_artists: res.tracks.items[0].track.artists[0].id,
-          seed_tracks: id,
-        })
-
-        .then((recommended) => {
-          dispatch(
-            set_Recommended({
-              recommended,
-            })
-          );
-        })
-        .catch((err) => {
-          alert(err.message);
-        });
-    });
+  const dialogSubmitHandler = () => {
+    addSongToPlaylist({
+      data: {
+        url,
+        image,
+        name,
+        albumName,
+        artistsName,
+        trackNumber,
+        time,
+      },
+      id: userPlaylistId,
+    })
+      .then((res) => {
+        getPlaylists()
+          .then((res) => {
+            dispatch(
+              set_playlists({
+                playlists: res.data,
+              })
+            );
+          })
+          .catch((err) => {
+            console.log("getPlaylists", err);
+          });
+      })
+      .catch((err) => {
+        console.log("addSongToPlaylist", err);
+      });
   };
 
   const playSong = () => {
@@ -129,10 +140,8 @@ function SongRow({
           fontSize="large"
         />
       )}
-
       {trackNumber && <h5>{trackNumber}</h5>}
       {image && <img src={image} alt="" />}
-
       <SongRowInfo>
         <h1>{name}</h1>
         <p>
@@ -140,9 +149,63 @@ function SongRow({
           {albumName && `/${albumName}`}
         </p>
       </SongRowInfo>
-
       {time && <p className="time">{millisToMinutesAndSeconds(time)}</p>}
-      {recommended && <Button onClick={addList}>ADD</Button>}
+
+      {!isUserPlaylist && (
+        <>
+          <Button onClick={dialogOpenHandler}>ADD</Button>
+          <FormDialog
+            dialogTitle="Add to Playlist"
+            dialogContentText="Select a playlist to add this song to"
+            open={addSongDialogOpen}
+            handleClose={dialogCloseHandler}
+            handleSubmit={dialogSubmitHandler}
+            buttonText="Add"
+          >
+            <Box sx={{ minWidth: 120, marginTop: "20px" }}>
+              <FormControl fullWidth>
+                <InputLabel
+                  sx={{
+                    "&.Mui-focused": {
+                      color: "#1db954",
+                    },
+                  }}
+                  id="simple-select-label"
+                >
+                  Playlists
+                </InputLabel>
+                <Select
+                  sx={{
+                    "& label.Mui-focused": {
+                      color: "#1db954",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#1db954",
+                    },
+                  }}
+                  labelId="simple-select-label"
+                  id="simple-select"
+                  value={userPlaylistId}
+                  label="Playlist"
+                  onChange={(e) => {
+                    setUserPlaylistId(e.target.value);
+                  }}
+                >
+                  {playlists?.map((playlist, index) => (
+                    <MenuItem
+                      key={index}
+                      disabled={playlist.songs?.some((obj) => obj.url === url)}
+                      value={playlist._id}
+                    >
+                      {playlist.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          </FormDialog>
+        </>
+      )}
     </SongRowContainer>
   );
 }
@@ -179,7 +242,7 @@ const SongRowContainer = styled.div`
 
     align-items: center;
     position: absolute;
-    right: 0;
+    right: 100px;
     color: white;
   }
   button {

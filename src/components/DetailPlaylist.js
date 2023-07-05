@@ -1,40 +1,52 @@
 import React, { useState, useEffect } from "react";
 
-import Header from "./Header";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "./SongRow";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
-import { selectList } from "../features/userSlice";
-import Loading from "./Loading";
 
-function DetailPlaylist() {
-  const userplaylist = useSelector(selectList);
-  const [loading, setLoading] = useState("true");
+import Loading from "./Loading";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+
+function DetailPlaylist({ spotify }) {
+  const [detailPlaylists, setDetailPlaylists] = useState("");
+
+  const [loading, setLoading] = useState(true);
+
+  const playlistId = window.location.href.split("/")[5];
+  const history = useHistory();
+
+  const sendPlaylistDetail = () => {
+    spotify
+      .getPlaylist(playlistId)
+      .then((res) => {
+        console.log(res);
+        setDetailPlaylists(res);
+        setLoading(false);
+      })
+      .catch((err) => {
+        alert("something went wrong, please try again");
+        history.push("/");
+      });
+  };
   useEffect(() => {
-    if (
-      userplaylist &&
-      userplaylist.res.id === window.location.href.split("/")[5]
-    ) {
-      setLoading(false);
-    }
-  }, [userplaylist]);
+    sendPlaylistDetail();
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <DetailPlaylistContainer>
       {loading ? (
         <Loading />
       ) : (
         <>
-          <Header />
-
           <DetailInfo>
-            <img src={userplaylist?.res.images[0].url} alt="" />
+            <img src={detailPlaylists.images[0].url} alt="" />
             <DetailInfoText>
               <strong>PLAYLIST</strong>
-              <h2>{userplaylist?.res.name}</h2>
-              <p>{userplaylist?.res.description}</p>
+              <h2>{detailPlaylists.name}</h2>
+              <p>{detailPlaylists.description}</p>
             </DetailInfoText>
           </DetailInfo>
 
@@ -45,9 +57,9 @@ function DetailPlaylist() {
               <MoreHorizIcon />
             </DetailIcons>
 
-            {userplaylist?.res.tracks.items.map((item, inx) => (
+            {detailPlaylists.tracks.items.map((item, inx) => (
               <SongRow
-                audiolist={userplaylist.res.tracks.items}
+                audiolist={detailPlaylists.tracks.items}
                 url={item.track.preview_url}
                 key={inx}
                 time={item.track.duration_ms}

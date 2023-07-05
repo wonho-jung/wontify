@@ -2,67 +2,10 @@ import React from "react";
 import styled from "styled-components";
 
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
-import { useDispatch } from "react-redux";
-import {
-  set_DetailAlbum,
-  set_DetailAlbumTracks,
-  set_list,
-} from "../features/userSlice";
+
 import { Link } from "react-router-dom";
 
-function Post({
-  image,
-  name,
-  artistsName,
-  description,
-  albumId,
-  spotify,
-  playlistId,
-}) {
-  const dispatch = useDispatch();
-
-  const sendAlbumDetail = () => {
-    spotify
-      .getAlbumTracks(albumId)
-      .then((res) => {
-        dispatch(
-          set_DetailAlbumTracks({
-            detailAlbumTracks: res,
-          })
-        );
-      })
-      .catch((err) => {
-        alert(err.message);
-      });
-
-    spotify
-      .getAlbum(albumId)
-      .then((res) => {
-        dispatch(
-          set_DetailAlbum({
-            detailAlbum: res,
-          })
-        );
-      })
-      .catch((err) => {
-        alert(err.message);
-      });
-  };
-  const sendPlaylistDetail = () => {
-    spotify
-      .getPlaylist(playlistId)
-      .then((res) => {
-        dispatch(
-          set_list({
-            res,
-          })
-        );
-      })
-      .catch((err) => {
-        alert(err.message);
-      });
-  };
-
+function Post({ image, name, artistsName, description, albumId, playlistId }) {
   return (
     <PostContainer>
       <Link
@@ -73,7 +16,7 @@ function Post({
         }
         style={{ textDecoration: "none", color: "white" }}
       >
-        <PostContent onClick={albumId ? sendAlbumDetail : sendPlaylistDetail}>
+        <PostContent>
           <img src={image} alt="" />
           <h4>{artistsName}</h4>
           <p>{name && name}</p>
