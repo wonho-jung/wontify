@@ -63,7 +63,6 @@ function Sidebar({ spotify }) {
       <Link to="/search" style={{ textDecoration: "none" }}>
         <SidebarOptions title="Search" Icon={SearchIcon} />
       </Link>
-
       <AddPlayListContainer>
         <strong>PLAYLISTS</strong>
         <IconButton
@@ -73,6 +72,8 @@ function Sidebar({ spotify }) {
           <AddIcon sx={{ color: "#ffffff" }} />
         </IconButton>
       </AddPlayListContainer>
+      <HelpText>Share with me your favourites songs</HelpText>
+      <hr />
       <FormDialog
         dialogTitle="Create Playlist"
         dialogContentText="Enter a name for your new playlist."
@@ -161,4 +162,8 @@ const AddPlayListContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 10px;
+`;
+const HelpText = styled.p`
+  font-size: 12px;
+  margin-left: 17px;
 `;
