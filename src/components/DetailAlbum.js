@@ -1,26 +1,38 @@
 import React, { useState, useEffect } from "react";
-import Header from "./Header";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "./SongRow";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
-import {
-  selectDetailAlbum,
-  selectDetailAlbumTracks,
-} from "../features/userSlice";
-import Loading from "./Loading";
 
-function DetailAlbum() {
-  const [loading, setLoading] = useState("true");
-  const album = useSelector(selectDetailAlbum);
-  const detailAlbumTracks = useSelector(selectDetailAlbumTracks);
+import Loading from "./Loading";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+
+function DetailAlbum({ spotify }) {
+  const [loading, setLoading] = useState(true);
+  const [detailAlbumTracks, setDetailAlbumTracks] = useState("");
+  const [detailAlbum, setDetailAlbum] = useState("");
+
+  const albumId = window.location.href.split("/")[5];
+  const history = useHistory();
+
   useEffect(() => {
-    if (album && album?.detailAlbum.id === window.location.href.split("/")[5]) {
-      setLoading(false);
-    }
-  }, [album]);
+    const fetchData = async () => {
+      try {
+        const getAlbum = await spotify.getAlbum(albumId);
+        const getAlbumTracks = await spotify.getAlbumTracks(albumId);
+
+        setDetailAlbum(getAlbum);
+        setDetailAlbumTracks(getAlbumTracks);
+        setLoading(false);
+      } catch (err) {
+        alert("something went wrong, please try again");
+        history.push("/");
+      }
+    };
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <DetailAlbumContainer>
@@ -28,14 +40,12 @@ function DetailAlbum() {
         <Loading />
       ) : (
         <>
-          <Header />
-
           <DetailInfo>
-            <img src={album?.detailAlbum.images[0].url} alt="" />
+            <img src={detailAlbum.images[0].url} alt="" />
             <DetailInfoText>
               <strong>PLAYLIST</strong>
-              <h2>{album?.detailAlbum.name}</h2>
-              <p>{album?.detailAlbum.description}</p>
+              <h2>{detailAlbum.name}</h2>
+              <p>{detailAlbum.description}</p>
             </DetailInfoText>
           </DetailInfo>
 
@@ -47,9 +57,9 @@ function DetailAlbum() {
             </DetailIcons>
 
             {detailAlbumTracks &&
-              detailAlbumTracks.detailAlbumTracks.items.map((item, inx) => (
+              detailAlbumTracks.items.map((item, inx) => (
                 <SongRow
-                  audiolist={detailAlbumTracks.detailAlbumTracks.items}
+                  audiolist={detailAlbumTracks.items}
                   url={item.preview_url}
                   key={inx}
                   trackNumber={inx + 1}

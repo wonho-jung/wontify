@@ -1,12 +1,6 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import {
-  set_list,
-  set_playlistid,
-  set_Recommended,
-} from "../features/userSlice";
 
 function SidebarOptions({ title, Icon, id }) {
   return (

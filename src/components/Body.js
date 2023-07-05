@@ -29,6 +29,8 @@ function Body({ spotify }) {
     getplaylistDetails(lastPathSegment)
       .then((res) => {
         if (!res.data.songs) {
+          setSonglists([]);
+          setUserAudioList([]);
           return;
         }
         const songUrlArray = res.data?.songs.map((item, index) => {

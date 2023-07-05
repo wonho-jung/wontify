@@ -34,10 +34,14 @@ function Sidebar({ spotify }) {
       });
   };
   const dialogCloseHandler = () => {
-    reloadGetPlaylists().finally(() => {
-      setCreatePlaylistDialogOpen(false);
-      setPlaylistName("");
-    });
+    //Reload playlists after 500ms, to give enough time for the backend to create the playlist
+    const reloadTimeout = setTimeout(() => {
+      reloadGetPlaylists().finally(() => {
+        setCreatePlaylistDialogOpen(false);
+        setPlaylistName("");
+      });
+    }, 100);
+    return () => clearTimeout(reloadTimeout);
   };
   const dialogSubmitHandler = () => {
     createPlaylist({ name: playlistName });

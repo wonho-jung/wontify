@@ -108,10 +108,10 @@ function Player({ spotify }) {
           <Sidebar spotify={spotify} />
           <Switch>
             <Route path="/detail/album/:id">
-              <DetailAlbum />
+              <DetailAlbum spotify={spotify} />
             </Route>
             <Route path="/detail/playlist/:id">
-              <DetailPlaylist />
+              <DetailPlaylist spotify={spotify} />
             </Route>
             <Route path="/search/search/song">
               <SearchDetail spotify={spotify} />
