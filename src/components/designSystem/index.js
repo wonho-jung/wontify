@@ -15,6 +15,8 @@ export default function FormDialog({
   dialogContentText,
   buttonText,
   children,
+
+  buttonDisabled = false,
 }) {
   return (
     <div>
@@ -38,6 +40,7 @@ export default function FormDialog({
             Cancel
           </Button>
           <Button
+            disabled={buttonDisabled}
             sx={{
               color: "#1db954",
               "&:hover": {

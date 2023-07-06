@@ -40,7 +40,6 @@ const SidebarOptionContainer = styled.div`
     padding-right: 10px;
   }
   > p {
-    margin-top: 10px;
     margin-left: 20px;
     font-size: 14px;
   }

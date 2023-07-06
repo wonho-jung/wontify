@@ -21,7 +21,6 @@ function DetailPlaylist({ spotify }) {
     spotify
       .getPlaylist(playlistId)
       .then((res) => {
-        console.log(res);
         setDetailPlaylists(res);
         setLoading(false);
       })

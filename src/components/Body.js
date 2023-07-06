@@ -24,7 +24,10 @@ function Body({ spotify }) {
   const playlistName = playlists?.find(
     (item) => item._id === lastPathSegment
   )?.name;
-
+  const removeSonglistById = (id) => {
+    const newSonglists = songlists.filter((item) => item.id !== id);
+    setSonglists([...newSonglists]);
+  };
   useEffect(() => {
     getplaylistDetails(lastPathSegment)
       .then((res) => {
@@ -66,6 +69,8 @@ function Body({ spotify }) {
 
         {songlists?.map((item, inx) => (
           <SongRow
+            removeSonglistById={removeSonglistById}
+            id={item.id}
             audiolist={userAudioList}
             key={inx}
             url={item.url}

@@ -1,7 +1,7 @@
 import { Button } from "@material-ui/core";
 import React, { useState } from "react";
 import styled from "styled-components";
-
+import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectAudioStatus,
@@ -14,7 +14,11 @@ import {
 } from "../features/userSlice";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
-import { addSongToPlaylist, getPlaylists } from "../backend";
+import {
+  addSongToPlaylist,
+  deleteSongFromPlaylist,
+  getPlaylists,
+} from "../backend";
 import FormDialog from "./designSystem";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
@@ -32,6 +36,8 @@ function SongRow({
   time,
   audiolist,
   isUserPlaylist = false,
+  id = null,
+  removeSonglistById = null,
 }) {
   const dispatch = useDispatch();
   const audiostate = useSelector(selectAudioStatus);
@@ -39,6 +45,12 @@ function SongRow({
   const { playlists } = useSelector(selectPlaylists);
   const [addSongDialogOpen, setaddSongDialogOpen] = useState(false);
   const [userPlaylistId, setUserPlaylistId] = useState("");
+  const playlistId = window.location.pathname.split("/")[2];
+  const deleteSongHandler = () => {
+    deleteSongFromPlaylist(playlistId, id).then((res) => {
+      removeSonglistById(id);
+    });
+  };
 
   const dialogOpenHandler = () => {
     setaddSongDialogOpen(true);
@@ -51,6 +63,7 @@ function SongRow({
   const dialogSubmitHandler = () => {
     addSongToPlaylist({
       data: {
+        id: uuidv4(),
         url,
         image,
         name,
@@ -206,6 +219,8 @@ function SongRow({
           </FormDialog>
         </>
       )}
+
+      {isUserPlaylist && <Button onClick={deleteSongHandler}>Delete</Button>}
     </SongRowContainer>
   );
 }
@@ -256,7 +271,7 @@ const SongRowContainer = styled.div`
     right: 0;
     color: white;
     :hover {
-      border: 2px solid white;
+      border: 1px solid white;
       opacity: 0.7;
     }
   }

@@ -8,15 +8,26 @@ import { Link } from "react-router-dom";
 import SidebarOptions from "./SidebarOptions";
 import AddIcon from "@mui/icons-material/Add";
 import { IconButton, TextField } from "@mui/material";
-import { createPlaylist, getPlaylists } from "../backend";
+import { createPlaylist, deletePlaylist, getPlaylists } from "../backend";
 import FormDialog from "./designSystem";
 import { set_playlists } from "../features/userSlice";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+const SAM_PLAY_LIST = "sam_playlist";
+
 function Sidebar({ spotify }) {
   const [createPlaylistDialogOpen, setCreatePlaylistDialogOpen] =
     useState(false);
+  const [deletePlaylistDialogOpen, setDeletePlaylistDialogOpen] =
+    useState(false);
   const [playlistName, setPlaylistName] = useState("");
+  const [deleteId, setDeletId] = useState("");
   const dispatch = useDispatch();
   const { playlists } = useSelector(selectPlaylists);
+
+  const playlistExists = playlists?.some(
+    (playlist) => playlist.name === playlistName
+  );
+
   const dialogOpenHandler = () => {
     setCreatePlaylistDialogOpen(true);
   };
@@ -33,7 +44,7 @@ function Sidebar({ spotify }) {
         console.log("getPlaylists", err);
       });
   };
-  const dialogCloseHandler = () => {
+  const createDialogCloseHandler = () => {
     //Reload playlists after 500ms, to give enough time for the backend to create the playlist
     const reloadTimeout = setTimeout(() => {
       reloadGetPlaylists().finally(() => {
@@ -43,8 +54,23 @@ function Sidebar({ spotify }) {
     }, 100);
     return () => clearTimeout(reloadTimeout);
   };
-  const dialogSubmitHandler = () => {
+  const createDialogSubmitHandler = () => {
     createPlaylist({ name: playlistName });
+  };
+
+  const deleteDialogCloseHandler = () => {
+    const reloadTimeout = setTimeout(() => {
+      reloadGetPlaylists().finally(() => {
+        setDeletePlaylistDialogOpen(false);
+        setDeletId("");
+      });
+    }, 100);
+    return () => clearTimeout(reloadTimeout);
+  };
+  const deleteDialogSubmitHandler = () => {
+    deletePlaylist(deleteId).then(() => {
+      reloadGetPlaylists();
+    });
   };
 
   useEffect(() => {
@@ -78,9 +104,10 @@ function Sidebar({ spotify }) {
         dialogTitle="Create Playlist"
         dialogContentText="Enter a name for your new playlist."
         open={createPlaylistDialogOpen}
-        handleClose={dialogCloseHandler}
-        handleSubmit={dialogSubmitHandler}
+        handleClose={createDialogCloseHandler}
+        handleSubmit={createDialogSubmitHandler}
         buttonText="Create"
+        buttonDisabled={playlistName === "" || playlistExists}
       >
         <TextField
           sx={{
@@ -113,18 +140,44 @@ function Sidebar({ spotify }) {
           type="text"
           fullWidth
           variant="standard"
+          helperText={
+            playlistExists
+              ? "Playlist name already exists"
+              : "Playlist name must be unique"
+          }
         />
       </FormDialog>
       {!!playlists &&
         playlists.length > 0 &&
         playlists.map((playlist, idx) => (
-          <SidebarOptions
-            spotify={spotify}
-            key={idx}
-            id={playlist._id}
-            title={playlist.name}
-          />
+          <PlaylistBox key={idx}>
+            <SidebarOptions
+              spotify={spotify}
+              key={idx}
+              id={playlist._id}
+              title={playlist.name}
+            />
+            {playlist.name !== SAM_PLAY_LIST && (
+              <IconButton
+                onClick={() => {
+                  setDeletePlaylistDialogOpen(true);
+                  setDeletId(playlist._id);
+                }}
+              >
+                <RemoveCircleOutlineIcon sx={{ color: "#ffffff" }} />
+              </IconButton>
+            )}
+          </PlaylistBox>
         ))}
+
+      <FormDialog
+        dialogTitle="Delete from Playlists?"
+        dialogContentText="This action cannot be undone."
+        open={deletePlaylistDialogOpen}
+        handleClose={deleteDialogCloseHandler}
+        handleSubmit={deleteDialogSubmitHandler}
+        buttonText="Delete"
+      />
     </SidebarContainer>
   );
 }
@@ -166,4 +219,11 @@ const AddPlayListContainer = styled.div`
 const HelpText = styled.p`
   font-size: 12px;
   margin-left: 17px;
+`;
+const PlaylistBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  // padding: 10px;
+  color: #ffffff;
 `;

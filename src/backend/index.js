@@ -1,7 +1,8 @@
 import axios from "axios";
 
 export const apiServer = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  // baseURL: process.env.REACT_APP_API_URL,
+  baseURL: "http://localhost:8888/.netlify/functions/api",
 });
 
 export function createPlaylist(data) {
@@ -18,4 +19,10 @@ export function addSongToPlaylist({ data, id }) {
 
 export function getplaylistDetails(id) {
   return apiServer.get(`/playlist/${id}`);
+}
+export function deletePlaylist(id) {
+  return apiServer.delete(`/playlist/${id}`);
+}
+export function deleteSongFromPlaylist(id, songId) {
+  return apiServer.delete(`/playlist/${id}/${songId}`);
 }

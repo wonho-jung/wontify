@@ -28,7 +28,8 @@
     "react-useinterval": "^1.0.2",
     "spotify-web-api-js": "^1.5.1",
     "spotify-web-api-node": "^5.0.2",
-    "styled-components": "^5.2.1"
+    "styled-components": "^5.2.1",
+    "uuid": "^9.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
