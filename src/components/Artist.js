@@ -11,6 +11,7 @@ function Artist({ spotify }) {
   const artistDetail = useSelector(selectArtistDetail);
   const [followNumber, setFollowNumber] = useState("");
   const [btntext, setBtntext] = useState("Follow");
+  console.log("eslint test with husky");
   useEffect(() => {
     if (artistDetail) {
       setFollowNumber(artistDetail.artistInfo.followers.total);
