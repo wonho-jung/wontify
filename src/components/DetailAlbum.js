@@ -35,6 +35,8 @@ function DetailAlbum({ spotify }) {
   }, []);
 
   return (
+    test catch bug
+
     <DetailAlbumContainer>
       {loading ? (
         <Loading />
