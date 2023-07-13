@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { selectArtistDetail } from "../features/userSlice";
-import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "./SongRow";
-import { Button } from "@material-ui/core";
 import SearchHeader from "./SearchHeader";
-function Artist({ spotify }) {
+import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
+import { Button } from "@material-ui/core";
+
+function Artist({ spotify }: any) {
   const artistDetail = useSelector(selectArtistDetail);
   const [followNumber, setFollowNumber] = useState("");
   const [btntext, setBtntext] = useState("Follow");
@@ -47,7 +48,7 @@ function Artist({ spotify }) {
                 <p>
                   Genres:{" "}
                   {artistDetail?.artistInfo.genres
-                    .map((genre) => genre)
+                    .map((genre: any) => genre)
                     .join(", ")}
                 </p>
               )}
@@ -62,7 +63,7 @@ function Artist({ spotify }) {
               <MoreHorizIcon />
             </ArtistIcons>
             <h1 className="artistTitle">Popular Top 10</h1>
-            {artistDetail?.artistDetail.tracks.map((item, inx) => (
+            {artistDetail?.artistDetail.tracks.map((item: any, inx: number) => (
               <SongRow
                 audiolist={artistDetail.artistDetail.tracks}
                 url={item.preview_url}
@@ -84,6 +85,7 @@ function Artist({ spotify }) {
 }
 
 export default Artist;
+
 const ArtistContainer = styled.div`
   padding: 30px;
   padding-bottom: 70px;

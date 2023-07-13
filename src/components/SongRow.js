@@ -32,7 +32,7 @@ function SongRow({
   name,
   albumName,
   artistsName,
-  trackNumber,
+  trackNumber = false,
   time,
   audiolist,
   isUserPlaylist = false,
