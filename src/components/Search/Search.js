@@ -2,7 +2,7 @@ import React from "react";
 
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectCategories } from "../features/userSlice";
+import { selectCategories } from "../../features/userSlice";
 import SearchPost from "./SearchPost";
 import SearchHeader from "./SearchHeader";
 

@@ -11,14 +11,14 @@ import {
   set_playing,
   set_playinglist,
   set_playlists,
-} from "../features/userSlice";
+} from "../../features/userSlice";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
 import {
   addSongToPlaylist,
   deleteSongFromPlaylist,
   getPlaylists,
-} from "../backend";
+} from "../../backend";
 import FormDialog from "./designSystem";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";

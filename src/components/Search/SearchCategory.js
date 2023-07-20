@@ -3,9 +3,9 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectCategoriesDetail } from "../features/userSlice";
-import Loading from "./Loading";
-import Post from "./Post";
+import { selectCategoriesDetail } from "../../features/userSlice";
+import Loading from "../shared/Loading";
+import Post from "../shared/Post";
 
 function SearchCategory({ spotify }) {
   const categoryDetail = useSelector(selectCategoriesDetail);

@@ -3,14 +3,14 @@ import styled from "styled-components";
 import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
 import { useDispatch, useSelector } from "react-redux";
-import { selectPlaylists } from "../features/userSlice";
+import { selectPlaylists } from "../../features/userSlice";
 import { Link } from "react-router-dom";
 import SidebarOptions from "./SidebarOptions";
 import AddIcon from "@mui/icons-material/Add";
 import { IconButton, TextField } from "@mui/material";
-import { createPlaylist, deletePlaylist, getPlaylists } from "../backend";
-import FormDialog from "./designSystem";
-import { set_playlists } from "../features/userSlice";
+import { createPlaylist, deletePlaylist, getPlaylists } from "../../backend";
+import FormDialog from "../shared/designSystem";
+import { set_playlists } from "../../features/userSlice";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 const SAM_PLAY_LIST = "sam_playlist";
 

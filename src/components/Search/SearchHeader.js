@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import SearchIcon from "@material-ui/icons/Search";
-// import { Avatar } from "@material-ui/core";
-import { set_searchResult } from "../features/userSlice";
+import { set_searchResult } from "../../features/userSlice";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 function SearchHeader({ spotify }) {
-  // const user = useSelector(selectUser);
   const [input, setInput] = useState("");
   const dispatch = useDispatch();
   const history = useHistory();

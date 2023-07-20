@@ -2,8 +2,8 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { set_artistDetail } from "../features/userSlice";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
+import { set_artistDetail } from "../../features/userSlice";
 
 function SearchArtistPost({ spotify, image, name, id, artistInfo }) {
   const dispatch = useDispatch();

@@ -1,12 +1,12 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectSearchResult, set_artistDetail } from "../features/userSlice";
+import { selectSearchResult, set_artistDetail } from "../../features/userSlice";
 import SearchHeader from "./SearchHeader";
 import SearchArtistPost from "./SearchArtistPost";
-import SongRow from "./SongRow";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import { Link } from "react-router-dom";
+import SongRow from "../shared/SongRow";
 
 function SearchDetail({ spotify }) {
   const dispatch = useDispatch();

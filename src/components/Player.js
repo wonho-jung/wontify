@@ -1,17 +1,17 @@
 import React, { useEffect } from "react";
-import styled from "styled-components";
-import Body from "./Body";
-import Footer from "./Footer";
-import Sidebar from "./Sidebar";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+import styled from "styled-components";
+import UserPlayList from "./UserPlayList";
+import Footer from "./Footer";
+import Sidebar from "./Sidebar/Sidebar";
 import Home from "./Home";
-import DetailAlbum from "./DetailAlbum";
-import DetailPlaylist from "./DetailPlaylist";
-import Library from "./Library";
-import Search from "./Search";
-import SearchCategory from "./SearchCategory";
-import SearchDetail from "./SearchDetail";
-import Artist from "./Artist";
+import DetailAlbum from "./Home/DetailAlbum";
+import DetailPlaylist from "./Home/DetailPlaylist";
+import Search from "./Search/Search";
+import SearchCategory from "./Search/SearchCategory";
+import SearchDetail from "./Search/SearchDetail";
+import Artist from "./Search/Artist";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectPlaying,
@@ -107,12 +107,16 @@ function Player({ spotify }) {
         <PlayerBody>
           <Sidebar spotify={spotify} />
           <Switch>
+            <Route path="/" exact>
+              <Home spotify={spotify} />
+            </Route>
             <Route path="/detail/album/:id">
               <DetailAlbum spotify={spotify} />
             </Route>
             <Route path="/detail/playlist/:id">
               <DetailPlaylist spotify={spotify} />
             </Route>
+
             <Route path="/search/search/song">
               <SearchDetail spotify={spotify} />
             </Route>
@@ -127,14 +131,8 @@ function Player({ spotify }) {
               <Artist spotify={spotify} />
             </Route>
 
-            <Route path="/library">
-              <Library spotify={spotify} />
-            </Route>
             <Route path="/playlist/:id">
-              <Body spotify={spotify} />
-            </Route>
-            <Route path="/" exact>
-              <Home spotify={spotify} />
+              <UserPlayList spotify={spotify} />
             </Route>
           </Switch>
         </PlayerBody>

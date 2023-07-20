@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectPlaylists } from "../features/userSlice";
+import { selectPlaylists } from "../../features/userSlice";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import SongRow from "./SongRow";
+import SongRow from "../shared/SongRow";
 import { useLocation } from "react-router-dom";
-import { getplaylistDetails } from "../backend";
+import { getplaylistDetails } from "../../backend";
 
 // import Loading from "./Loading";
 
-function Body({ spotify }) {
+function UserPlayList({ spotify }) {
   // const [loading, setLoading] = useState(false);
   const [songlists, setSonglists] = useState([]);
   const [userAudioList, setUserAudioList] = useState([]);
@@ -88,7 +88,7 @@ function Body({ spotify }) {
   );
 }
 
-export default Body;
+export default UserPlayList;
 
 const BodyContainer = styled.div`
   padding: 30px;

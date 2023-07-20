@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Post from "./Post";
+import Post from "../shared/Post";
 import {
   selectMood,
   selectNewReleases,
   selectParty,
   selectTopList,
   selectWorkout,
-} from "../features/userSlice";
+} from "../../features/userSlice";
 import { useSelector } from "react-redux";
-import Loading from "./Loading";
+import Loading from "../shared/Loading";
 function Home({ spotify }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const newReleases = useSelector(selectNewReleases);

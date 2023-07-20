@@ -1,51 +1,51 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import SongRow from "./SongRow";
 import styled from "styled-components";
 
-import Loading from "./Loading";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import Loading from "../shared/Loading";
+import SongRow from "../shared/SongRow";
 
-function DetailAlbum({ spotify }) {
+function DetailPlaylist({ spotify }) {
+  const [detailPlaylists, setDetailPlaylists] = useState("");
+
   const [loading, setLoading] = useState(true);
-  const [detailAlbumTracks, setDetailAlbumTracks] = useState("");
-  const [detailAlbum, setDetailAlbum] = useState("");
 
-  const albumId = window.location.href.split("/")[5];
+  const playlistId = window.location.href.split("/")[5];
   const history = useHistory();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const getAlbum = await spotify.getAlbum(albumId);
-        const getAlbumTracks = await spotify.getAlbumTracks(albumId);
-
-        setDetailAlbum(getAlbum);
-        setDetailAlbumTracks(getAlbumTracks);
+  const sendPlaylistDetail = () => {
+    spotify
+      .getPlaylist(playlistId)
+      .then((res) => {
+        setDetailPlaylists(res);
         setLoading(false);
-      } catch (err) {
+      })
+      .catch((err) => {
         alert("something went wrong, please try again");
         history.push("/");
-      }
-    };
-    fetchData();
+      });
+  };
+  useEffect(() => {
+    sendPlaylistDetail();
     // eslint-disable-next-line
   }, []);
 
   return (
-    <DetailAlbumContainer>
+    <DetailPlaylistContainer>
       {loading ? (
         <Loading />
       ) : (
         <>
           <DetailInfo>
-            <img src={detailAlbum.images[0].url} alt="" />
+            <img src={detailPlaylists.images[0].url} alt="" />
             <DetailInfoText>
               <strong>PLAYLIST</strong>
-              <h2>{detailAlbum.name}</h2>
-              <p>{detailAlbum.description}</p>
+              <h2>{detailPlaylists.name}</h2>
+              <p>{detailPlaylists.description}</p>
             </DetailInfoText>
           </DetailInfo>
 
@@ -56,33 +56,33 @@ function DetailAlbum({ spotify }) {
               <MoreHorizIcon />
             </DetailIcons>
 
-            {detailAlbumTracks &&
-              detailAlbumTracks.items.map((item, inx) => (
-                <SongRow
-                  audiolist={detailAlbumTracks.items}
-                  url={item.preview_url}
-                  key={inx}
-                  trackNumber={inx + 1}
-                  name={item.name}
-                  artistsName={item.artists}
-                  time={item.duration_ms}
-                />
-              ))}
+            {detailPlaylists.tracks.items.map((item, inx) => (
+              <SongRow
+                audiolist={detailPlaylists.tracks.items}
+                url={item.track.preview_url}
+                key={inx}
+                time={item.track.duration_ms}
+                image={item.track.album?.images[0]?.url}
+                name={item.track.name}
+                albumName={item.track.album.name}
+                artistsName={item.track.artists}
+              />
+            ))}
           </DetailSongs>
         </>
       )}
-    </DetailAlbumContainer>
+    </DetailPlaylistContainer>
   );
 }
 
-export default DetailAlbum;
-const DetailAlbumContainer = styled.div`
+export default DetailPlaylist;
+const DetailPlaylistContainer = styled.div`
   padding: 30px;
   flex: 0.8;
   height: 100vh;
   color: white;
   overflow-y: overlay;
-  background: linear-gradient(#42275a, #734b6d);
+  background: linear-gradient(#ffafbd, #ffc3a0);
   ::-webkit-scrollbar {
     display: none;
   }

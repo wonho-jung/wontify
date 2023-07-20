@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectArtistDetail } from "../features/userSlice";
+import { selectArtistDetail } from "../../features/userSlice";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import SongRow from "./SongRow";
+import SongRow from "../shared/SongRow";
 import { Button } from "@material-ui/core";
 import SearchHeader from "./SearchHeader";
 function Artist({ spotify }) {
