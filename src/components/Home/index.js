@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Post from "../shared/Post";
 import {
   selectMood,
   selectNewReleases,
   selectParty,
   selectTopList,
   selectWorkout,
-} from "../../features/userSlice";
+} from "../../features/spotifyDataSlice";
 import { useSelector } from "react-redux";
 import Loading from "../shared/Loading";
+import Post from "../shared/Post";
 function Home({ spotify }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const newReleases = useSelector(selectNewReleases);
@@ -18,7 +18,7 @@ function Home({ spotify }) {
   const party = useSelector(selectParty);
   const mood = useSelector(selectMood);
 
-  const filterEmtypeValueInArray = (array) => {
+  const filterEmptyValueInArray = (array) => {
     if (!array) return;
     const filteredArray = array.filter((item) => {
       return item !== null;
@@ -45,7 +45,7 @@ function Home({ spotify }) {
           <HomeContentContainer>
             <h1>New Releases</h1>
             <PostsContainer>
-              {filterEmtypeValueInArray(newReleases?.newReleases).map(
+              {filterEmptyValueInArray(newReleases?.newReleases).map(
                 (track, inx) => (
                   <Post
                     spotify={spotify}
@@ -63,7 +63,7 @@ function Home({ spotify }) {
           <HomeContentContainer>
             <h1>Top play lists</h1>
             <PostsContainer>
-              {filterEmtypeValueInArray(topList?.topList).map((track, inx) => (
+              {filterEmptyValueInArray(topList?.topList).map((track, inx) => (
                 <Post
                   spotify={spotify}
                   playlistId={track?.id}
@@ -79,7 +79,7 @@ function Home({ spotify }) {
           <HomeContentContainer>
             <h1>Work out</h1>
             <PostsContainer>
-              {filterEmtypeValueInArray(workout?.workout)?.map((track, inx) => (
+              {filterEmptyValueInArray(workout?.workout)?.map((track, inx) => (
                 <Post
                   spotify={spotify}
                   playlistId={track?.id}
@@ -94,7 +94,7 @@ function Home({ spotify }) {
           <HomeContentContainer>
             <h1>Mood</h1>
             <PostsContainer>
-              {filterEmtypeValueInArray(mood?.mood)?.map((track, inx) => (
+              {filterEmptyValueInArray(mood?.mood)?.map((track, inx) => (
                 <Post
                   spotify={spotify}
                   playlistId={track.id}
@@ -110,7 +110,7 @@ function Home({ spotify }) {
           <HomeContentContainer>
             <h1>Party</h1>
             <PostsContainer>
-              {filterEmtypeValueInArray(party?.party)?.map((track, inx) => (
+              {filterEmptyValueInArray(party?.party)?.map((track, inx) => (
                 <Post
                   spotify={spotify}
                   playlistId={track?.id}

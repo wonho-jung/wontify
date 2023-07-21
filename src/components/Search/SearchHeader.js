@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import SearchIcon from "@material-ui/icons/Search";
-import { set_searchResult } from "../../features/userSlice";
+import { set_searchResult } from "../../features/spotifyDataSlice";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 function SearchHeader({ spotify }) {

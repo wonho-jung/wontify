@@ -58,7 +58,7 @@ function DetailPlaylist({ spotify }) {
 
             {detailPlaylists.tracks.items.map((item, inx) => (
               <SongRow
-                audiolist={detailPlaylists.tracks.items}
+                audioList={detailPlaylists.tracks.items}
                 url={item.track.preview_url}
                 key={inx}
                 time={item.track.duration_ms}

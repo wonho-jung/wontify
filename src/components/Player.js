@@ -18,7 +18,7 @@ import {
   selectPlayingList,
   set_audioStatus,
   set_playing,
-} from "../features/userSlice";
+} from "../features/audioStatusSlice";
 import { useState } from "react";
 
 function Player({ spotify }) {
@@ -26,9 +26,8 @@ function Player({ spotify }) {
   const [audio] = useState(new Audio());
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
-  const playlisturl = useSelector(selectPlayingList);
-
-  const audioChecktime = () => {
+  const playlistUrl = useSelector(selectPlayingList);
+  const audioCheckTime = () => {
     const timeOut = setTimeout(() => {
       if (Math.ceil(audio.currentTime) === 30) {
         clearTimeout(timeOut);
@@ -47,31 +46,32 @@ function Player({ spotify }) {
       }
     }, 30000);
   };
+
   audio.ontimeupdate = (e) => {
     setCurrentTime(Math.ceil(e.target.currentTime));
   };
   useEffect(() => {
-    if (playlisturl) {
+    if (playlistUrl) {
       if (audio.src === "" && playing.playSong === true) {
-        audio.src = playlisturl.playinglist;
+        audio.src = playlistUrl.playingList;
         audio.play();
 
-        audioChecktime();
+        audioCheckTime();
         dispatch(
           set_audioStatus({
-            audioStatus: playlisturl.playinglist,
+            audioStatus: playlistUrl.playingList,
           })
         );
-      } else if (playlisturl.playinglist === audio.src) {
+      } else if (playlistUrl.playingList === audio.src) {
         if (playing.playSong === true) {
           dispatch(
             set_audioStatus({
-              audioStatus: playlisturl.playinglist,
+              audioStatus: playlistUrl.playingList,
             })
           );
           audio.play();
 
-          audioChecktime();
+          audioCheckTime();
         } else if (playing.playSong === false) {
           audio.pause();
           audio.currentTime = 0;
@@ -81,25 +81,25 @@ function Player({ spotify }) {
             })
           );
         }
-      } else if (playlisturl.playinglist !== audio.src) {
+      } else if (playlistUrl.playingList !== audio.src) {
         audio.pause();
         audio.currentTime = 0;
         if (playing.playSong === true) {
           dispatch(
             set_audioStatus({
-              audioStatus: playlisturl.playinglist,
+              audioStatus: playlistUrl.playingList,
             })
           );
-          audio.src = playlisturl.playinglist;
+          audio.src = playlistUrl.playingList;
           audio.play();
 
-          audioChecktime();
+          audioCheckTime();
         }
       }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playlisturl]);
+  }, [playlistUrl]);
 
   return (
     <Router>

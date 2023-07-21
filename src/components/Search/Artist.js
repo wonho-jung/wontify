@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectArtistDetail } from "../../features/userSlice";
+import { selectArtistDetail } from "../../features/spotifyDataSlice";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "../shared/SongRow";
@@ -10,7 +10,7 @@ import SearchHeader from "./SearchHeader";
 function Artist({ spotify }) {
   const artistDetail = useSelector(selectArtistDetail);
   const [followNumber, setFollowNumber] = useState("");
-  const [btntext, setBtntext] = useState("Follow");
+  const [btnText, setBtnText] = useState("Follow");
   useEffect(() => {
     if (artistDetail) {
       setFollowNumber(artistDetail.artistInfo.followers.total);
@@ -18,14 +18,14 @@ function Artist({ spotify }) {
   }, [artistDetail]);
 
   const followArtist = () => {
-    if (btntext === "Follow") {
+    if (btnText === "Follow") {
       setFollowNumber(artistDetail.artistInfo.followers.total + 1);
 
-      setBtntext("Followed");
+      setBtnText("Followed");
     } else {
       setFollowNumber(artistDetail.artistInfo.followers.total);
 
-      setBtntext("Follow");
+      setBtnText("Follow");
     }
   };
   return (
@@ -58,13 +58,13 @@ function Artist({ spotify }) {
           <ArtistSongs>
             <ArtistIcons>
               <PlayCircleFilledIcon className="Artist__shuffle" />
-              <Button onClick={followArtist}>{btntext}</Button>
+              <Button onClick={followArtist}>{btnText}</Button>
               <MoreHorizIcon />
             </ArtistIcons>
             <h1 className="artistTitle">Popular Top 10</h1>
             {artistDetail?.artistDetail.tracks.map((item, inx) => (
               <SongRow
-                audiolist={artistDetail.artistDetail.tracks}
+                audioList={artistDetail.artistDetail.tracks}
                 url={item.preview_url}
                 key={inx}
                 time={item.duration_ms}

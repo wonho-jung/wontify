@@ -16,7 +16,7 @@ export function addSongToPlaylist({ data, id }) {
   return apiServer.put(`/playlist/${id}`, data);
 }
 
-export function getplaylistDetails(id) {
+export function getPlaylistDetails(id) {
   return apiServer.get(`/playlist/${id}`);
 }
 export function deletePlaylist(id) {

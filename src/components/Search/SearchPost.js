@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { set_categoriesDetail } from "../../features/userSlice";
+import { set_categoriesDetail } from "../../features/spotifyDataSlice";
 
 function SearchPost({ spotify, image, name, id }) {
   const dispatch = useDispatch();

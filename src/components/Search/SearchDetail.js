@@ -1,7 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectSearchResult, set_artistDetail } from "../../features/userSlice";
+import {
+  selectSearchResult,
+  set_artistDetail,
+} from "../../features/spotifyDataSlice";
 import SearchHeader from "./SearchHeader";
 import SearchArtistPost from "./SearchArtistPost";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
@@ -29,7 +32,7 @@ function SearchDetail({ spotify }) {
 
       {searchResult && searchResult.searchResult?.artists.items.length > 0 ? (
         <>
-          <SearchresultContainer>
+          <TopResultBox>
             <ResultLeft>
               <h3>Top result</h3>
               <Link
@@ -54,12 +57,12 @@ function SearchDetail({ spotify }) {
             </ResultLeft>
             <ResultRight>
               <h3>Songs</h3>
-              <ResultRightSongcontainer>
+              <ResultSongsContainer>
                 {searchResult?.searchResult.tracks.items
                   .filter((url) => url.preview_url !== null)
                   .map((item, idx) => (
                     <SongRow
-                      audiolist={searchResult.searchResult.tracks.items}
+                      audioList={searchResult.searchResult.tracks.items}
                       url={item.preview_url}
                       key={idx}
                       time={item.duration_ms}
@@ -69,9 +72,9 @@ function SearchDetail({ spotify }) {
                       artistsName={item.artists}
                     />
                   ))}
-              </ResultRightSongcontainer>
+              </ResultSongsContainer>
             </ResultRight>
-          </SearchresultContainer>
+          </TopResultBox>
 
           <h3>Artist</h3>
           <Test>
@@ -112,7 +115,7 @@ const Test = styled.div`
   display: flex;
   flex-wrap: wrap;
 `;
-const SearchresultContainer = styled.div`
+const TopResultBox = styled.div`
   display: flex;
 `;
 
@@ -136,7 +139,7 @@ const PostContainer = styled.div`
   .icon {
     font-size: 60px;
     position: absolute;
-    color: lightgreen;
+    color: lightGreen;
     top: 150px;
     left: 300px;
     display: none;
@@ -161,7 +164,7 @@ const PostContent = styled.div`
     font-size: 40px;
   }
 `;
-const ResultRightSongcontainer = styled.div`
+const ResultSongsContainer = styled.div`
   margin-top: 15px;
   border-radius: 20px;
   width: 95%;

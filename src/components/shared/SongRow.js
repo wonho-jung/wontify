@@ -6,12 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectAudioStatus,
   selectPlaying,
-  selectPlaylists,
-  set_footeraudioState,
+  // selectPlaylists,
+  set_footerAudioState,
   set_playing,
-  set_playinglist,
+  set_playingList,
   set_playlists,
-} from "../../features/userSlice";
+} from "../../features/audioStatusSlice";
+import { selectPlaylists } from "../../features/userPlaylistSlice";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
 import {
@@ -34,30 +35,30 @@ function SongRow({
   artistsName,
   trackNumber,
   time,
-  audiolist,
+  audioList,
   isUserPlaylist = false,
   id = null,
-  removeSonglistById = null,
+  removeSongListById = null,
 }) {
   const dispatch = useDispatch();
-  const audiostate = useSelector(selectAudioStatus);
+  const audioState = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
   const { playlists } = useSelector(selectPlaylists);
-  const [addSongDialogOpen, setaddSongDialogOpen] = useState(false);
+  const [addSongDialogOpen, setAddSongDialogOpen] = useState(false);
   const [userPlaylistId, setUserPlaylistId] = useState("");
   const playlistId = window.location.pathname.split("/")[2];
   const deleteSongHandler = () => {
     deleteSongFromPlaylist(playlistId, id).then((res) => {
-      removeSonglistById(id);
+      removeSongListById(id);
     });
   };
 
   const dialogOpenHandler = () => {
-    setaddSongDialogOpen(true);
+    setAddSongDialogOpen(true);
   };
   const dialogCloseHandler = () => {
     setUserPlaylistId("");
-    setaddSongDialogOpen(false);
+    setAddSongDialogOpen(false);
   };
 
   const dialogSubmitHandler = () => {
@@ -99,33 +100,33 @@ function SongRow({
       })
     );
     dispatch(
-      set_playinglist({
-        playinglist: url,
+      set_playingList({
+        playingList: url,
       })
     );
     dispatch(
-      set_footeraudioState({
-        footeraudioState: {
+      set_footerAudioState({
+        footerAudioState: {
           name,
           url,
           image,
           artistsName,
           albumName,
-          audiolist,
+          audioList,
         },
       })
     );
   };
 
-  const stopsong = () => {
+  const stopSong = () => {
     dispatch(
       set_playing({
         playSong: false,
       })
     );
     dispatch(
-      set_playinglist({
-        playinglist: url,
+      set_playingList({
+        playingList: url,
       })
     );
   };
@@ -138,17 +139,17 @@ function SongRow({
 
   return (
     <SongRowContainer>
-      {(time && url !== null && audiostate?.audioStatus === null) ||
-        (time && url !== null && audiostate?.audioStatus !== url && (
+      {(time && url !== null && audioState?.audioStatus === null) ||
+        (time && url !== null && audioState?.audioStatus !== url && (
           <PlayCircleOutlineIcon
             onClick={playSong}
             className="icon"
             fontSize="large"
           />
         ))}
-      {time && url !== null && audiostate?.audioStatus === url && playing && (
+      {time && url !== null && audioState?.audioStatus === url && playing && (
         <PauseCircleOutlineIcon
-          onClick={stopsong}
+          onClick={stopSong}
           className="icon"
           fontSize="large"
         />
@@ -280,7 +281,7 @@ const SongRowContainer = styled.div`
     position: absolute;
     top: 30px;
     left: 0;
-    color: lightgreen;
+    color: lightGreen;
     display: none;
   }
   h5 {

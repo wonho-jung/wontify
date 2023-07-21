@@ -2,7 +2,7 @@ import React from "react";
 
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectCategories } from "../../features/userSlice";
+import { selectCategories } from "../../features/spotifyDataSlice";
 import SearchPost from "./SearchPost";
 import SearchHeader from "./SearchHeader";
 
@@ -15,7 +15,7 @@ function Search({ spotify }) {
 
       <h3>Browse all</h3>
       <CategoryContainer>
-        <Categorycontent>
+        <CategoryContent>
           {category?.category.categories?.items.map((item, idx) => (
             <SearchPost
               key={idx}
@@ -25,7 +25,7 @@ function Search({ spotify }) {
               name={item.name}
             />
           ))}
-        </Categorycontent>
+        </CategoryContent>
       </CategoryContainer>
     </SearchContainer>
   );
@@ -48,7 +48,7 @@ const SearchContainer = styled.div`
 const CategoryContainer = styled.div`
   width: 100%;
 `;
-const Categorycontent = styled.div`
+const CategoryContent = styled.div`
   display: flex;
   flex-wrap: wrap;
 `;

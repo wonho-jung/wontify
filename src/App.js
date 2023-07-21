@@ -10,7 +10,7 @@ import {
   set_party,
   set_mood,
   set_categories,
-} from "./features/userSlice";
+} from "./features/spotifyDataSlice";
 import "./App.css";
 import { getToken } from "./utils/spotify";
 import ErrorScreen from "./components/shared/ErrorScreen";
@@ -27,15 +27,21 @@ function App() {
       try {
         const token = await getToken();
         spotify.setAccessToken(token);
-        const [newReleases, topList, workout, mood, party, categories] =
-          await Promise.all([
-            spotify.getNewReleases({ limit: 10 }),
-            spotify.getCategoryPlaylists("toplists", { limit: 10 }),
-            spotify.getCategoryPlaylists("workout", { limit: 10 }),
-            spotify.getCategoryPlaylists("mood", { limit: 10 }),
-            spotify.getCategoryPlaylists("party", { limit: 10 }),
-            spotify.getCategories(),
-          ]);
+        const [
+          newReleases,
+          topList,
+          workout,
+          mood,
+          party,
+          categories,
+        ] = await Promise.all([
+          spotify.getNewReleases({ limit: 10 }),
+          spotify.getCategoryPlaylists("toplists", { limit: 10 }),
+          spotify.getCategoryPlaylists("workout", { limit: 10 }),
+          spotify.getCategoryPlaylists("mood", { limit: 10 }),
+          spotify.getCategoryPlaylists("party", { limit: 10 }),
+          spotify.getCategories(),
+        ]);
         dispatch(
           set_newReleases({
             newReleases: newReleases.albums.items,

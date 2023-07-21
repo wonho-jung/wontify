@@ -40,7 +40,7 @@ const PostContainer = styled.div`
     position: absolute;
     top: 100px;
     left: 100px;
-    color: lightgreen;
+    color: lightGreen;
     display: none;
   }
   opacity: 0.7;

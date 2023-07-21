@@ -3,11 +3,11 @@ import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
-import { set_artistDetail } from "../../features/userSlice";
+import { set_artistDetail } from "../../features/spotifyDataSlice";
 
 function SearchArtistPost({ spotify, image, name, id, artistInfo }) {
   const dispatch = useDispatch();
-  const sendToArtis = () => {
+  const sendToArtiest = () => {
     spotify.getArtistTopTracks(id, "CA").then((res) => {
       dispatch(
         set_artistDetail({
@@ -22,7 +22,7 @@ function SearchArtistPost({ spotify, image, name, id, artistInfo }) {
       to={`/artist/${id}`}
       style={{ textDecoration: "none", color: "white" }}
     >
-      <PostContainer onClick={sendToArtis}>
+      <PostContainer onClick={sendToArtiest}>
         <PostContent>
           <img src={image} alt="" />
           <p>{name && name}</p>
@@ -61,7 +61,7 @@ const PostContent = styled.div`
   .icon {
     font-size: 60px;
     position: absolute;
-    color: lightgreen;
+    color: lightGreen;
     top: 100px;
     left: 100px;
     display: none;
