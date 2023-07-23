@@ -1,36 +1,39 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import { set_artistDetail } from "../../features/spotifyDataSlice";
+import { spotifyContext } from "../Player";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
-function SearchArtistPost({ spotify, image, name, id, artistInfo }) {
+function SearchArtistPost({ image, name, id, artistInfo }) {
+  const spotify = useContext(spotifyContext);
   const dispatch = useDispatch();
-  const sendToArtiest = () => {
-    spotify.getArtistTopTracks(id, "CA").then((res) => {
+  const history = useHistory();
+  const sendToArtiest = async () => {
+    try {
+      const res = await spotify.getArtistTopTracks(id, "CA");
       dispatch(
         set_artistDetail({
           artistDetail: res,
           artistInfo: artistInfo,
         })
       );
-    });
+      history.push(`/artist/${id}`);
+    } catch (err) {
+      alert(err.message);
+    }
   };
+
   return (
-    <Link
-      to={`/artist/${id}`}
-      style={{ textDecoration: "none", color: "white" }}
-    >
-      <PostContainer onClick={sendToArtiest}>
-        <PostContent>
-          <img src={image} alt="" />
-          <p>{name && name}</p>
-          <p>Artist</p>
-          <PlayCircleOutlineIcon className="icon" fontSize="large" />
-        </PostContent>
-      </PostContainer>
-    </Link>
+    <PostContainer onClick={sendToArtiest}>
+      <PostContent>
+        <img src={image} alt="artist" />
+        <p>{name && name}</p>
+        <p>Artist</p>
+        <PlayCircleOutlineIcon className="icon" fontSize="large" />
+      </PostContent>
+    </PostContainer>
   );
 }
 

@@ -1,68 +1,63 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useContext } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import {
-  selectSearchResult,
-  set_artistDetail,
-} from "../../features/spotifyDataSlice";
-import SearchHeader from "./SearchHeader";
+import { set_artistDetail } from "../../features/spotifyDataSlice";
 import SearchArtistPost from "./SearchArtistPost";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
-import { Link } from "react-router-dom";
 import SongRow from "../shared/SongRow";
+import { spotifyContext } from "../Player";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
-function SearchDetail({ spotify }) {
+function SearchDetail({ searchResult }) {
+  const spotify = useContext(spotifyContext);
   const dispatch = useDispatch();
-  const searchResult = useSelector(selectSearchResult);
-  const sendArtist = () => {
-    spotify
-      .getArtistTopTracks(searchResult.searchResult.artists.items[0].id, "CA")
-      .then((res) => {
-        dispatch(
-          set_artistDetail({
-            artistDetail: res,
-            artistInfo: searchResult.searchResult.artists.items[0],
-          })
-        );
-      });
+  const history = useHistory();
+  const getArtistTracks = async () => {
+    try {
+      const res = await spotify.getArtistTopTracks(
+        searchResult.artists.items[0].id,
+        "CA"
+      );
+      dispatch(
+        set_artistDetail({
+          artistDetail: res,
+          artistInfo: searchResult?.artists.items[0],
+        })
+      );
+      history.push(`/artist/${searchResult.artists.items[0].id}`);
+    } catch (err) {
+      alert(err.message);
+    }
   };
+
   return (
     <SearchResultContainer>
-      <SearchHeader spotify={spotify} />
-
-      {searchResult && searchResult.searchResult?.artists.items.length > 0 ? (
+      {!!searchResult && searchResult.artists.items.length > 0 ? (
         <>
           <TopResultBox>
             <ResultLeft>
               <h3>Top result</h3>
-              <Link
-                to={`/artist/${searchResult.searchResult?.artists.items[0].id}`}
-                style={{ textDecoration: "none", color: "white" }}
-              >
-                <PostContainer onClick={sendArtist}>
-                  <PostContent>
-                    <img
-                      src={
-                        searchResult.searchResult.artists?.items[0].images[0]
-                          .url
-                      }
-                      alt=""
-                    />
-                    <h2>{searchResult.searchResult.artists?.items[0].name}</h2>
-                    <h3>Artist</h3>
-                    <PlayCircleOutlineIcon className="icon" fontSize="large" />
-                  </PostContent>
-                </PostContainer>
-              </Link>
+
+              <PostContainer>
+                <PostContent onClick={getArtistTracks}>
+                  <img
+                    src={searchResult.artists?.items[0].images[0].url}
+                    alt=""
+                  />
+                  <h2>{searchResult.artists?.items[0].name}</h2>
+                  <h3>Artist</h3>
+                  <PlayCircleOutlineIcon className="icon" fontSize="large" />
+                </PostContent>
+              </PostContainer>
             </ResultLeft>
             <ResultRight>
               <h3>Songs</h3>
               <ResultSongsContainer>
-                {searchResult?.searchResult.tracks.items
+                {searchResult?.tracks.items
                   .filter((url) => url.preview_url !== null)
                   .map((item, idx) => (
                     <SongRow
-                      audioList={searchResult.searchResult.tracks.items}
+                      audioList={searchResult.tracks.items}
                       url={item.preview_url}
                       key={idx}
                       time={item.duration_ms}
@@ -78,11 +73,10 @@ function SearchDetail({ spotify }) {
 
           <h3>Artist</h3>
           <Test>
-            {searchResult?.searchResult.artists.items.map((item, idx) => (
+            {searchResult?.artists.items.map((item, idx) => (
               <SearchArtistPost
                 key={idx}
                 id={item.id}
-                spotify={spotify}
                 image={item.images[0]?.url}
                 name={item.name}
                 artistInfo={item}

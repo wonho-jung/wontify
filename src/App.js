@@ -4,7 +4,6 @@ import Player from "./components/Player";
 import SpotifyWebApi from "spotify-web-api-js";
 import { useDispatch } from "react-redux";
 import {
-  set_newReleases,
   set_topList,
   set_workout,
   set_party,
@@ -14,7 +13,7 @@ import {
 import "./App.css";
 import { getToken } from "./utils/spotify";
 import ErrorScreen from "./components/shared/ErrorScreen";
-import LoadingScreen from "./components/shared/LoadingScreen";
+import Loading from "./components/shared/Loading";
 
 function App() {
   const [isLoadData, setIsLoadData] = useState(false);
@@ -27,26 +26,14 @@ function App() {
       try {
         const token = await getToken();
         spotify.setAccessToken(token);
-        const [
-          newReleases,
-          topList,
-          workout,
-          mood,
-          party,
-          categories,
-        ] = await Promise.all([
-          spotify.getNewReleases({ limit: 10 }),
+        const [topList, workout, mood, party, categories] = await Promise.all([
           spotify.getCategoryPlaylists("toplists", { limit: 10 }),
           spotify.getCategoryPlaylists("workout", { limit: 10 }),
           spotify.getCategoryPlaylists("mood", { limit: 10 }),
           spotify.getCategoryPlaylists("party", { limit: 10 }),
           spotify.getCategories(),
         ]);
-        dispatch(
-          set_newReleases({
-            newReleases: newReleases.albums.items,
-          })
-        );
+
         dispatch(
           set_topList({
             topList: topList.playlists.items,
@@ -84,7 +71,7 @@ function App() {
 
   return (
     <div className="app">
-      {isLoadData ? <Player spotify={spotify} /> : <LoadingScreen />}
+      {isLoadData ? <Player spotify={spotify} /> : <Loading />}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
@@ -14,9 +14,12 @@ import {
   selectPlaylists,
 } from "../../features/userPlaylistSlice";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { spotifyContext } from "../Player";
 const SAM_PLAY_LIST = "sam_playlist";
 
-function Sidebar({ spotify }) {
+function Sidebar() {
+  const spotify = useContext(spotifyContext);
+
   const [createPlaylistDialogOpen, setCreatePlaylistDialogOpen] = useState(
     false
   );
@@ -81,6 +84,7 @@ function Sidebar({ spotify }) {
     reloadGetPlaylists();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <SidebarContainer>
       <img

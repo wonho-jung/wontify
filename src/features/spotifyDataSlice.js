@@ -10,8 +10,9 @@ const initialSpotifyDataState = {
   detailAlbumTracks: null,
   category: null,
   categoryDetail: null,
-  searchResult: null,
+  // searchResult: null,
   artistDetail: null,
+  test: null,
 };
 
 const spotifyDataSlice = createSlice({
@@ -46,9 +47,9 @@ const spotifyDataSlice = createSlice({
     set_categoriesDetail: (state, action) => {
       state.categoryDetail = action.payload;
     },
-    set_searchResult: (state, action) => {
-      state.searchResult = action.payload;
-    },
+    // set_searchResult: (state, action) => {
+    //   state.searchResult = action.payload;
+    // },
     set_artistDetail: (state, action) => {
       state.artistDetail = action.payload;
     },
@@ -65,7 +66,7 @@ export const {
   set_DetailAlbumTracks,
   set_categories,
   set_categoriesDetail,
-  set_searchResult,
+  // set_searchResult,
   set_artistDetail,
 } = spotifyDataSlice.actions;
 
@@ -80,7 +81,7 @@ export const selectDetailAlbumTracks = (state) =>
 export const selectCategories = (state) => state.spotifyData.category;
 export const selectCategoriesDetail = (state) =>
   state.spotifyData.categoryDetail;
-export const selectSearchResult = (state) => state.spotifyData.searchResult;
+// export const selectSearchResult = (state) => state.spotifyData.searchResult;
 export const selectArtistDetail = (state) => state.spotifyData.artistDetail;
 
 export default spotifyDataSlice.reducer;

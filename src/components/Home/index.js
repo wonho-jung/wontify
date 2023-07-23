@@ -1,22 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import {
   selectMood,
-  selectNewReleases,
   selectParty,
   selectTopList,
   selectWorkout,
 } from "../../features/spotifyDataSlice";
 import { useSelector } from "react-redux";
-import Loading from "../shared/Loading";
 import Post from "../shared/Post";
-function Home({ spotify }) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const newReleases = useSelector(selectNewReleases);
-  const topList = useSelector(selectTopList);
-  const workout = useSelector(selectWorkout);
-  const party = useSelector(selectParty);
-  const mood = useSelector(selectMood);
+import { spotifyContext } from "../Player";
+function Home() {
+  const spotify = useContext(spotifyContext);
+  const { topList } = useSelector(selectTopList);
+  const { workout } = useSelector(selectWorkout);
+  const { party } = useSelector(selectParty);
+  const { mood } = useSelector(selectMood);
 
   const filterEmptyValueInArray = (array) => {
     if (!array) return;
@@ -26,110 +24,72 @@ function Home({ spotify }) {
     return filteredArray;
   };
 
-  useEffect(() => {
-    if (
-      newReleases?.newReleases &&
-      topList?.topList &&
-      workout?.workout &&
-      party?.party &&
-      mood?.mood
-    ) {
-      setIsLoaded(true);
-    }
-  }, [newReleases, topList, workout, party, mood]);
-
   return (
     <HomeContainer>
-      {isLoaded ? (
-        <>
-          <HomeContentContainer>
-            <h1>New Releases</h1>
-            <PostsContainer>
-              {filterEmptyValueInArray(newReleases?.newReleases).map(
-                (track, inx) => (
-                  <Post
-                    spotify={spotify}
-                    key={inx}
-                    albumId={track.id}
-                    image={track.images[0].url}
-                    artistsName={track.artists[0].name}
-                    name={track.name}
-                  />
-                )
-              )}
-            </PostsContainer>
-          </HomeContentContainer>
+      <>
+        <HomeContentContainer>
+          <h1>Top play lists</h1>
+          <PostsContainer>
+            {filterEmptyValueInArray(topList).map((track, inx) => (
+              <Post
+                spotify={spotify}
+                playlistId={track?.id}
+                key={inx}
+                image={track.images[0].url}
+                artistsName={track.name}
+                description={track.description}
+              />
+            ))}
+          </PostsContainer>
+        </HomeContentContainer>
 
-          <HomeContentContainer>
-            <h1>Top play lists</h1>
-            <PostsContainer>
-              {filterEmptyValueInArray(topList?.topList).map((track, inx) => (
-                <Post
-                  spotify={spotify}
-                  playlistId={track?.id}
-                  key={inx}
-                  image={track.images[0].url}
-                  artistsName={track.name}
-                  description={track.description}
-                />
-              ))}
-            </PostsContainer>
-          </HomeContentContainer>
+        <HomeContentContainer>
+          <h1>Work out</h1>
+          <PostsContainer>
+            {filterEmptyValueInArray(workout).map((track, inx) => (
+              <Post
+                spotify={spotify}
+                playlistId={track?.id}
+                key={inx}
+                image={track.images[0].url}
+                artistsName={track.name}
+                description={track.description}
+              />
+            ))}
+          </PostsContainer>
+        </HomeContentContainer>
+        <HomeContentContainer>
+          <h1>Mood</h1>
+          <PostsContainer>
+            {filterEmptyValueInArray(mood).map((track, inx) => (
+              <Post
+                spotify={spotify}
+                playlistId={track.id}
+                key={inx}
+                image={track.images[0].url}
+                artistsName={track.name}
+                description={track.description}
+              />
+            ))}
+          </PostsContainer>
+        </HomeContentContainer>
 
-          <HomeContentContainer>
-            <h1>Work out</h1>
-            <PostsContainer>
-              {filterEmptyValueInArray(workout?.workout)?.map((track, inx) => (
-                <Post
-                  spotify={spotify}
-                  playlistId={track?.id}
-                  key={inx}
-                  image={track.images[0].url}
-                  artistsName={track.name}
-                  description={track.description}
-                />
-              ))}
-            </PostsContainer>
-          </HomeContentContainer>
-          <HomeContentContainer>
-            <h1>Mood</h1>
-            <PostsContainer>
-              {filterEmptyValueInArray(mood?.mood)?.map((track, inx) => (
-                <Post
-                  spotify={spotify}
-                  playlistId={track.id}
-                  key={inx}
-                  image={track.images[0].url}
-                  artistsName={track.name}
-                  description={track.description}
-                />
-              ))}
-            </PostsContainer>
-          </HomeContentContainer>
-
-          <HomeContentContainer>
-            <h1>Party</h1>
-            <PostsContainer>
-              {filterEmptyValueInArray(party?.party)?.map((track, inx) => (
-                <Post
-                  spotify={spotify}
-                  playlistId={track?.id}
-                  key={inx}
-                  image={track.images[0].url}
-                  artistsName={track.name}
-                  description={track.description}
-                />
-              ))}
-            </PostsContainer>
-          </HomeContentContainer>
-        </>
-      ) : (
-        <>
-          <div>
-            <Loading />
-          </div>
-        </>
-      )}
+        <HomeContentContainer>
+          <h1>Party</h1>
+          <PostsContainer>
+            {filterEmptyValueInArray(party).map((track, inx) => (
+              <Post
+                spotify={spotify}
+                playlistId={track?.id}
+                key={inx}
+                image={track.images[0].url}
+                artistsName={track.name}
+                description={track.description}
+              />
+            ))}
+          </PostsContainer>
+        </HomeContentContainer>
+      </>
     </HomeContainer>
   );
 }

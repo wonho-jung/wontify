@@ -77,7 +77,7 @@ function Artist({ spotify }) {
           </ArtistSongs>
         </>
       ) : (
-        <h1 style={{ fontSize: "30px" }}>No data sorry :( go back to Search</h1>
+        <h1 style={{ fontSize: "30px" }}>No data.. Go back to Search</h1>
       )}
     </ArtistContainer>
   );

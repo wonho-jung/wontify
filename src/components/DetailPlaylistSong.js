@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
@@ -6,37 +6,36 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import styled from "styled-components";
 
-import Loading from "../shared/Loading";
-import SongRow from "../shared/SongRow";
+import Loading from "./shared/Loading";
+import SongRow from "./shared/SongRow";
+import { spotifyContext } from "./Player";
 
-function DetailPlaylist({ spotify }) {
+function DetailPlaylist() {
+  const spotify = useContext(spotifyContext);
   const [detailPlaylists, setDetailPlaylists] = useState("");
+  const playlistId = window.location.href.split("/")[4];
+  const [isLoadData, setIsLoadData] = useState(false);
 
-  const [loading, setLoading] = useState(true);
-
-  const playlistId = window.location.href.split("/")[5];
   const history = useHistory();
 
-  const sendPlaylistDetail = () => {
-    spotify
-      .getPlaylist(playlistId)
-      .then((res) => {
-        setDetailPlaylists(res);
-        setLoading(false);
-      })
-      .catch((err) => {
-        alert("something went wrong, please try again");
-        history.push("/");
-      });
-  };
   useEffect(() => {
-    sendPlaylistDetail();
+    const fetchData = async () => {
+      try {
+        const getPlaylist = await spotify.getPlaylist(playlistId);
+        setDetailPlaylists(getPlaylist);
+        setIsLoadData(true);
+      } catch (err) {
+        alert("something went wrong, please try again", err.message);
+        history.push("/home");
+      }
+    };
+    fetchData();
     // eslint-disable-next-line
   }, []);
 
   return (
     <DetailPlaylistContainer>
-      {loading ? (
+      {!isLoadData ? (
         <Loading />
       ) : (
         <>
@@ -82,7 +81,7 @@ const DetailPlaylistContainer = styled.div`
   height: 100vh;
   color: white;
   overflow-y: overlay;
-  background: linear-gradient(#ffafbd, #ffc3a0);
+  background: linear-gradient(#42275a, #734b6d);
   ::-webkit-scrollbar {
     display: none;
   }
