@@ -20,7 +20,7 @@ import {
 } from "../features/audioStatusSlice";
 import { useState } from "react";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
-import DetailPlaylistSong from "./DetailPlaylistSong";
+import DetailPlaylistSong from "./DetailPlaylist";
 
 export const spotifyContext = createContext();
 
