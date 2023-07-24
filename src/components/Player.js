@@ -9,7 +9,6 @@ import Home from "./Home";
 
 import Search from "./Search";
 import SearchCategory from "./Search/SearchCategoryPostDetail";
-import SearchDetail from "./Search/SearchDetail";
 import Artist from "./Search/Artist";
 import { useDispatch, useSelector } from "react-redux";
 import {

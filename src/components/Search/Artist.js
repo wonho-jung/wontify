@@ -41,7 +41,7 @@ function Artist({ spotify }) {
             <ArtistInfoText>
               <strong>ARTIST</strong>
 
-              <h2>{artistDetail?.artistInfo.name}</h2>
+              <h1>{artistDetail?.artistInfo.name}</h1>
 
               {artistDetail?.artistInfo.genres && (
                 <p>
@@ -61,7 +61,7 @@ function Artist({ spotify }) {
               <Button onClick={followArtist}>{btnText}</Button>
               <MoreHorizIcon />
             </ArtistIcons>
-            <h1 className="artistTitle">Popular Top 10</h1>
+            <h1>Popular Top 10</h1>
             {artistDetail?.artistDetail.tracks.map((item, inx) => (
               <SongRow
                 audioList={artistDetail.artistDetail.tracks}
@@ -77,7 +77,7 @@ function Artist({ spotify }) {
           </ArtistSongs>
         </>
       ) : (
-        <h1 style={{ fontSize: "30px" }}>No data.. Go back to Search</h1>
+        <h1 style={{ fontSize: "30px" }}>No data.. go back to Search</h1>
       )}
     </ArtistContainer>
   );
@@ -109,8 +109,8 @@ const ArtistInfo = styled.div`
 `;
 const ArtistInfoText = styled.div`
   flex: 1;
-  > h2 {
-    font-size: 150px;
+  > h1 {
+    font-size: 70px;
     margin-bottom: 10px;
   }
   > p {
@@ -120,8 +120,8 @@ const ArtistInfoText = styled.div`
 `;
 
 const ArtistSongs = styled.div`
-  margin: 20px -30px;
-  .artistTitle {
+  margin: 20px, -30px;
+  .h1 {
     margin-left: 30px;
   }
 `;
@@ -134,7 +134,7 @@ const ArtistIcons = styled.div`
     padding: 10px;
     color: white;
     :hover {
-      border: 3px solid green;
+      border: 1px solid green;
     }
   }
   > .MuiSvgIcon-root {
