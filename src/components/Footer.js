@@ -19,6 +19,7 @@ import {
 
 function Footer({ audio, currentTime }) {
   const [volume, setVolume] = useState(100);
+
   const footerAudioState = useSelector(selectFooterAudioState);
   const audioState = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);

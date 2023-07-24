@@ -9,7 +9,7 @@ import SongRow from "../shared/SongRow";
 import { getPlaylistDetails } from "../../backend";
 import { useLocation } from "react-router-dom";
 
-function UserPlayList() {
+function UserPlayList({ spotify }) {
   const [songLists, setSongLists] = useState([]);
   const [userAudioList, setUserAudioList] = useState([]);
   const { playlists } = useSelector(selectPlaylists);

@@ -109,6 +109,10 @@ const ArtistInfoText = styled.div`
   flex: 1;
   > h1 {
     font-size: 70px;
+<<<<<<< HEAD:src/components/Search/Artist.tsx
+=======
+
+>>>>>>> 15f693307b7e827252a9694fd69868028b2471db:src/components/Search/Artist.js
     margin-bottom: 10px;
   }
   > p {
@@ -133,6 +137,10 @@ const ArtistIcons = styled.div`
     color: white;
     :hover {
       border: 1px solid green;
+<<<<<<< HEAD:src/components/Search/Artist.tsx
+=======
+
+>>>>>>> 15f693307b7e827252a9694fd69868028b2471db:src/components/Search/Artist.js
     }
   }
   > .MuiSvgIcon-root {
