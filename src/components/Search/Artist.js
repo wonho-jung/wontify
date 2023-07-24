@@ -41,7 +41,9 @@ function Artist({ spotify }) {
             <ArtistInfoText>
               <strong>ARTIST</strong>
 
+
               <h1>{artistDetail?.artistInfo.name}</h1>
+
 
               {artistDetail?.artistInfo.genres && (
                 <p>
@@ -62,6 +64,7 @@ function Artist({ spotify }) {
               <MoreHorizIcon />
             </ArtistIcons>
             <h1>Popular Top 10</h1>
+
             {artistDetail?.artistDetail.tracks.map((item, inx) => (
               <SongRow
                 audioList={artistDetail.artistDetail.tracks}
@@ -77,7 +80,7 @@ function Artist({ spotify }) {
           </ArtistSongs>
         </>
       ) : (
-        <h1 style={{ fontSize: "30px" }}>No data.. go back to Search</h1>
+        <h1 style={{ fontSize: "30px" }}>No data.. Go back to Search</h1>
       )}
     </ArtistContainer>
   );
@@ -111,6 +114,7 @@ const ArtistInfoText = styled.div`
   flex: 1;
   > h1 {
     font-size: 70px;
+
     margin-bottom: 10px;
   }
   > p {
@@ -135,6 +139,7 @@ const ArtistIcons = styled.div`
     color: white;
     :hover {
       border: 1px solid green;
+
     }
   }
   > .MuiSvgIcon-root {
