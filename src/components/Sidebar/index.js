@@ -14,7 +14,7 @@ import {
   selectPlaylists,
 } from "../../features/userPlaylistSlice";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import { spotifyContext } from "../Player";
+import { spotifyContext } from "App";
 const SAM_PLAY_LIST = "sam_playlist";
 
 function Sidebar() {

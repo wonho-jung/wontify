@@ -6,13 +6,10 @@ import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "../shared/SongRow";
-import { useLocation } from "react-router-dom";
 import { getPlaylistDetails } from "../../backend";
+import { useLocation } from "react-router-dom";
 
-// import Loading from "./Loading";
-
-function UserPlayList({ spotify }) {
-  // const [loading, setLoading] = useState(false);
+function UserPlayList() {
   const [songLists, setSongLists] = useState([]);
   const [userAudioList, setUserAudioList] = useState([]);
   const { playlists } = useSelector(selectPlaylists);
@@ -78,7 +75,6 @@ function UserPlayList({ spotify }) {
             name={item.name}
             albumName={item.albumName}
             artistsName={item.artistsName}
-            spotify={spotify}
             isUserPlaylist={true}
           />
         ))}

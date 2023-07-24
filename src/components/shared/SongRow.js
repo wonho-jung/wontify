@@ -33,7 +33,7 @@ function SongRow({
   name,
   albumName,
   artistsName,
-  trackNumber,
+  trackNumber = "",
   time,
   audioList,
   isUserPlaylist = false,
@@ -46,7 +46,7 @@ function SongRow({
   const { playlists } = useSelector(selectPlaylists);
   const [addSongDialogOpen, setAddSongDialogOpen] = useState(false);
   const [userPlaylistId, setUserPlaylistId] = useState("");
-  const playlistId = window.location.pathname.split("/")[2];
+  const playlistId = window.location?.pathname.split("/")[2];
   const deleteSongHandler = () => {
     deleteSongFromPlaylist(playlistId, id).then((res) => {
       removeSongListById(id);

@@ -16,6 +16,7 @@ import {
   set_playing,
   set_playingList,
 } from "../features/audioStatusSlice";
+
 function Footer({ audio, currentTime }) {
   const [volume, setVolume] = useState(100);
   const footerAudioState = useSelector(selectFooterAudioState);

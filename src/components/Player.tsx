@@ -1,12 +1,10 @@
-import React, { useEffect, createContext } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-
+import React, { useEffect, useState } from "react";
+import { Navigate, Route, BrowserRouter, Routes } from "react-router-dom";
 import styled from "styled-components";
 import UserPlayList from "./UserPlayList";
 import Footer from "./Footer";
 import Sidebar from "./Sidebar";
 import Home from "./Home";
-
 import Search from "./Search";
 import SearchCategory from "./Search/SearchCategoryPostDetail";
 import Artist from "./Search/Artist";
@@ -17,13 +15,9 @@ import {
   set_audioStatus,
   set_playing,
 } from "../features/audioStatusSlice";
-import { useState } from "react";
-import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 import DetailPlaylistSong from "./DetailPlaylist";
 
-export const spotifyContext = createContext();
-
-function Player({ spotify }) {
+function Player() {
   const [currentTime, setCurrentTime] = useState(0);
   const [audio] = useState(new Audio());
   const playing = useSelector(selectPlaying);
@@ -49,7 +43,8 @@ function Player({ spotify }) {
     }, 30000);
   };
 
-  audio.ontimeupdate = (e) => {
+  audio.ontimeupdate = (e: any) => {
+    //ts-ignore
     setCurrentTime(Math.ceil(e.target.currentTime));
   };
   useEffect(() => {
@@ -104,43 +99,26 @@ function Player({ spotify }) {
   }, [playlistUrl]);
 
   return (
-    <Router>
-      <spotifyContext.Provider value={spotify}>
-        <PlayerContainer>
-          <PlayerBody>
-            <Sidebar />
-            <Switch>
-              <Route path="/home" exact>
-                <Home />
-              </Route>
-
-              <Route path="/detail_playlist/:id">
-                <DetailPlaylistSong />
-              </Route>
-
-              <Route path="/search/:name">
-                <SearchCategory spotify={spotify} />
-              </Route>
-
-              <Route path="/search" exact>
-                <Search />
-              </Route>
-
-              <Route path="/artist/:id">
-                <Artist spotify={spotify} />
-              </Route>
-
-              <Route path="/playlist/:id">
-                <UserPlayList spotify={spotify} />
-              </Route>
-
-              <Redirect to="/home" />
-            </Switch>
-          </PlayerBody>
-          <Footer audio={audio} currentTime={currentTime} />
-        </PlayerContainer>
-      </spotifyContext.Provider>
-    </Router>
+    <BrowserRouter>
+      <PlayerContainer>
+        <PlayerBody>
+          <Sidebar />
+          <Routes>
+            <Route path="/home" element={<Home />} />
+            <Route
+              path="/detail_playlist/:id"
+              element={<DetailPlaylistSong />}
+            />
+            <Route path="/search/:name" element={<SearchCategory />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/artist/:id" element={<Artist />} />
+            <Route path="/playlist/:id" element={<UserPlayList />} />
+            <Route path="*" element={<Navigate to="/home" replace />} />
+          </Routes>
+        </PlayerBody>
+        <Footer audio={audio} currentTime={currentTime} />
+      </PlayerContainer>
+    </BrowserRouter>
   );
 }
 

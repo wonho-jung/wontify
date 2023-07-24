@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import Player from "./components/Player";
+import { useDispatch } from "react-redux";
 
 import SpotifyWebApi from "spotify-web-api-js";
-import { useDispatch } from "react-redux";
 import {
   set_topList,
   set_workout,
@@ -14,6 +14,11 @@ import "./App.css";
 import { getToken } from "./utils/spotify";
 import ErrorScreen from "./components/shared/ErrorScreen";
 import Loading from "./components/shared/Loading";
+import { IState, filteredPlaylists } from "utils/stateArray";
+
+export const spotifyContext = createContext<SpotifyWebApi.SpotifyWebApiJs>(
+  {} as SpotifyWebApi.SpotifyWebApiJs
+);
 
 function App() {
   const [isLoadData, setIsLoadData] = useState(false);
@@ -26,6 +31,7 @@ function App() {
       try {
         const token = await getToken();
         spotify.setAccessToken(token);
+        //Todo: Data filter that only use in the app.
         const [topList, workout, mood, party, categories] = await Promise.all([
           spotify.getCategoryPlaylists("toplists", { limit: 10 }),
           spotify.getCategoryPlaylists("workout", { limit: 10 }),
@@ -33,26 +39,25 @@ function App() {
           spotify.getCategoryPlaylists("party", { limit: 10 }),
           spotify.getCategories(),
         ]);
-
         dispatch(
-          set_topList({
-            topList: topList.playlists.items,
-          })
+          set_topList(
+            filteredPlaylists((topList.playlists.items as unknown) as IState[])
+          )
         );
         dispatch(
-          set_workout({
-            workout: workout.playlists.items,
-          })
+          set_workout(
+            filteredPlaylists((workout.playlists.items as unknown) as IState[])
+          )
         );
         dispatch(
-          set_mood({
-            mood: mood.playlists.items,
-          })
+          set_mood(
+            filteredPlaylists((mood.playlists.items as unknown) as IState[])
+          )
         );
         dispatch(
-          set_party({
-            party: party.playlists.items,
-          })
+          set_party(
+            filteredPlaylists((party.playlists.items as unknown) as IState[])
+          )
         );
         dispatch(set_categories({ category: categories }));
 
@@ -63,15 +68,26 @@ function App() {
     };
 
     fetchSpotifyData();
-    if (hasError) {
-      return <ErrorScreen />;
-    }
+
+    return () => {
+      setIsLoadData(false);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  if (hasError) {
+    return <ErrorScreen />;
+  }
   return (
     <div className="app">
-      {isLoadData ? <Player spotify={spotify} /> : <Loading />}
+      {isLoadData ? (
+        <>
+          <spotifyContext.Provider value={spotify}>
+            <Player />
+          </spotifyContext.Provider>
+        </>
+      ) : (
+        <Loading />
+      )}
     </div>
   );
 }

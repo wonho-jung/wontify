@@ -1,28 +1,13 @@
-import React, { useContext } from "react";
+import React from "react";
 import styled from "styled-components";
-import {
-  selectMood,
-  selectParty,
-  selectTopList,
-  selectWorkout,
-} from "../../features/spotifyDataSlice";
-import { useSelector } from "react-redux";
-import Post from "../shared/Post";
-import { spotifyContext } from "../Player";
-function Home() {
-  const spotify = useContext(spotifyContext);
-  const { topList } = useSelector(selectTopList);
-  const { workout } = useSelector(selectWorkout);
-  const { party } = useSelector(selectParty);
-  const { mood } = useSelector(selectMood);
 
-  const filterEmptyValueInArray = (array) => {
-    if (!array) return;
-    const filteredArray = array.filter((item) => {
-      return item !== null;
-    });
-    return filteredArray;
-  };
+import Post from "../shared/Post";
+import { useAppSelector } from "app/hook";
+
+function Home() {
+  const { topList, workout, party, mood } = useAppSelector(
+    (state) => state.spotifyData
+  );
 
   return (
     <HomeContainer>
@@ -30,13 +15,12 @@ function Home() {
         <HomeContentContainer>
           <h1>Top play lists</h1>
           <PostsContainer>
-            {filterEmptyValueInArray(topList).map((track, inx) => (
+            {topList!.map((track, inx) => (
               <Post
-                spotify={spotify}
-                playlistId={track?.id}
                 key={inx}
-                image={track.images[0].url}
-                artistsName={track.name}
+                playlistId={track.playlistId}
+                image={track.image}
+                artistsName={track.artistsName}
                 description={track.description}
               />
             ))}
@@ -46,13 +30,12 @@ function Home() {
         <HomeContentContainer>
           <h1>Work out</h1>
           <PostsContainer>
-            {filterEmptyValueInArray(workout).map((track, inx) => (
+            {workout!.map((track, inx) => (
               <Post
-                spotify={spotify}
-                playlistId={track?.id}
                 key={inx}
-                image={track.images[0].url}
-                artistsName={track.name}
+                playlistId={track.playlistId}
+                image={track.image}
+                artistsName={track.artistsName}
                 description={track.description}
               />
             ))}
@@ -61,13 +44,12 @@ function Home() {
         <HomeContentContainer>
           <h1>Mood</h1>
           <PostsContainer>
-            {filterEmptyValueInArray(mood).map((track, inx) => (
+            {mood!.map((track, inx) => (
               <Post
-                spotify={spotify}
-                playlistId={track.id}
                 key={inx}
-                image={track.images[0].url}
-                artistsName={track.name}
+                playlistId={track.playlistId}
+                image={track.image}
+                artistsName={track.artistsName}
                 description={track.description}
               />
             ))}
@@ -77,13 +59,12 @@ function Home() {
         <HomeContentContainer>
           <h1>Party</h1>
           <PostsContainer>
-            {filterEmptyValueInArray(party).map((track, inx) => (
+            {party!.map((track, inx) => (
               <Post
-                spotify={spotify}
-                playlistId={track?.id}
                 key={inx}
-                image={track.images[0].url}
-                artistsName={track.name}
+                playlistId={track.playlistId}
+                image={track.image}
+                artistsName={track.artistsName}
                 description={track.description}
               />
             ))}

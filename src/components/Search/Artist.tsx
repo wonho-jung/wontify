@@ -6,38 +6,36 @@ import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "../shared/SongRow";
 import { Button } from "@material-ui/core";
-import SearchHeader from "./SearchHeader";
-function Artist({ spotify }) {
+function Artist() {
   const artistDetail = useSelector(selectArtistDetail);
-  const [followNumber, setFollowNumber] = useState("");
+  const [followNumber, setFollowNumber] = useState<null | number>(null);
   const [btnText, setBtnText] = useState("Follow");
   useEffect(() => {
     if (artistDetail) {
-      setFollowNumber(artistDetail.artistInfo.followers.total);
+      setFollowNumber(artistDetail.artistInfo.followers);
     }
   }, [artistDetail]);
 
   const followArtist = () => {
     if (btnText === "Follow") {
-      setFollowNumber(artistDetail.artistInfo.followers.total + 1);
+      setFollowNumber(artistDetail!.artistInfo.followers + 1);
 
       setBtnText("Followed");
     } else {
-      setFollowNumber(artistDetail.artistInfo.followers.total);
+      setFollowNumber(artistDetail!.artistInfo.followers);
 
       setBtnText("Follow");
     }
   };
   return (
     <ArtistContainer>
-      <SearchHeader spotify={spotify} />
-      {artistDetail?.artistInfo.images[0]?.url &&
+      {artistDetail?.artistInfo.image &&
       artistDetail?.artistInfo.name &&
       artistDetail?.artistInfo.genres &&
       followNumber ? (
         <>
           <ArtistInfo>
-            <img src={artistDetail?.artistInfo.images[0]?.url} alt="" />
+            <img src={artistDetail?.artistInfo.image} alt="" />
             <ArtistInfoText>
               <strong>ARTIST</strong>
 
@@ -47,7 +45,7 @@ function Artist({ spotify }) {
                 <p>
                   Genres:{" "}
                   {artistDetail?.artistInfo.genres
-                    .map((genre) => genre)
+                    .map((genre: string) => genre)
                     .join(", ")}
                 </p>
               )}
@@ -62,16 +60,16 @@ function Artist({ spotify }) {
               <MoreHorizIcon />
             </ArtistIcons>
             <h1>Popular Top 10</h1>
-            {artistDetail?.artistDetail.tracks.map((item, inx) => (
+            {artistDetail?.artistDetail.map((item, inx) => (
               <SongRow
-                audioList={artistDetail.artistDetail.tracks}
-                url={item.preview_url}
                 key={inx}
-                time={item.duration_ms}
-                image={item.album?.images[0].url}
+                audioList={artistDetail.artistDetail}
+                url={item.preview_url}
+                time={item.time}
+                image={item.image}
                 name={item.name}
-                albumName={item.album.name}
-                artistsName={item.artists}
+                albumName={item.albumName}
+                artistsName={item.artistsName}
               />
             ))}
           </ArtistSongs>

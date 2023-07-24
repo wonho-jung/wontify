@@ -1,22 +1,23 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 import Loading from "./shared/Loading";
 import SongRow from "./shared/SongRow";
-import { spotifyContext } from "./Player";
+import { spotifyContext } from "App";
 
 function DetailPlaylist() {
   const spotify = useContext(spotifyContext);
   const [detailPlaylists, setDetailPlaylists] = useState("");
-  const playlistId = window.location.href.split("/")[4];
+  const playlistId = window.location?.href.split("/")[4];
+
   const [isLoadData, setIsLoadData] = useState(false);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,7 +27,7 @@ function DetailPlaylist() {
         setIsLoadData(true);
       } catch (err) {
         alert("something went wrong, please try again", err.message);
-        history.push("/home");
+        navigate("/home");
       }
     };
     fetchData();

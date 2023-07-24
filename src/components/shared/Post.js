@@ -5,7 +5,7 @@ import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 
 import { Link } from "react-router-dom";
 
-function Post({ image, name, artistsName, description, albumId, playlistId }) {
+function Post({ image, name = "", artistsName, description, playlistId }) {
   return (
     <PostContainer>
       <Link
