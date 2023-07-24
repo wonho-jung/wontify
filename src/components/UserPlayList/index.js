@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectPlaylists } from "../features/userSlice";
+import { selectPlaylists } from "../../features/userPlaylistSlice";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import SongRow from "./SongRow";
+import SongRow from "../shared/SongRow";
 import { useLocation } from "react-router-dom";
-import { getplaylistDetails } from "../backend";
+import { getPlaylistDetails } from "../../backend";
 
 // import Loading from "./Loading";
 
-function Body({ spotify }) {
+function UserPlayList({ spotify }) {
   // const [loading, setLoading] = useState(false);
-  const [songlists, setSonglists] = useState([]);
+  const [songLists, setSongLists] = useState([]);
   const [userAudioList, setUserAudioList] = useState([]);
   const { playlists } = useSelector(selectPlaylists);
   const location = useLocation();
@@ -21,18 +21,17 @@ function Body({ spotify }) {
   const lastPathSegment = currentPath.substring(
     currentPath.lastIndexOf("/") + 1
   );
-  const playlistName = playlists?.find(
-    (item) => item._id === lastPathSegment
-  )?.name;
-  const removeSonglistById = (id) => {
-    const newSonglists = songlists.filter((item) => item.id !== id);
-    setSonglists([...newSonglists]);
+  const playlistName = playlists?.find((item) => item._id === lastPathSegment)
+    ?.name;
+  const removeSongListById = (id) => {
+    const newSongLists = songLists.filter((item) => item.id !== id);
+    setSongLists([...newSongLists]);
   };
   useEffect(() => {
-    getplaylistDetails(lastPathSegment)
+    getPlaylistDetails(lastPathSegment)
       .then((res) => {
         if (!res.data.songs) {
-          setSonglists([]);
+          setSongLists([]);
           setUserAudioList([]);
           return;
         }
@@ -46,7 +45,7 @@ function Body({ spotify }) {
         });
 
         setUserAudioList(songUrlArray);
-        setSonglists(res.data.songs);
+        setSongLists(res.data.songs);
       })
       .catch((err) => {
         console.log(err);
@@ -67,11 +66,11 @@ function Body({ spotify }) {
           <MoreHorizIcon />
         </BodyIcons>
 
-        {songlists?.map((item, inx) => (
+        {songLists?.map((item, inx) => (
           <SongRow
-            removeSonglistById={removeSonglistById}
+            removeSongListById={removeSongListById}
             id={item.id}
-            audiolist={userAudioList}
+            audioList={userAudioList}
             key={inx}
             url={item.url}
             time={item.time}
@@ -88,7 +87,7 @@ function Body({ spotify }) {
   );
 }
 
-export default Body;
+export default UserPlayList;
 
 const BodyContainer = styled.div`
   padding: 30px;

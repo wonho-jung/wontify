@@ -1,34 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useEffect, createContext } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
 import styled from "styled-components";
-import Body from "./Body";
+import UserPlayList from "./UserPlayList";
 import Footer from "./Footer";
 import Sidebar from "./Sidebar";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./Home";
-import DetailAlbum from "./DetailAlbum";
-import DetailPlaylist from "./DetailPlaylist";
-import Library from "./Library";
+
 import Search from "./Search";
-import SearchCategory from "./SearchCategory";
-import SearchDetail from "./SearchDetail";
-import Artist from "./Artist";
+import SearchCategory from "./Search/SearchCategoryPostDetail";
+import SearchDetail from "./Search/SearchDetail";
+import Artist from "./Search/Artist";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectPlaying,
   selectPlayingList,
   set_audioStatus,
   set_playing,
-} from "../features/userSlice";
+} from "../features/audioStatusSlice";
 import { useState } from "react";
+import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
+import DetailPlaylistSong from "./DetailPlaylist";
+
+export const spotifyContext = createContext();
 
 function Player({ spotify }) {
   const [currentTime, setCurrentTime] = useState(0);
   const [audio] = useState(new Audio());
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
-  const playlisturl = useSelector(selectPlayingList);
-
-  const audioChecktime = () => {
+  const playlistUrl = useSelector(selectPlayingList);
+  const audioCheckTime = () => {
     const timeOut = setTimeout(() => {
       if (Math.ceil(audio.currentTime) === 30) {
         clearTimeout(timeOut);
@@ -47,31 +49,32 @@ function Player({ spotify }) {
       }
     }, 30000);
   };
+
   audio.ontimeupdate = (e) => {
     setCurrentTime(Math.ceil(e.target.currentTime));
   };
   useEffect(() => {
-    if (playlisturl) {
+    if (playlistUrl) {
       if (audio.src === "" && playing.playSong === true) {
-        audio.src = playlisturl.playinglist;
+        audio.src = playlistUrl.playingList;
         audio.play();
 
-        audioChecktime();
+        audioCheckTime();
         dispatch(
           set_audioStatus({
-            audioStatus: playlisturl.playinglist,
+            audioStatus: playlistUrl.playingList,
           })
         );
-      } else if (playlisturl.playinglist === audio.src) {
+      } else if (playlistUrl.playingList === audio.src) {
         if (playing.playSong === true) {
           dispatch(
             set_audioStatus({
-              audioStatus: playlisturl.playinglist,
+              audioStatus: playlistUrl.playingList,
             })
           );
           audio.play();
 
-          audioChecktime();
+          audioCheckTime();
         } else if (playing.playSong === false) {
           audio.pause();
           audio.currentTime = 0;
@@ -81,65 +84,63 @@ function Player({ spotify }) {
             })
           );
         }
-      } else if (playlisturl.playinglist !== audio.src) {
+      } else if (playlistUrl.playingList !== audio.src) {
         audio.pause();
         audio.currentTime = 0;
         if (playing.playSong === true) {
           dispatch(
             set_audioStatus({
-              audioStatus: playlisturl.playinglist,
+              audioStatus: playlistUrl.playingList,
             })
           );
-          audio.src = playlisturl.playinglist;
+          audio.src = playlistUrl.playingList;
           audio.play();
 
-          audioChecktime();
+          audioCheckTime();
         }
       }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playlisturl]);
+  }, [playlistUrl]);
 
   return (
     <Router>
-      <PlayerContainer>
-        <PlayerBody>
-          <Sidebar spotify={spotify} />
-          <Switch>
-            <Route path="/detail/album/:id">
-              <DetailAlbum spotify={spotify} />
-            </Route>
-            <Route path="/detail/playlist/:id">
-              <DetailPlaylist spotify={spotify} />
-            </Route>
-            <Route path="/search/search/song">
-              <SearchDetail spotify={spotify} />
-            </Route>
-            <Route path="/search/:id">
-              <SearchCategory spotify={spotify} />
-            </Route>
+      <spotifyContext.Provider value={spotify}>
+        <PlayerContainer>
+          <PlayerBody>
+            <Sidebar />
+            <Switch>
+              <Route path="/home" exact>
+                <Home />
+              </Route>
 
-            <Route path="/search" exact>
-              <Search spotify={spotify} />
-            </Route>
-            <Route path="/artist/:id">
-              <Artist spotify={spotify} />
-            </Route>
+              <Route path="/detail_playlist/:id">
+                <DetailPlaylistSong />
+              </Route>
 
-            <Route path="/library">
-              <Library spotify={spotify} />
-            </Route>
-            <Route path="/playlist/:id">
-              <Body spotify={spotify} />
-            </Route>
-            <Route path="/" exact>
-              <Home spotify={spotify} />
-            </Route>
-          </Switch>
-        </PlayerBody>
-        <Footer audio={audio} currentTime={currentTime} />
-      </PlayerContainer>
+              <Route path="/search/:name">
+                <SearchCategory spotify={spotify} />
+              </Route>
+
+              <Route path="/search" exact>
+                <Search />
+              </Route>
+
+              <Route path="/artist/:id">
+                <Artist spotify={spotify} />
+              </Route>
+
+              <Route path="/playlist/:id">
+                <UserPlayList spotify={spotify} />
+              </Route>
+
+              <Redirect to="/home" />
+            </Switch>
+          </PlayerBody>
+          <Footer audio={audio} currentTime={currentTime} />
+        </PlayerContainer>
+      </spotifyContext.Provider>
     </Router>
   );
 }

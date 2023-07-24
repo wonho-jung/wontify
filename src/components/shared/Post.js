@@ -9,11 +9,7 @@ function Post({ image, name, artistsName, description, albumId, playlistId }) {
   return (
     <PostContainer>
       <Link
-        to={
-          albumId
-            ? `/detail/album/${albumId}`
-            : `/detail/playlist/${playlistId}`
-        }
+        to={`/detail_playlist/${playlistId}`}
         style={{ textDecoration: "none", color: "white" }}
       >
         <PostContent>
@@ -40,7 +36,7 @@ const PostContainer = styled.div`
     position: absolute;
     top: 100px;
     left: 100px;
-    color: lightgreen;
+    color: lightGreen;
     display: none;
   }
   opacity: 0.7;

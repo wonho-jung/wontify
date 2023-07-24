@@ -1,26 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
 import { useDispatch, useSelector } from "react-redux";
-import { selectPlaylists } from "../features/userSlice";
 import { Link } from "react-router-dom";
 import SidebarOptions from "./SidebarOptions";
 import AddIcon from "@mui/icons-material/Add";
 import { IconButton, TextField } from "@mui/material";
-import { createPlaylist, deletePlaylist, getPlaylists } from "../backend";
-import FormDialog from "./designSystem";
-import { set_playlists } from "../features/userSlice";
+import { createPlaylist, deletePlaylist, getPlaylists } from "../../backend";
+import FormDialog from "../shared/designSystem";
+import {
+  set_playlists,
+  selectPlaylists,
+} from "../../features/userPlaylistSlice";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { spotifyContext } from "../Player";
 const SAM_PLAY_LIST = "sam_playlist";
 
-function Sidebar({ spotify }) {
-  const [createPlaylistDialogOpen, setCreatePlaylistDialogOpen] =
-    useState(false);
-  const [deletePlaylistDialogOpen, setDeletePlaylistDialogOpen] =
-    useState(false);
+function Sidebar() {
+  const spotify = useContext(spotifyContext);
+
+  const [createPlaylistDialogOpen, setCreatePlaylistDialogOpen] = useState(
+    false
+  );
+  const [deletePlaylistDialogOpen, setDeletePlaylistDialogOpen] = useState(
+    false
+  );
   const [playlistName, setPlaylistName] = useState("");
-  const [deleteId, setDeletId] = useState("");
+  const [deleteId, setDeleteId] = useState("");
   const dispatch = useDispatch();
   const { playlists } = useSelector(selectPlaylists);
 
@@ -62,7 +69,7 @@ function Sidebar({ spotify }) {
     const reloadTimeout = setTimeout(() => {
       reloadGetPlaylists().finally(() => {
         setDeletePlaylistDialogOpen(false);
-        setDeletId("");
+        setDeleteId("");
       });
     }, 100);
     return () => clearTimeout(reloadTimeout);
@@ -77,6 +84,7 @@ function Sidebar({ spotify }) {
     reloadGetPlaylists();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <SidebarContainer>
       <img
@@ -161,7 +169,7 @@ function Sidebar({ spotify }) {
               <IconButton
                 onClick={() => {
                   setDeletePlaylistDialogOpen(true);
-                  setDeletId(playlist._id);
+                  setDeleteId(playlist._id);
                 }}
               >
                 <RemoveCircleOutlineIcon sx={{ color: "#ffffff" }} />

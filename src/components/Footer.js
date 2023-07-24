@@ -10,16 +10,16 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
   selectAudioStatus,
-  selectFooteraudioState,
+  selectFooterAudioState,
   selectPlaying,
-  set_footeraudioState,
+  set_footerAudioState,
   set_playing,
-  set_playinglist,
-} from "../features/userSlice";
+  set_playingList,
+} from "../features/audioStatusSlice";
 function Footer({ audio, currentTime }) {
   const [volume, setVolume] = useState(100);
-  const footeraudioState = useSelector(selectFooteraudioState);
-  const audiostate = useSelector(selectAudioStatus);
+  const footerAudioState = useSelector(selectFooterAudioState);
+  const audioState = useSelector(selectAudioStatus);
   const playing = useSelector(selectPlaying);
   const dispatch = useDispatch();
   const volumeControl = (event) => {
@@ -37,37 +37,37 @@ function Footer({ audio, currentTime }) {
       })
     );
     dispatch(
-      set_playinglist({
-        playinglist: footeraudioState.footeraudioState.url,
+      set_playingList({
+        playingList: footerAudioState.footerAudioState.url,
       })
     );
   };
 
-  const stopsong = () => {
+  const stopSong = () => {
     dispatch(
       set_playing({
         playSong: false,
       })
     );
     dispatch(
-      set_playinglist({
-        playinglist: footeraudioState.footeraudioState.url,
+      set_playingList({
+        playingList: footerAudioState.footerAudioState.url,
       })
     );
   };
   const getFilterList = () => {
-    const audiolist = footeraudioState.footeraudioState.audiolist;
-    const filterUrl = audiolist.filter((item) =>
+    const audioList = footerAudioState.footerAudioState.audioList;
+    const filterUrl = audioList.filter((item) =>
       item.track ? item.track.preview_url !== null : item.preview_url !== null
     );
     return filterUrl;
   };
 
   const getCurrentIndex = () => {
-    const audiolist = footeraudioState.footeraudioState.audiolist;
-    const url = footeraudioState.footeraudioState.url;
+    const audioList = footerAudioState.footerAudioState.audioList;
+    const url = footerAudioState.footerAudioState.url;
 
-    let currentIndex = audiolist
+    let currentIndex = audioList
       .filter((item) => {
         return item.track
           ? item.track.preview_url !== null
@@ -87,10 +87,10 @@ function Footer({ audio, currentTime }) {
 
     const updateState = {
       playSong: true,
-      playinglist: isTrack
+      playingList: isTrack
         ? filterList[currentIndex].track.preview_url
         : filterList[currentIndex].preview_url,
-      footeraudioState: {
+      footerAudioState: {
         name: isTrack
           ? filterList[currentIndex].track.name
           : filterList[currentIndex].name,
@@ -106,13 +106,13 @@ function Footer({ audio, currentTime }) {
         artistsName: isTrack
           ? filterList[currentIndex].track.artists
           : filterList[currentIndex].artists,
-        audiolist: filterList,
+        audioList: filterList,
       },
     };
 
     dispatch(set_playing(updateState));
-    dispatch(set_playinglist(updateState));
-    dispatch(set_footeraudioState(updateState));
+    dispatch(set_playingList(updateState));
+    dispatch(set_footerAudioState(updateState));
   };
 
   const prevSong = async () => {
@@ -142,19 +142,19 @@ function Footer({ audio, currentTime }) {
   };
   return (
     <FooterContainer>
-      {footeraudioState.footeraudioState ? (
+      {footerAudioState.footerAudioState ? (
         <FooterLeft>
-          {footeraudioState.footeraudioState.image && (
-            <img src={footeraudioState.footeraudioState?.image} alt="" />
+          {footerAudioState.footerAudioState.image && (
+            <img src={footerAudioState.footerAudioState?.image} alt="" />
           )}
           <FooterSongInfo>
-            <h1>{footeraudioState.footeraudioState.name}</h1>
+            <h1>{footerAudioState.footerAudioState.name}</h1>
             <p>
-              {footeraudioState.footeraudioState.artistsName
+              {footerAudioState.footerAudioState.artistsName
                 ?.map((artist) => artist.name)
                 .join(", ")}
-              {footeraudioState.footeraudioState.albumName &&
-                `/${footeraudioState.footeraudioState.albumName}`}
+              {footerAudioState.footerAudioState.albumName &&
+                `/${footerAudioState.footerAudioState.albumName}`}
             </p>
           </FooterSongInfo>
         </FooterLeft>
@@ -174,12 +174,12 @@ function Footer({ audio, currentTime }) {
         <IconContainer>
           <SkipPreviousIcon
             className="icon"
-            onClick={audiostate ? prevSong : null}
+            onClick={audioState ? prevSong : null}
           />
-          {audiostate?.audioStatus === footeraudioState.footeraudioState?.url &&
+          {audioState?.audioStatus === footerAudioState.footerAudioState?.url &&
           playing ? (
             <PauseCircleOutlineIcon
-              onClick={stopsong}
+              onClick={stopSong}
               className="icon"
               fontSize="large"
             />
@@ -191,22 +191,22 @@ function Footer({ audio, currentTime }) {
             />
           )}
           <SkipNextIcon
-            onClick={audiostate ? nextSong : null}
+            onClick={audioState ? nextSong : null}
             className="icon"
           />
         </IconContainer>
-        <ProgressbarContainer>
+        <ProgressBarContainer>
           {currentTime < 10 ? `0:0${currentTime}` : `0:${currentTime}`}
 
-          <Progressbar>
-            <Movingbar style={{ width: currentTime * 16.5 }} />
-          </Progressbar>
+          <ProgressBar>
+            <MovingBar style={{ width: currentTime * 16.5 }} />
+          </ProgressBar>
           <p>
             {currentTime > 20
               ? `0:0${30 - currentTime}`
               : `0:${30 - currentTime}`}
           </p>
-        </ProgressbarContainer>
+        </ProgressBarContainer>
       </FooterCenter>
 
       <FooterRight>
@@ -319,17 +319,17 @@ const FooterRight = styled.div`
     }
   }
 `;
-const ProgressbarContainer = styled.div`
+const ProgressBarContainer = styled.div`
   display: flex;
   align-items: center;
 `;
-const Progressbar = styled.div`
+const ProgressBar = styled.div`
   width: 500px;
   height: 4px;
   background: rgb(64, 64, 64);
   border-radius: 4px;
 `;
-const Movingbar = styled.div`
+const MovingBar = styled.div`
   margin: 0;
 
   height: 4px;

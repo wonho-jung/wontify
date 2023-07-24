@@ -1,78 +1,77 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Player from "./components/Player";
-import { _getToken } from "./spotify";
+
 import SpotifyWebApi from "spotify-web-api-js";
 import { useDispatch } from "react-redux";
 import {
-  set_newReleases,
   set_topList,
   set_workout,
   set_party,
   set_mood,
   set_categories,
-} from "./features/userSlice";
+} from "./features/spotifyDataSlice";
 import "./App.css";
+import { getToken } from "./utils/spotify";
+import ErrorScreen from "./components/shared/ErrorScreen";
+import Loading from "./components/shared/Loading";
 
 function App() {
+  const [isLoadData, setIsLoadData] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const spotify = new SpotifyWebApi();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    _getToken().then((res) => {
-      spotify.setAccessToken(res);
-      spotify.getNewReleases({ limit: 10 }).then((newReleases) => {
+    const fetchSpotifyData = async () => {
+      try {
+        const token = await getToken();
+        spotify.setAccessToken(token);
+        const [topList, workout, mood, party, categories] = await Promise.all([
+          spotify.getCategoryPlaylists("toplists", { limit: 10 }),
+          spotify.getCategoryPlaylists("workout", { limit: 10 }),
+          spotify.getCategoryPlaylists("mood", { limit: 10 }),
+          spotify.getCategoryPlaylists("party", { limit: 10 }),
+          spotify.getCategories(),
+        ]);
+
         dispatch(
-          set_newReleases({
-            newReleases: newReleases.albums.items,
+          set_topList({
+            topList: topList.playlists.items,
           })
         );
-      });
-
-      spotify
-        .getCategoryPlaylists("toplists", { limit: 10 })
-        .then((topList) => {
-          dispatch(
-            set_topList({
-              topList: topList.playlists.items,
-            })
-          );
-        });
-      spotify.getCategoryPlaylists("workout", { limit: 10 }).then((workout) => {
         dispatch(
           set_workout({
             workout: workout.playlists.items,
           })
         );
-      });
-      spotify.getCategoryPlaylists("mood", { limit: 10 }).then((mood) => {
         dispatch(
           set_mood({
             mood: mood.playlists.items,
           })
         );
-      });
-      spotify.getCategoryPlaylists("party", { limit: 10 }).then((party) => {
         dispatch(
           set_party({
             party: party.playlists.items,
           })
         );
-      });
+        dispatch(set_categories({ category: categories }));
 
-      spotify.getCategories().then((category) => {
-        dispatch(
-          set_categories({
-            category,
-          })
-        );
-      });
-    });
+        setIsLoadData(true);
+      } catch (error) {
+        setHasError(true);
+      }
+    };
+
+    fetchSpotifyData();
+    if (hasError) {
+      return <ErrorScreen />;
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div className="app">
-      <Player spotify={spotify} />
+      {isLoadData ? <Player spotify={spotify} /> : <Loading />}
     </div>
   );
 }
