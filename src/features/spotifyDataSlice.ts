@@ -37,7 +37,6 @@ export interface SpotifyPlaylist {
   description: string | null;
 }
 
-//TODO, fix this
 // category
 export interface SpotifyCategory {
   href: string;
@@ -50,17 +49,17 @@ export interface SpotifyCategory {
   name: string;
 }
 
-export interface SpotifyCategories {
-  categories: {
-    href: string;
-    items: SpotifyCategory[];
-    limit: number;
-    next: string | null;
-    offset: number;
-    previous: string | null;
-    total: number;
-  };
-}
+// export interface SpotifyCategories {
+//   categories: {
+//     href: string;
+//     items: SpotifyCategory[];
+//     limit: number;
+//     next: string | null;
+//     offset: number;
+//     previous: string | null;
+//     total: number;
+//   };
+// }
 interface SpotifyData {
   topList: SpotifyPlaylist[] | null;
   workout: SpotifyPlaylist[] | null;
@@ -68,7 +67,7 @@ interface SpotifyData {
   party: SpotifyPlaylist[] | null;
   detailAlbum: SpotifyPlaylist[] | null;
   detailAlbumTracks: SpotifyPlaylist[] | null;
-  category: any;
+  category: SpotifyCategory[] | null;
   categoryDetail: CategoriesDetail | null;
   artistDetail: ArtistDetail | null;
 }
@@ -145,7 +144,7 @@ export const selectDetailAlbum = (state: RootState): SpotifyPlaylist[] | null =>
 export const selectDetailAlbumTracks = (
   state: RootState
 ): SpotifyPlaylist[] | null => state.spotifyData.detailAlbumTracks;
-export const selectCategories = (state: RootState): SpotifyCategories | null =>
+export const selectCategories = (state: RootState): SpotifyCategory[] | null =>
   state.spotifyData.category;
 export const selectCategoriesDetail = (
   state: RootState

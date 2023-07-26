@@ -1,18 +1,20 @@
 import { Button } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  selectAudioStatus,
-  selectPlaying,
   // selectPlaylists,
   set_footerAudioState,
-  set_playing,
-  set_playingList,
-  set_playlists,
+  set_isAudioPlaying,
+  set_currentPlayingURL,
+  set_currentTime,
+  // set_playlists,
 } from "../../features/audioStatusSlice";
-import { selectPlaylists } from "../../features/userPlaylistSlice";
+import {
+  selectPlaylists,
+  set_playlists,
+} from "../../features/userPlaylistSlice";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
 import {
@@ -26,6 +28,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import { audioContext } from "components/Player";
 
 function SongRow({
   url,
@@ -41,12 +44,17 @@ function SongRow({
   removeSongListById = null,
 }) {
   const dispatch = useDispatch();
-  const audioState = useSelector(selectAudioStatus);
-  const playing = useSelector(selectPlaying);
+
+  const { currentPlayingURL } = useSelector((state) => state.audioStatus);
+
   const { playlists } = useSelector(selectPlaylists);
+  // console.log(playlists, "playlists");
   const [addSongDialogOpen, setAddSongDialogOpen] = useState(false);
   const [userPlaylistId, setUserPlaylistId] = useState("");
   const playlistId = window.location?.pathname.split("/")[2];
+
+  const audioObject = useContext(audioContext);
+
   const deleteSongHandler = () => {
     deleteSongFromPlaylist(playlistId, id).then((res) => {
       removeSongListById(id);
@@ -92,43 +100,38 @@ function SongRow({
         console.log("addSongToPlaylist", err);
       });
   };
-
   const playSong = () => {
-    dispatch(
-      set_playing({
-        playSong: true,
-      })
-    );
-    dispatch(
-      set_playingList({
-        playingList: url,
-      })
-    );
+    dispatch(set_currentPlayingURL(url));
+    dispatch(set_isAudioPlaying(true));
     dispatch(
       set_footerAudioState({
-        footerAudioState: {
-          name,
-          url,
-          image,
-          artistsName,
-          albumName,
-          audioList,
-        },
+        name,
+        url,
+        image,
+        artistsName,
+        albumName,
+        audioList,
       })
     );
+    audioObject.current.src = url;
+    audioObject.current.play();
+    audioObject.current.addEventListener("ended", () => {
+      dispatch(set_isAudioPlaying(false));
+      dispatch(set_currentPlayingURL(null));
+      dispatch(set_currentTime(0));
+    });
+    audioObject.current.ontimeupdate = (e) => {
+      dispatch(set_currentTime(Math.ceil(e.target.currentTime)));
+    };
   };
-
   const stopSong = () => {
-    dispatch(
-      set_playing({
-        playSong: false,
-      })
-    );
-    dispatch(
-      set_playingList({
-        playingList: url,
-      })
-    );
+    audioObject.current.pause();
+
+    audioObject.current.ontimeupdate = (e) => {
+      dispatch(set_currentTime(0));
+    };
+    dispatch(set_isAudioPlaying(false));
+    dispatch(set_currentPlayingURL(null));
   };
 
   const millisToMinutesAndSeconds = (millis) => {
@@ -139,15 +142,14 @@ function SongRow({
 
   return (
     <SongRowContainer>
-      {(time && url !== null && audioState?.audioStatus === null) ||
-        (time && url !== null && audioState?.audioStatus !== url && (
-          <PlayCircleOutlineIcon
-            onClick={playSong}
-            className="icon"
-            fontSize="large"
-          />
-        ))}
-      {time && url !== null && audioState?.audioStatus === url && playing && (
+      {!!time && !!url && currentPlayingURL !== url && (
+        <PlayCircleOutlineIcon
+          onClick={playSong}
+          className="icon"
+          fontSize="large"
+        />
+      )}
+      {!!time && !!url && currentPlayingURL === url && (
         <PauseCircleOutlineIcon
           onClick={stopSong}
           className="icon"

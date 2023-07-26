@@ -42,7 +42,7 @@ export interface ISearchResult {
 
 function Search() {
   const spotify = useContext(spotifyContext);
-  const { category } = useAppSelector((state) => state.spotifyData.category);
+  const category = useAppSelector((state) => state.spotifyData.category);
   const [inputValue, setInputValue] = useState("");
 
   const [searchResult, setSearchResult] = useState<null | ISearchResult>(null);
@@ -127,16 +127,15 @@ function Search() {
           <h3>Browse all</h3>
           <CategoryContainer>
             <CategoryContent>
-              {category.categories.items.map(
-                (item: SpotifyCategory, idx: number) => (
+              {category &&
+                category!.map((item: SpotifyCategory, idx: number) => (
                   <SearchCategoryPost
                     key={idx}
                     id={item.id}
                     image={item.icons[0].url}
                     name={item.name}
                   />
-                )
-              )}
+                ))}
             </CategoryContent>
           </CategoryContainer>
         </>

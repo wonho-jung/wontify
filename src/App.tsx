@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import Player from "./components/Player";
 import { useDispatch } from "react-redux";
 
@@ -59,7 +59,7 @@ function App() {
             filteredPlaylists((party.playlists.items as unknown) as IState[])
           )
         );
-        dispatch(set_categories({ category: categories }));
+        dispatch(set_categories(categories.categories.items));
 
         setIsLoadData(true);
       } catch (error) {
