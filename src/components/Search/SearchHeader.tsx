@@ -1,8 +1,17 @@
 import React from "react";
 import styled from "styled-components";
 import SearchIcon from "@material-ui/icons/Search";
+interface ISearchHeader {
+  searchOnSubmit: (event: React.SyntheticEvent) => void;
+  searchOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  input: string;
+}
 
-function SearchHeader({ searchOnSubmit, searchOnChange, input }) {
+function SearchHeader({
+  searchOnSubmit,
+  searchOnChange,
+  input,
+}: ISearchHeader) {
   return (
     <SearchHeaderContainer>
       <SearchHeaderLeft>

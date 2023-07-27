@@ -1,32 +1,80 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
-import Loading from "./shared/Loading";
 import SongRow from "./shared/SongRow";
-import { spotifyContext } from "./Player";
+import { spotifyContext } from "App";
+import LoadingScreen from "./shared/LoadingScreen";
+
+interface IdetailPlaylists {
+  image: string;
+  name: string;
+  description: string | null;
+  tracks: {
+    url: string;
+    time: number;
+    image: string;
+    name: string;
+    albumName: string;
+    artistsName: {
+      external_urls: {
+        spotify: string;
+      };
+      href: string;
+      id: string;
+      name: string;
+
+      type: string;
+      uri: string;
+    }[];
+  }[];
+}
 
 function DetailPlaylist() {
   const spotify = useContext(spotifyContext);
-  const [detailPlaylists, setDetailPlaylists] = useState("");
-  const playlistId = window.location.href.split("/")[4];
+  const [
+    detailPlaylists,
+    setDetailPlaylists,
+  ] = useState<IdetailPlaylists | null>(null);
+
+  const playlistId = window.location?.href.split("/")[4];
+
   const [isLoadData, setIsLoadData] = useState(false);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const getPlaylist = await spotify.getPlaylist(playlistId);
-        setDetailPlaylists(getPlaylist);
+        const res = await spotify.getPlaylist(playlistId);
+
+        //Fix error TS2339: Property 'preview_url' does not exist on type 'TrackObjectFull | EpisodeObjectFull'.
+        //'TrackObjectFull | EpisodeObjectFull' does not contain the property 'preview_url' but it does exist.
+        const filteredTracks = res.tracks.items.map((item: any) => {
+          return {
+            url: item.track.preview_url,
+            name: item.track.name,
+            time: item.track.duration_ms,
+            image: item.track.album.images[0].url,
+            albumName: item.track.album.name,
+            artistsName: item.track.artists,
+          };
+        });
+
+        setDetailPlaylists({
+          image: res.images[0].url,
+          name: res.name,
+          description: res.description,
+          tracks: filteredTracks,
+        });
         setIsLoadData(true);
       } catch (err) {
-        alert("something went wrong, please try again", err.message);
-        history.push("/home");
+        alert(err);
+        navigate("/home");
       }
     };
     fetchData();
@@ -36,15 +84,15 @@ function DetailPlaylist() {
   return (
     <DetailPlaylistContainer>
       {!isLoadData ? (
-        <Loading />
+        <LoadingScreen />
       ) : (
         <>
           <DetailInfo>
-            <img src={detailPlaylists.images[0].url} alt="" />
+            <img src={detailPlaylists!.image} alt="album" />
             <DetailInfoText>
               <strong>PLAYLIST</strong>
-              <h2>{detailPlaylists.name}</h2>
-              <p>{detailPlaylists.description}</p>
+              <h2>{detailPlaylists!.name}</h2>
+              <p>{detailPlaylists!.description}</p>
             </DetailInfoText>
           </DetailInfo>
 
@@ -55,16 +103,16 @@ function DetailPlaylist() {
               <MoreHorizIcon />
             </DetailIcons>
 
-            {detailPlaylists.tracks.items.map((item, inx) => (
+            {detailPlaylists!.tracks.map((item, inx) => (
               <SongRow
-                audioList={detailPlaylists.tracks.items}
-                url={item.track.preview_url}
+                audioList={detailPlaylists!.tracks}
+                url={item.url}
                 key={inx}
-                time={item.track.duration_ms}
-                image={item.track.album?.images[0]?.url}
-                name={item.track.name}
-                albumName={item.track.album.name}
-                artistsName={item.track.artists}
+                time={item.time}
+                image={item.image}
+                name={item.name}
+                albumName={item.albumName}
+                artistsName={item.artistsName}
               />
             ))}
           </DetailSongs>

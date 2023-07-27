@@ -1,10 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { RootState } from "app/store";
+
+interface Token {
+  token: string | null;
+}
+
+const initialTokenSlice: Token = {
+  token: null,
+};
 
 export const tokenSlice = createSlice({
   name: "token",
-  initialState: {
-    token: null,
-  },
+  initialState: initialTokenSlice,
 
   reducers: {
     set_token: (state, action) => {
@@ -15,6 +22,6 @@ export const tokenSlice = createSlice({
 
 export const { set_token } = tokenSlice.actions;
 
-export const selectToken = (state) => state.token.token;
+export const selectToken = (state: RootState) => state.token.token;
 
 export default tokenSlice.reducer;

@@ -1,27 +1,40 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { selectCategoriesDetail } from "../../features/spotifyDataSlice";
 import Post from "../shared/Post";
+import { useNavigate } from "react-router-dom";
 
 function SearchCategoryPostDetail() {
   const categoryDetail = useSelector(selectCategoriesDetail);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    //If user refresh the page, categoryDetail will be null. So, redirect to search page.
+    if (!categoryDetail) {
+      navigate(`/search`);
+    }
+  }, [categoryDetail, navigate]);
 
   return (
     <SearchCategoryContainer>
       <HomeContentContainer>
-        <h1>{categoryDetail?.name}</h1>
-        <PostsContainer>
-          {categoryDetail?.playListItem.map((track, inx) => (
-            <Post
-              playlistId={track.id}
-              key={inx}
-              image={track.images[0].url}
-              artistsName={track.name}
-              description={track.description}
-            />
-          ))}
-        </PostsContainer>
+        {categoryDetail && (
+          <>
+            <h1>{categoryDetail!.name}</h1>
+            <PostsContainer>
+              {categoryDetail!.playlistItems.map((track, inx) => (
+                <Post
+                  key={inx}
+                  playlistId={track.id}
+                  image={track.image}
+                  artistsName={track.name}
+                  description={track.description}
+                />
+              ))}
+            </PostsContainer>
+          </>
+        )}
       </HomeContentContainer>
     </SearchCategoryContainer>
   );

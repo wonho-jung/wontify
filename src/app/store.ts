@@ -3,7 +3,8 @@ import spotifyDataReducer from "../features/spotifyDataSlice";
 import tokenReducer from "../features/tokenSlice";
 import audioStatusReducer from "../features/audioStatusSlice";
 import userPlaylistReducer from "../features/userPlaylistSlice";
-export default configureStore({
+
+const store = configureStore({
   reducer: {
     spotifyData: spotifyDataReducer,
     token: tokenReducer,
@@ -11,3 +12,7 @@ export default configureStore({
     userPlaylist: userPlaylistReducer,
   },
 });
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+export default store;

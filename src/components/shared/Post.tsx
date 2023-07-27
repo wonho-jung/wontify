@@ -4,8 +4,21 @@ import styled from "styled-components";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 
 import { Link } from "react-router-dom";
+interface IPost {
+  image: string;
+  name?: string | null;
+  artistsName?: string | null;
+  description?: string | null;
+  playlistId: string;
+}
 
-function Post({ image, name, artistsName, description, albumId, playlistId }) {
+function Post({
+  image,
+  name = null,
+  artistsName = null,
+  description = null,
+  playlistId,
+}: IPost) {
   return (
     <PostContainer>
       <Link
@@ -13,8 +26,8 @@ function Post({ image, name, artistsName, description, albumId, playlistId }) {
         style={{ textDecoration: "none", color: "white" }}
       >
         <PostContent>
-          <img src={image} alt="" />
-          <h4>{artistsName}</h4>
+          <img src={image && image} alt="" />
+          <h4>{artistsName && artistsName}</h4>
           <p>{name && name}</p>
           <p>{description && description}</p>
         </PostContent>

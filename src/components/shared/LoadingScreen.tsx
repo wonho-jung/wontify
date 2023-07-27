@@ -2,7 +2,7 @@ import React from "react";
 import Spinner from "react-spinkit";
 import styled from "styled-components";
 
-function Loading() {
+function LoadingScreen() {
   return (
     <LoadingContainer>
       <h1>Loading...</h1>
@@ -11,7 +11,7 @@ function Loading() {
   );
 }
 
-export default Loading;
+export default LoadingScreen;
 
 const LoadingContainer = styled.div`
   height: 80vh;

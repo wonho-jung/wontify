@@ -2,36 +2,47 @@ import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { set_categoriesDetail } from "../../features/spotifyDataSlice";
-import { spotifyContext } from "../Player";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useNavigate } from "react-router-dom";
+import { spotifyContext } from "App";
 
-function SearchCategoryPost({ image, name, id }) {
-  const history = useHistory();
+interface ISearchCategoryPost {
+  image: string;
+  name: string;
+  id: string;
+}
+
+function SearchCategoryPost({ image, name, id }: ISearchCategoryPost) {
+  const navigate = useNavigate();
   const spotify = useContext(spotifyContext);
   const dispatch = useDispatch();
 
   const sendSearchDetail = async () => {
     try {
-      const getCategoriesDetail = await spotify.getCategoryPlaylists(id, {
+      const response = await spotify.getCategoryPlaylists(id, {
         limit: 10,
       });
       //SpotifyWebApi sent null value in array. Need to filter.
-      const playListItem = getCategoriesDetail.playlists.items.filter(
-        (item) => {
-          return item !== null;
-        }
-      );
+      const playlistItems = response.playlists.items
+        .filter((item) => item !== null)
+        .map((item) => {
+          return {
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            image: item.images[0].url,
+          };
+        });
       dispatch(
         set_categoriesDetail({
-          playListItem,
+          playlistItems,
           id: id,
           name: name,
         })
       );
-      history.push(`/search/${id}`);
+      navigate(`/search/${id}`);
     } catch (err) {
-      alert(err.message);
-      history.push("/search");
+      alert(err);
+      navigate("/search");
     }
   };
   return (

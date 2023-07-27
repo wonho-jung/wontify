@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
@@ -6,116 +6,117 @@ import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import { Grid } from "@material-ui/core";
 import VolumeDownIcon from "@material-ui/icons/VolumeDown";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import {
-  selectAudioStatus,
-  selectFooterAudioState,
-  selectPlaying,
+  set_currentTime,
   set_footerAudioState,
-  set_playing,
-  set_playingList,
+  set_isAudioPlaying,
+  set_currentPlayingURL,
+  IAudioList,
 } from "../features/audioStatusSlice";
-function Footer({ audio, currentTime }) {
+import { audioContext } from "./Player";
+import { useAppSelector } from "app/hook";
+
+function Footer() {
+  const audioObject = useContext(audioContext);
+
+  const {
+    isAudioPlaying,
+    currentPlayingURL,
+    footerAudioState,
+    currentTime,
+  } = useAppSelector((state) => state.audioStatus);
+  const isFooterStateEmpty = Object.values(footerAudioState).every(
+    (item) => !item
+  );
   const [volume, setVolume] = useState(100);
-  const footerAudioState = useSelector(selectFooterAudioState);
-  const audioState = useSelector(selectAudioStatus);
-  const playing = useSelector(selectPlaying);
+
   const dispatch = useDispatch();
-  const volumeControl = (event) => {
-    setVolume(event);
-    audio.volume = volume / 100;
-    if (audio.volume === 0.01) {
-      audio.volume = 0;
+  const volumeControl = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setVolume(parseInt(event.target.value));
+    audioObject!.current!.volume = volume / 100;
+    if (audioObject!.current!.volume === 0.01) {
+      audioObject!.current!.volume = 0;
     }
   };
 
   const playSong = () => {
-    dispatch(
-      set_playing({
-        playSong: true,
-      })
-    );
-    dispatch(
-      set_playingList({
-        playingList: footerAudioState.footerAudioState.url,
-      })
-    );
+    if (!footerAudioState.url) {
+      return;
+    }
+    dispatch(set_isAudioPlaying(true));
+    dispatch(set_currentPlayingURL(footerAudioState.url));
+    audioObject!.current!.src = footerAudioState.url;
+    audioObject!.current!.play();
+    audioObject!.current!.addEventListener("ended", () => {
+      dispatch(set_isAudioPlaying(false));
+      dispatch(set_currentPlayingURL(null));
+      dispatch(set_currentTime(0));
+    });
+    audioObject!.current!.ontimeupdate = (e) => {
+      const audioElement = e.target as HTMLAudioElement; // Cast to HTMLAudioElement
+      dispatch(set_currentTime(Math.ceil(audioElement.currentTime)));
+    };
   };
 
   const stopSong = () => {
-    dispatch(
-      set_playing({
-        playSong: false,
-      })
-    );
-    dispatch(
-      set_playingList({
-        playingList: footerAudioState.footerAudioState.url,
-      })
-    );
+    audioObject!.current!.pause();
+
+    audioObject!.current!.ontimeupdate = (e) => {
+      dispatch(set_currentTime(0));
+    };
+    dispatch(set_isAudioPlaying(false));
+    dispatch(set_currentPlayingURL(null));
   };
   const getFilterList = () => {
-    const audioList = footerAudioState.footerAudioState.audioList;
-    const filterUrl = audioList.filter((item) =>
-      item.track ? item.track.preview_url !== null : item.preview_url !== null
-    );
+    const filterUrl = footerAudioState.audioList!.filter((item) => !!item.url);
     return filterUrl;
   };
 
   const getCurrentIndex = () => {
-    const audioList = footerAudioState.footerAudioState.audioList;
-    const url = footerAudioState.footerAudioState.url;
+    const audioList = footerAudioState.audioList;
+    const url = footerAudioState.url;
 
-    let currentIndex = audioList
-      .filter((item) => {
-        return item.track
-          ? item.track.preview_url !== null
-          : item.preview_url !== null;
-      })
-      .findIndex((item) => {
-        return item.track
-          ? item.track.preview_url === url
-          : item.preview_url === url;
-      });
+    let currentIndex = audioList!
+      .filter((item) => !!item.url)
+      .findIndex((item) => item.url === url);
 
     return currentIndex;
   };
 
-  const updateAudioState = (currentIndex, filterList) => {
-    const isTrack = !!filterList[currentIndex]?.track;
-
+  const updateAudioState = (currentIndex: number, filterList: IAudioList[]) => {
     const updateState = {
-      playSong: true,
-      playingList: isTrack
-        ? filterList[currentIndex].track.preview_url
-        : filterList[currentIndex].preview_url,
-      footerAudioState: {
-        name: isTrack
-          ? filterList[currentIndex].track.name
-          : filterList[currentIndex].name,
-        url: isTrack
-          ? filterList[currentIndex].track.preview_url
-          : filterList[currentIndex].preview_url,
-        image: isTrack
-          ? filterList[currentIndex].track.album.images[0].url
-          : filterList[currentIndex].album?.images[0].url,
-        albumName: isTrack
-          ? filterList[currentIndex].track.album.name
-          : filterList[currentIndex].album?.name,
-        artistsName: isTrack
-          ? filterList[currentIndex].track.artists
-          : filterList[currentIndex].artists,
-        audioList: filterList,
-      },
+      name: filterList[currentIndex].name,
+      url: filterList[currentIndex].url,
+      image: filterList[currentIndex].image,
+      albumName: filterList[currentIndex].albumName,
+      artistsName: filterList[currentIndex].artistsName,
+      audioList: filterList,
     };
+    if (isAudioPlaying) {
+      dispatch(set_currentPlayingURL(updateState.url));
+      audioObject!.current!.src = updateState.url ?? "";
+      audioObject!.current!.play();
 
-    dispatch(set_playing(updateState));
-    dispatch(set_playingList(updateState));
+      audioObject!.current!.ontimeupdate = (e) => {
+        const audioElement = e.target as HTMLAudioElement; // Cast to HTMLAudioElement
+        dispatch(set_currentTime(Math.ceil(audioElement.currentTime)));
+      };
+      audioObject!.current!.addEventListener("ended", () => {
+        dispatch(set_isAudioPlaying(false));
+        dispatch(set_currentPlayingURL(null));
+        dispatch(set_currentTime(0));
+      });
+    }
+
     dispatch(set_footerAudioState(updateState));
   };
 
   const prevSong = async () => {
+    if (!footerAudioState.audioList) {
+      return;
+    }
     let currentIndex = await getCurrentIndex();
     let filterList = await getFilterList();
 
@@ -129,6 +130,9 @@ function Footer({ audio, currentTime }) {
   };
 
   const nextSong = async () => {
+    if (!footerAudioState.audioList) {
+      return;
+    }
     let currentIndex = await getCurrentIndex();
     let filterList = await getFilterList();
 
@@ -142,19 +146,19 @@ function Footer({ audio, currentTime }) {
   };
   return (
     <FooterContainer>
-      {footerAudioState.footerAudioState ? (
+      {!isFooterStateEmpty ? (
         <FooterLeft>
-          {footerAudioState.footerAudioState.image && (
-            <img src={footerAudioState.footerAudioState?.image} alt="" />
+          {footerAudioState.image && (
+            <img src={footerAudioState.image} alt="" />
           )}
           <FooterSongInfo>
-            <h1>{footerAudioState.footerAudioState.name}</h1>
+            <h1>{footerAudioState.name}</h1>
             <p>
-              {footerAudioState.footerAudioState.artistsName
-                ?.map((artist) => artist.name)
-                .join(", ")}
-              {footerAudioState.footerAudioState.albumName &&
-                `/${footerAudioState.footerAudioState.albumName}`}
+              {!!footerAudioState.artistsName &&
+                footerAudioState.artistsName
+                  .map((artist) => artist.name)
+                  .join(", ")}
+              {footerAudioState.albumName && `/${footerAudioState.albumName}`}
             </p>
           </FooterSongInfo>
         </FooterLeft>
@@ -172,12 +176,8 @@ function Footer({ audio, currentTime }) {
 
       <FooterCenter>
         <IconContainer>
-          <SkipPreviousIcon
-            className="icon"
-            onClick={audioState ? prevSong : null}
-          />
-          {audioState?.audioStatus === footerAudioState.footerAudioState?.url &&
-          playing ? (
+          <SkipPreviousIcon className="icon" onClick={prevSong} />
+          {currentPlayingURL === footerAudioState.url && isAudioPlaying ? (
             <PauseCircleOutlineIcon
               onClick={stopSong}
               className="icon"
@@ -185,15 +185,12 @@ function Footer({ audio, currentTime }) {
             />
           ) : (
             <PlayCircleOutlineIcon
-              onClick={playing ? playSong : null}
+              onClick={playSong}
               className="icon"
               fontSize="large"
             />
           )}
-          <SkipNextIcon
-            onClick={audioState ? nextSong : null}
-            className="icon"
-          />
+          <SkipNextIcon onClick={nextSong} className="icon" />
         </IconContainer>
         <ProgressBarContainer>
           {currentTime < 10 ? `0:0${currentTime}` : `0:${currentTime}`}
@@ -216,7 +213,7 @@ function Footer({ audio, currentTime }) {
         </Grid>
         <VolumeDownIcon />
         <input
-          onChange={(event) => volumeControl(event.target.value)}
+          onChange={volumeControl}
           type="range"
           min="0"
           max="100"

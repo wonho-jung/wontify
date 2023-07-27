@@ -3,25 +3,48 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import { set_artistDetail } from "../../features/spotifyDataSlice";
-import { spotifyContext } from "../Player";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useNavigate } from "react-router-dom";
+import { spotifyContext } from "App";
 
-function SearchArtistPost({ image, name, id, artistInfo }) {
+interface ISearchArtistPost {
+  image: string;
+  name: string;
+  id: string;
+  artistInfo: {
+    name: string;
+    image: string;
+    followers: number;
+    genres: string[];
+  };
+}
+
+function SearchArtistPost({ image, name, id, artistInfo }: ISearchArtistPost) {
   const spotify = useContext(spotifyContext);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const sendToArtiest = async () => {
     try {
       const res = await spotify.getArtistTopTracks(id, "CA");
+      const filteredTracks = res.tracks.map((track) => {
+        return {
+          preview_url: track.preview_url,
+          time: track.duration_ms,
+          image: track.album.images[0].url,
+          name: track.name,
+          albumName: track.album.name,
+          artistsName: track.artists,
+        };
+      });
       dispatch(
         set_artistDetail({
-          artistDetail: res,
+          artistDetail: filteredTracks,
           artistInfo: artistInfo,
         })
       );
-      history.push(`/artist/${id}`);
+
+      navigate(`/artist/${id}`);
     } catch (err) {
-      alert(err.message);
+      alert(err);
     }
   };
 

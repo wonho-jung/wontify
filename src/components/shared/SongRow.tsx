@@ -1,18 +1,18 @@
 import { Button } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  selectAudioStatus,
-  selectPlaying,
-  // selectPlaylists,
   set_footerAudioState,
-  set_playing,
-  set_playingList,
-  set_playlists,
+  set_isAudioPlaying,
+  set_currentPlayingURL,
+  set_currentTime,
 } from "../../features/audioStatusSlice";
-import { selectPlaylists } from "../../features/userPlaylistSlice";
+import {
+  selectPlaylists,
+  set_playlists,
+} from "../../features/userPlaylistSlice";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
 import {
@@ -26,30 +26,67 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import { audioContext } from "components/Player";
+import { useAppSelector } from "app/hook";
 
+interface ISongRow {
+  url: string | null;
+  image: string | null;
+  name: string | null;
+  albumName: string;
+  artistsName: {
+    external_urls: {
+      spotify: string;
+    };
+    href: string;
+    id: string;
+    name: string;
+    type: string;
+    uri: string;
+  }[];
+  time: number | null;
+  audioList: {
+    url: string | null;
+    image: string | null;
+    name: string | null;
+    albumName: string;
+    artistsName: {
+      external_urls: {
+        spotify: string;
+      };
+      href: string;
+      id: string;
+      name: string;
+      type: string;
+      uri: string;
+    }[];
+  }[];
+  isUserPlaylist?: boolean;
+  id?: string;
+  removeSongListById?: ((id: string) => void) | null;
+}
 function SongRow({
   url,
   image,
   name,
   albumName,
   artistsName,
-  trackNumber,
   time,
   audioList,
   isUserPlaylist = false,
-  id = null,
+  id = "",
   removeSongListById = null,
-}) {
+}: ISongRow) {
   const dispatch = useDispatch();
-  const audioState = useSelector(selectAudioStatus);
-  const playing = useSelector(selectPlaying);
-  const { playlists } = useSelector(selectPlaylists);
+  const { currentPlayingURL } = useAppSelector((state) => state.audioStatus);
+  const playlists = useSelector(selectPlaylists);
   const [addSongDialogOpen, setAddSongDialogOpen] = useState(false);
   const [userPlaylistId, setUserPlaylistId] = useState("");
-  const playlistId = window.location.pathname.split("/")[2];
+  const playlistId = window.location?.pathname.split("/")[2];
+  const audioObject = useContext(audioContext);
   const deleteSongHandler = () => {
     deleteSongFromPlaylist(playlistId, id).then((res) => {
-      removeSongListById(id);
+      removeSongListById && removeSongListById(id);
     });
   };
 
@@ -70,7 +107,6 @@ function SongRow({
         name,
         albumName,
         artistsName,
-        trackNumber,
         time,
       },
       id: userPlaylistId,
@@ -78,11 +114,7 @@ function SongRow({
       .then((res) => {
         getPlaylists()
           .then((res) => {
-            dispatch(
-              set_playlists({
-                playlists: res.data,
-              })
-            );
+            dispatch(set_playlists(res.data));
           })
           .catch((err) => {
             console.log("getPlaylists", err);
@@ -92,74 +124,68 @@ function SongRow({
         console.log("addSongToPlaylist", err);
       });
   };
-
   const playSong = () => {
-    dispatch(
-      set_playing({
-        playSong: true,
-      })
-    );
-    dispatch(
-      set_playingList({
-        playingList: url,
-      })
-    );
+    dispatch(set_currentPlayingURL(url));
+    dispatch(set_isAudioPlaying(true));
     dispatch(
       set_footerAudioState({
-        footerAudioState: {
-          name,
-          url,
-          image,
-          artistsName,
-          albumName,
-          audioList,
-        },
+        name: name,
+        url,
+        image,
+        artistsName,
+        albumName,
+        audioList,
       })
     );
+    audioObject!.current!.src = url ?? "";
+    audioObject!.current!.play();
+    audioObject!.current!.addEventListener("ended", () => {
+      dispatch(set_isAudioPlaying(false));
+      dispatch(set_currentPlayingURL(null));
+      dispatch(set_currentTime(0));
+    });
+    audioObject!.current!.ontimeupdate = (e) => {
+      const audioElement = e.target as HTMLAudioElement; // Cast to HTMLAudioElement
+      dispatch(set_currentTime(Math.ceil(audioElement.currentTime)));
+    };
   };
-
   const stopSong = () => {
-    dispatch(
-      set_playing({
-        playSong: false,
-      })
-    );
-    dispatch(
-      set_playingList({
-        playingList: url,
-      })
-    );
+    audioObject!.current!.pause();
+
+    audioObject!.current!.ontimeupdate = (e) => {
+      dispatch(set_currentTime(0));
+    };
+    dispatch(set_isAudioPlaying(false));
+    dispatch(set_currentPlayingURL(null));
   };
 
-  const millisToMinutesAndSeconds = (millis) => {
+  const millisToMinutesAndSeconds = (millis: number) => {
     const minutes = Math.floor(millis / 60000);
-    const seconds = ((millis % 60000) / 1000).toFixed(0);
+    const seconds = parseInt(((millis % 60000) / 1000).toFixed(0)); // Convert back to number
     return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
   };
 
   return (
     <SongRowContainer>
-      {(time && url !== null && audioState?.audioStatus === null) ||
-        (time && url !== null && audioState?.audioStatus !== url && (
-          <PlayCircleOutlineIcon
-            onClick={playSong}
-            className="icon"
-            fontSize="large"
-          />
-        ))}
-      {time && url !== null && audioState?.audioStatus === url && playing && (
+      {!!time && !!url && currentPlayingURL !== url && (
+        <PlayCircleOutlineIcon
+          onClick={playSong}
+          className="icon"
+          fontSize="large"
+        />
+      )}
+      {!!time && !!url && currentPlayingURL === url && (
         <PauseCircleOutlineIcon
           onClick={stopSong}
           className="icon"
           fontSize="large"
         />
       )}
-      {trackNumber && <h5>{trackNumber}</h5>}
       {image && <img src={image} alt="" />}
       <SongRowInfo>
         <h1>{name}</h1>
         <p>
-          {artistsName?.map((artist) => artist.name).join(", ")}
+          {artistsName?.map((artist: any) => artist.name).join(", ")}
           {albumName && `/${albumName}`}
         </p>
       </SongRowInfo>
@@ -205,10 +231,12 @@ function SongRow({
                     setUserPlaylistId(e.target.value);
                   }}
                 >
-                  {playlists?.map((playlist, index) => (
+                  {playlists?.map((playlist: any, index: number) => (
                     <MenuItem
                       key={index}
-                      disabled={playlist.songs?.some((obj) => obj.url === url)}
+                      disabled={playlist.songs?.some(
+                        (obj: any) => obj.url === url
+                      )}
                       value={playlist._id}
                     >
                       {playlist.name}
