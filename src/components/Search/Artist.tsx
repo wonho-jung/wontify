@@ -14,6 +14,7 @@ function Artist() {
 
   const [followNumber, setFollowNumber] = useState<null | number>(null);
   const [btnText, setBtnText] = useState("Follow");
+
   //If there is no data, go back to search page
   useEffect(() => {
     if (!artistDetail) {
