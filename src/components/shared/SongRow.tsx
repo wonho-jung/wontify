@@ -99,15 +99,6 @@ function SongRow({
   };
 
   const dialogSubmitHandler = () => {
-    console.log({
-      id: uuidv4(),
-      url,
-      image,
-      name,
-      albumName,
-      artistsName,
-      time,
-    });
     addSongToPlaylist({
       data: {
         id: uuidv4(),
