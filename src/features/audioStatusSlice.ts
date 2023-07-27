@@ -12,69 +12,6 @@ export interface IArtistName {
   uri: string;
 }
 
-// export interface IAudioList {
-//   added_at: string;
-//   added_by: {
-//     external_urls: {
-//       spotify: string;
-//     };
-//     href: string;
-//     id: string;
-//     type: string;
-//     uri: string;
-//   };
-//   is_local: boolean;
-//   primary_color: string;
-//   track: {
-//     album: {
-//       album_type: string;
-//       artists: IArtistName[];
-//       available_markets: string[];
-//       external_urls: {
-//         spotify: string;
-//       };
-//       href: string;
-//       id: string;
-//       images: {
-//         height: number | null;
-//         url: string;
-//         width: number | null;
-//       }[];
-//       name: string;
-//       release_date: string;
-//       release_date_precision: string;
-//       total_tracks: number;
-//       type: string;
-//       uri: string;
-//     };
-//     artists: IArtistName[];
-//     available_markets: string[];
-//     disc_number: number;
-//     duration_ms: number;
-//     episode: boolean;
-//     explicit: boolean;
-//     external_ids: {
-//       isrc: string;
-//     };
-//     external_urls: {
-//       spotify: string;
-//     };
-//     href: string;
-//     id: string;
-//     is_local: boolean;
-//     name: string;
-//     popularity: number;
-//     preview_url: string | null;
-//     track: boolean;
-//     track_number: number;
-//     type: string;
-//     uri: string;
-//   };
-
-//   video_thumbnail: {
-//     url: string | null;
-//   };
-// }
 export interface IAudioList {
   albumName: string;
   artistsName: IArtistName[] | null;
