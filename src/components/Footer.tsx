@@ -6,15 +6,17 @@ import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import { Grid } from "@material-ui/core";
 import VolumeDownIcon from "@material-ui/icons/VolumeDown";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import {
   set_currentTime,
   set_footerAudioState,
   set_isAudioPlaying,
   set_currentPlayingURL,
+  IAudioList,
 } from "../features/audioStatusSlice";
 import { audioContext } from "./Player";
+import { useAppSelector } from "app/hook";
 
 function Footer() {
   const audioObject = useContext(audioContext);
@@ -24,50 +26,51 @@ function Footer() {
     currentPlayingURL,
     footerAudioState,
     currentTime,
-  } = useSelector((state) => state.audioStatus);
+  } = useAppSelector((state) => state.audioStatus);
   const isFooterStateEmpty = Object.values(footerAudioState).every(
     (item) => !item
   );
   const [volume, setVolume] = useState(100);
 
   const dispatch = useDispatch();
-  const volumeControl = (event) => {
-    setVolume(event);
-    audioObject.current.volume = volume / 100;
-    if (audioObject.volume === 0.01) {
-      audioObject.current.volume = 0;
+  const volumeControl = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setVolume(parseInt(event.target.value));
+    audioObject!.current!.volume = volume / 100;
+    if (audioObject!.current!.volume === 0.01) {
+      audioObject!.current!.volume = 0;
     }
   };
 
   const playSong = () => {
+    if (!footerAudioState.url) {
+      return;
+    }
     dispatch(set_isAudioPlaying(true));
     dispatch(set_currentPlayingURL(footerAudioState.url));
-    audioObject.current.src = footerAudioState.url;
-    audioObject.current.play();
-    audioObject.current.addEventListener("ended", () => {
+    audioObject!.current!.src = footerAudioState.url;
+    audioObject!.current!.play();
+    audioObject!.current!.addEventListener("ended", () => {
       dispatch(set_isAudioPlaying(false));
       dispatch(set_currentPlayingURL(null));
       dispatch(set_currentTime(0));
     });
-    audioObject.current.ontimeupdate = (e) => {
-      dispatch(set_currentTime(Math.ceil(e.target.currentTime)));
+    audioObject!.current!.ontimeupdate = (e) => {
+      const audioElement = e.target as HTMLAudioElement; // Cast to HTMLAudioElement
+      dispatch(set_currentTime(Math.ceil(audioElement.currentTime)));
     };
   };
 
   const stopSong = () => {
-    audioObject.current.pause();
+    audioObject!.current!.pause();
 
-    audioObject.current.ontimeupdate = (e) => {
+    audioObject!.current!.ontimeupdate = (e) => {
       dispatch(set_currentTime(0));
     };
     dispatch(set_isAudioPlaying(false));
     dispatch(set_currentPlayingURL(null));
   };
   const getFilterList = () => {
-    const audioList = footerAudioState.audioList;
-    const filterUrl = audioList.filter((item) =>
-      item.track ? item.track.preview_url !== null : item.preview_url !== null
-    );
+    const filterUrl = footerAudioState.audioList!.filter((item) => !!item.url);
     return filterUrl;
   };
 
@@ -75,50 +78,32 @@ function Footer() {
     const audioList = footerAudioState.audioList;
     const url = footerAudioState.url;
 
-    let currentIndex = audioList
-      .filter((item) => {
-        return item.track
-          ? item.track.preview_url !== null
-          : item.preview_url !== null;
-      })
-      .findIndex((item) => {
-        return item.track
-          ? item.track.preview_url === url
-          : item.preview_url === url;
-      });
+    let currentIndex = audioList!
+      .filter((item) => !!item.url)
+      .findIndex((item) => item.url === url);
 
     return currentIndex;
   };
 
-  const updateAudioState = (currentIndex, filterList) => {
-    const isTrack = !!filterList[currentIndex]?.track;
+  const updateAudioState = (currentIndex: number, filterList: IAudioList[]) => {
     const updateState = {
-      name: isTrack
-        ? filterList[currentIndex].track.name
-        : filterList[currentIndex].name,
-      url: isTrack
-        ? filterList[currentIndex].track.preview_url
-        : filterList[currentIndex].preview_url,
-      image: isTrack
-        ? filterList[currentIndex].track.album.images[0].url
-        : filterList[currentIndex].album?.images[0].url,
-      albumName: isTrack
-        ? filterList[currentIndex].track.album.name
-        : filterList[currentIndex].album?.name,
-      artistsName: isTrack
-        ? filterList[currentIndex].track.artists
-        : filterList[currentIndex].artists,
+      name: filterList[currentIndex].name,
+      url: filterList[currentIndex].url,
+      image: filterList[currentIndex].image,
+      albumName: filterList[currentIndex].albumName,
+      artistsName: filterList[currentIndex].artistsName,
       audioList: filterList,
     };
     if (isAudioPlaying) {
       dispatch(set_currentPlayingURL(updateState.url));
-      audioObject.current.src = updateState.url;
-      audioObject.current.play();
+      audioObject!.current!.src = updateState.url ?? "";
+      audioObject!.current!.play();
 
-      audioObject.current.ontimeupdate = (e) => {
-        dispatch(set_currentTime(Math.ceil(e.target.currentTime)));
+      audioObject!.current!.ontimeupdate = (e) => {
+        const audioElement = e.target as HTMLAudioElement; // Cast to HTMLAudioElement
+        dispatch(set_currentTime(Math.ceil(audioElement.currentTime)));
       };
-      audioObject.current.addEventListener("ended", () => {
+      audioObject!.current!.addEventListener("ended", () => {
         dispatch(set_isAudioPlaying(false));
         dispatch(set_currentPlayingURL(null));
         dispatch(set_currentTime(0));
@@ -129,6 +114,9 @@ function Footer() {
   };
 
   const prevSong = async () => {
+    if (!footerAudioState.audioList) {
+      return;
+    }
     let currentIndex = await getCurrentIndex();
     let filterList = await getFilterList();
 
@@ -142,6 +130,9 @@ function Footer() {
   };
 
   const nextSong = async () => {
+    if (!footerAudioState.audioList) {
+      return;
+    }
     let currentIndex = await getCurrentIndex();
     let filterList = await getFilterList();
 
@@ -163,9 +154,10 @@ function Footer() {
           <FooterSongInfo>
             <h1>{footerAudioState.name}</h1>
             <p>
-              {footerAudioState.artistsName
-                ?.map((artist) => artist.name)
-                .join(", ")}
+              {!!footerAudioState.artistsName &&
+                footerAudioState.artistsName
+                  .map((artist) => artist.name)
+                  .join(", ")}
               {footerAudioState.albumName && `/${footerAudioState.albumName}`}
             </p>
           </FooterSongInfo>
@@ -184,10 +176,7 @@ function Footer() {
 
       <FooterCenter>
         <IconContainer>
-          <SkipPreviousIcon
-            className="icon"
-            onClick={!isFooterStateEmpty ? prevSong : null}
-          />
+          <SkipPreviousIcon className="icon" onClick={prevSong} />
           {currentPlayingURL === footerAudioState.url && isAudioPlaying ? (
             <PauseCircleOutlineIcon
               onClick={stopSong}
@@ -196,15 +185,12 @@ function Footer() {
             />
           ) : (
             <PlayCircleOutlineIcon
-              onClick={footerAudioState.url ? playSong : null}
+              onClick={playSong}
               className="icon"
               fontSize="large"
             />
           )}
-          <SkipNextIcon
-            onClick={!isFooterStateEmpty ? nextSong : null}
-            className="icon"
-          />
+          <SkipNextIcon onClick={nextSong} className="icon" />
         </IconContainer>
         <ProgressBarContainer>
           {currentTime < 10 ? `0:0${currentTime}` : `0:${currentTime}`}
@@ -227,7 +213,7 @@ function Footer() {
         </Grid>
         <VolumeDownIcon />
         <input
-          onChange={(event) => volumeControl(event.target.value)}
+          onChange={volumeControl}
           type="range"
           min="0"
           max="100"

@@ -6,11 +6,21 @@ import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "../shared/SongRow";
 import { Button } from "@material-ui/core";
+import { useNavigate } from "react-router-dom";
 function Artist() {
-  const artistDetail = useSelector(selectArtistDetail);
-  const [followNumber, setFollowNumber] = useState<null | number>(null);
+  const navigate = useNavigate();
 
+  const artistDetail = useSelector(selectArtistDetail);
+
+  const [followNumber, setFollowNumber] = useState<null | number>(null);
   const [btnText, setBtnText] = useState("Follow");
+  //If there is no data, go back to search page
+  useEffect(() => {
+    if (!artistDetail) {
+      navigate(`/search`);
+    }
+  }, [artistDetail, navigate]);
+
   useEffect(() => {
     if (artistDetail) {
       setFollowNumber(artistDetail.artistInfo.followers);
@@ -65,7 +75,7 @@ function Artist() {
               <SongRow
                 key={inx}
                 audioList={artistDetail.artistDetail}
-                url={item.preview_url}
+                url={item.url}
                 time={item.time}
                 image={item.image}
                 name={item.name}

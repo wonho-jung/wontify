@@ -6,6 +6,17 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
+interface IFormDialog {
+  open: boolean;
+  handleClose: () => void;
+  handleSubmit: () => void;
+  dialogTitle: string;
+  dialogContentText: string;
+  buttonText: string;
+  children?: React.ReactNode;
+  buttonDisabled?: boolean;
+}
+
 export default function FormDialog({
   open,
   handleClose,
@@ -17,14 +28,14 @@ export default function FormDialog({
   children,
 
   buttonDisabled = false,
-}) {
+}: IFormDialog) {
   return (
     <div>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>{dialogTitle}</DialogTitle>
         <DialogContent>
           <DialogContentText>{dialogContentText} </DialogContentText>
-          {children}
+          {children && children}
         </DialogContent>
         <DialogActions>
           <Button

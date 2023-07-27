@@ -18,7 +18,7 @@ function SearchDetail({ searchResult }: { searchResult: ISearchResult }) {
       const res = await spotify.getArtistTopTracks(searchResult.topId, "CA");
       const filteredTracks = res.tracks.map((track) => {
         return {
-          preview_url: track.preview_url,
+          url: track.preview_url,
           time: track.duration_ms,
           image: track.album.images[0].url,
           name: track.name,

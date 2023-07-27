@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { selectPlaylists } from "../../features/userPlaylistSlice";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
@@ -8,11 +7,12 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "../shared/SongRow";
 import { getPlaylistDetails } from "../../backend";
 import { useLocation } from "react-router-dom";
+import { useAppSelector } from "app/hook";
 
 function UserPlayList() {
   const [songLists, setSongLists] = useState([]);
   const [userAudioList, setUserAudioList] = useState([]);
-  const { playlists } = useSelector(selectPlaylists);
+  const playlists = useAppSelector(selectPlaylists);
   const location = useLocation();
   const currentPath = location.pathname;
   const lastPathSegment = currentPath.substring(
@@ -20,10 +20,12 @@ function UserPlayList() {
   );
   const playlistName = playlists?.find((item) => item._id === lastPathSegment)
     ?.name;
-  const removeSongListById = (id) => {
-    const newSongLists = songLists.filter((item) => item.id !== id);
+
+  const removeSongListById = (id: string) => {
+    const newSongLists = songLists.filter((item: any) => item.id !== id);
     setSongLists([...newSongLists]);
   };
+
   useEffect(() => {
     getPlaylistDetails(lastPathSegment)
       .then((res) => {
@@ -32,7 +34,7 @@ function UserPlayList() {
           setUserAudioList([]);
           return;
         }
-        const songUrlArray = res.data?.songs.map((item, index) => {
+        const songUrlArray = res.data?.songs.map((item: any, index: number) => {
           return {
             preview_url: item.url,
             name: item.name,
@@ -40,7 +42,6 @@ function UserPlayList() {
             artists: item.artistsName,
           };
         });
-
         setUserAudioList(songUrlArray);
         setSongLists(res.data.songs);
       })
@@ -48,6 +49,7 @@ function UserPlayList() {
         console.log(err);
       });
   }, [lastPathSegment]);
+
   return (
     <BodyContainer>
       <BodyInfo>
@@ -63,7 +65,7 @@ function UserPlayList() {
           <MoreHorizIcon />
         </BodyIcons>
 
-        {songLists?.map((item, inx) => (
+        {songLists?.map((item: any, inx) => (
           <SongRow
             removeSongListById={removeSongListById}
             id={item.id}
@@ -134,12 +136,3 @@ const BodyIcons = styled.div`
     margin-bottom: 20px;
   }
 `;
-// const Recommended = styled.div`
-//   margin-top: 50px;
-//   h3,
-//   .recommend_p {
-//     padding-left: 30px;
-//   }
-//   padding-top: 10px;
-//   padding-bottom: 200px;
-// `;

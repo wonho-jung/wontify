@@ -12,15 +12,26 @@ interface CategoriesDetail {
   }[];
 }
 //artist
-interface ArtistDetail {
-  artistDetail: {
-    preview_url: string;
-    time: number;
-    image: string;
+export interface IArtistDetail {
+  url: string;
+  time: number;
+  image: string;
+  name: string;
+  albumName: string;
+  artistsName: {
+    external_urls: {
+      spotify: string;
+    };
+    href: string;
+    id: string;
     name: string;
-    albumName: string;
-    artistsName: string[];
+    type: string;
+    uri: string;
   }[];
+}
+
+interface ArtistDetail {
+  artistDetail: IArtistDetail[];
   artistInfo: {
     name: string;
     image: string;
@@ -49,17 +60,6 @@ export interface SpotifyCategory {
   name: string;
 }
 
-// export interface SpotifyCategories {
-//   categories: {
-//     href: string;
-//     items: SpotifyCategory[];
-//     limit: number;
-//     next: string | null;
-//     offset: number;
-//     previous: string | null;
-//     total: number;
-//   };
-// }
 interface SpotifyData {
   topList: SpotifyPlaylist[] | null;
   workout: SpotifyPlaylist[] | null;

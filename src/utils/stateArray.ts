@@ -27,4 +27,3 @@ export const filteredPlaylists = (data: IState[]) => {
 
   return filteredPlaylist;
 };
-//TODO: add the type of the data that we need to return

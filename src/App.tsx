@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useRef, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import Player from "./components/Player";
 import { useDispatch } from "react-redux";
 
@@ -13,8 +13,8 @@ import {
 import "./App.css";
 import { getToken } from "./utils/spotify";
 import ErrorScreen from "./components/shared/ErrorScreen";
-import Loading from "./components/shared/Loading";
 import { IState, filteredPlaylists } from "utils/stateArray";
+import LoadingScreen from "components/shared/LoadingScreen";
 
 export const spotifyContext = createContext<SpotifyWebApi.SpotifyWebApiJs>(
   {} as SpotifyWebApi.SpotifyWebApiJs
@@ -86,7 +86,7 @@ function App() {
           </spotifyContext.Provider>
         </>
       ) : (
-        <Loading />
+        <LoadingScreen />
       )}
     </div>
   );

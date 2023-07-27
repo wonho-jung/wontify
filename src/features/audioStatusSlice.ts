@@ -1,94 +1,87 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "app/store";
 
-interface IArtistName {
-  artistsName: {
-    external_urls: {
-      spotify: string;
-    };
-    href: string;
-    id: string;
-    name: string;
-    type: string;
-    uri: string;
+export interface IArtistName {
+  external_urls: {
+    spotify: string;
   };
+  href: string;
+  id: string;
+  name: string;
+  type: string;
+  uri: string;
 }
 
-// interface IPlaylists {
-//   _id: string;
-//   name: string;
-//   songs: {
-//     url: string;
+// export interface IAudioList {
+//   added_at: string;
+//   added_by: {
+//     external_urls: {
+//       spotify: string;
+//     };
+//     href: string;
+//     id: string;
+//     type: string;
+//     uri: string;
+//   };
+//   is_local: boolean;
+//   primary_color: string;
+//   track: {
+//     album: {
+//       album_type: string;
+//       artists: IArtistName[];
+//       available_markets: string[];
+//       external_urls: {
+//         spotify: string;
+//       };
+//       href: string;
+//       id: string;
+//       images: {
+//         height: number | null;
+//         url: string;
+//         width: number | null;
+//       }[];
+//       name: string;
+//       release_date: string;
+//       release_date_precision: string;
+//       total_tracks: number;
+//       type: string;
+//       uri: string;
+//     };
+//     artists: IArtistName[];
+//     available_markets: string[];
+//     disc_number: number;
+//     duration_ms: number;
+//     episode: boolean;
+//     explicit: boolean;
+//     external_ids: {
+//       isrc: string;
+//     };
+//     external_urls: {
+//       spotify: string;
+//     };
+//     href: string;
+//     id: string;
+//     is_local: boolean;
 //     name: string;
-//     image: string;
-//     albumName: String;
-//     artistsName: IArtistName[];
-//   }[];
-// }
-interface IAudioList {
-  audioList: {
-    added_at: string;
-    added_by: {
-      external_urls: {
-        spotify: string;
-      };
-      href: string;
-      id: string;
-      type: string;
-      uri: string;
-    };
-    is_local: boolean;
-    primary_color: string;
-    track: {
-      album: {
-        album_type: string;
-        artists: IArtistName[];
-        available_markets: string[];
-        external_urls: {
-          spotify: string;
-        };
-        href: string;
-        id: string;
-        images: {
-          height: number | null;
-          url: string;
-          width: number | null;
-        }[];
-        name: string;
-        release_date: string;
-        release_date_precision: string;
-        total_tracks: number;
-        type: string;
-        uri: string;
-      };
-      artists: IArtistName[];
-      available_markets: string[];
-      disc_number: number;
-      duration_ms: number;
-      episode: boolean;
-      explicit: boolean;
-      external_ids: {
-        isrc: string;
-      };
-      external_urls: {
-        spotify: string;
-      };
-      href: string;
-      id: string;
-      is_local: boolean;
-      name: string;
-      popularity: number;
-      preview_url: string | null;
-      track: boolean;
-      track_number: number;
-      type: string;
-      uri: string;
-    };
+//     popularity: number;
+//     preview_url: string | null;
+//     track: boolean;
+//     track_number: number;
+//     type: string;
+//     uri: string;
+//   };
 
-    video_thumbnail: {
-      url: string | null;
-    };
-  }[];
+//   video_thumbnail: {
+//     url: string | null;
+//   };
+// }
+export interface IAudioList {
+  albumName: string;
+  artistsName: IArtistName[] | null;
+  image: string;
+  name: string;
+  time: number | null;
+  url: string | null;
 }
 
 interface AudioStatusState {
@@ -101,7 +94,7 @@ interface AudioStatusState {
     url: string | null;
     artistsName: IArtistName[] | null;
     albumName: string | null;
-    audioList: IAudioList | null;
+    audioList: IAudioList[] | null;
   };
 }
 const initialAudioStatusState: AudioStatusState = {
@@ -147,11 +140,11 @@ export const {
   set_footerAudioState,
 } = audioStatusSlice.actions;
 
-export const selectCurrentTime = (state: RootState) =>
+export const selectCurrentTime = (state: RootState): number =>
   state.audioStatus.currentTime;
-export const selectIsAudioPlaying = (state: RootState) =>
+export const selectIsAudioPlaying = (state: RootState): boolean =>
   state.audioStatus.isAudioPlaying;
-export const selectCurrentPlayingURL = (state: RootState) =>
+export const selectCurrentPlayingURL = (state: RootState): string | null =>
   state.audioStatus.currentPlayingURL;
 
 export const selectFooterAudioState = (state: RootState) =>

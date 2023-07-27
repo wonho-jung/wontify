@@ -2803,6 +2803,13 @@
     "@types/history" "^4.7.11"
     "@types/react" "*"
 
+"@types/react-spinkit@^3.0.7":
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/@types/react-spinkit/-/react-spinkit-3.0.7.tgz#13600d114658969c91501d139fa53dfe04a88a0c"
+  integrity sha512-y/Jnzx/WCJ8QpkL4hJ0umfhApV9tEmuiN4XKentBCBhAkxERD7hNACJaH7VUzCyhE7LkVYTq8l1vmlK1o+PhuA==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-transition-group@^4.2.0":
   version "4.4.1"
   resolved "https://registry.npmjs.org/@types/react-transition-group/-/react-transition-group-4.4.1.tgz"
@@ -2927,6 +2934,11 @@
   version "2.0.3"
   resolved "https://registry.npmjs.org/@types/trusted-types/-/trusted-types-2.0.3.tgz"
   integrity sha512-NfQ4gyz38SL8sDNrSixxU2Os1a5xcdFxipAFxYEuLUlvU2uDwS4NUpsImcf1//SlWItCVMMLiylsxbmNMToV/g==
+
+"@types/uuid@^9.0.2":
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-9.0.2.tgz#ede1d1b1e451548d44919dc226253e32a6952c4b"
+  integrity sha512-kNnC1GFBLuhImSnV7w4njQkUiJi0ZXUycu1rUaouPqiKlXkh77JKgdRnTAp1x5eBwcIwbtI+3otwzuIDEuDoxQ==
 
 "@types/ws@^8.5.5":
   version "8.5.5"

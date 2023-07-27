@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
@@ -14,12 +14,9 @@ import {
   selectPlaylists,
 } from "../../features/userPlaylistSlice";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import { spotifyContext } from "App";
 const SAM_PLAY_LIST = "sam_playlist";
 
 function Sidebar() {
-  const spotify = useContext(spotifyContext);
-
   const [createPlaylistDialogOpen, setCreatePlaylistDialogOpen] = useState(
     false
   );
@@ -29,7 +26,7 @@ function Sidebar() {
   const [playlistName, setPlaylistName] = useState("");
   const [deleteId, setDeleteId] = useState("");
   const dispatch = useDispatch();
-  const { playlists } = useSelector(selectPlaylists);
+  const playlists = useSelector(selectPlaylists);
 
   const playlistExists = playlists?.some(
     (playlist) => playlist.name === playlistName
@@ -41,11 +38,7 @@ function Sidebar() {
   const reloadGetPlaylists = () => {
     return getPlaylists()
       .then((res) => {
-        dispatch(
-          set_playlists({
-            playlists: res.data,
-          })
-        );
+        dispatch(set_playlists(res.data));
       })
       .catch((err) => {
         console.log("getPlaylists", err);
@@ -159,12 +152,7 @@ function Sidebar() {
         playlists.length > 0 &&
         playlists.map((playlist, idx) => (
           <PlaylistBox key={idx}>
-            <SidebarOptions
-              spotify={spotify}
-              key={idx}
-              id={playlist._id}
-              title={playlist.name}
-            />
+            <SidebarOptions id={playlist._id} title={playlist.name} />
             {playlist.name !== SAM_PLAY_LIST && (
               <IconButton
                 onClick={() => {

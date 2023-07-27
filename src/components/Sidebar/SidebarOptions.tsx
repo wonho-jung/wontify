@@ -1,8 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+interface ISidebarOptions {
+  title: string;
+  Icon?: React.ComponentType;
+  id?: string;
+}
 
-function SidebarOptions({ title, Icon, id }) {
+function SidebarOptions({ title, Icon, id }: ISidebarOptions) {
   return (
     <>
       {id ? (

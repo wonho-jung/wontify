@@ -26,7 +26,14 @@ export interface Itracks {
   name: string;
   albumName: string;
   artistsName: {
+    external_urls: {
+      spotify: string;
+    };
+    href: string;
+    id: string;
     name: string;
+    type: string;
+    uri: string;
   }[];
 }
 
@@ -88,7 +95,6 @@ function Search() {
               artistsName: item.artists,
             };
           });
-
         setSearchResult({
           topId: res.artists!.items[0].id,
           topName: res.artists!.items[0].name,
