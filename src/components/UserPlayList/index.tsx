@@ -9,9 +9,28 @@ import { getPlaylistDetails } from "../../backend";
 import { useLocation } from "react-router-dom";
 import { useAppSelector } from "app/hook";
 
+interface isUserAudioList {
+  albumName: string;
+  artistsName: {
+    external_urls: {
+      spotify: string;
+    };
+    href: string;
+    id: string;
+    name: string;
+    type: string;
+    uri: string;
+  }[];
+  image: string;
+  name: string;
+  time: number;
+  url: string;
+}
+
 function UserPlayList() {
-  const [songLists, setSongLists] = useState([]);
-  const [userAudioList, setUserAudioList] = useState([]);
+  const [userAudioList, setUserAudioList] = useState<isUserAudioList[] | []>(
+    []
+  );
   const playlists = useAppSelector(selectPlaylists);
   const location = useLocation();
   const currentPath = location.pathname;
@@ -22,32 +41,24 @@ function UserPlayList() {
     ?.name;
 
   const removeSongListById = (id: string) => {
-    const newSongLists = songLists.filter((item: any) => item.id !== id);
-    setSongLists([...newSongLists]);
+    const newSongLists = userAudioList.filter((item: any) => item.id !== id);
+    setUserAudioList([...newSongLists]);
   };
 
   useEffect(() => {
-    getPlaylistDetails(lastPathSegment)
-      .then((res) => {
+    const fetchData = async () => {
+      try {
+        const res = await getPlaylistDetails(lastPathSegment);
         if (!res.data.songs) {
-          setSongLists([]);
           setUserAudioList([]);
           return;
         }
-        const songUrlArray = res.data?.songs.map((item: any, index: number) => {
-          return {
-            preview_url: item.url,
-            name: item.name,
-            album: { images: [{ url: item.image }], name: item.albumName },
-            artists: item.artistsName,
-          };
-        });
-        setUserAudioList(songUrlArray);
-        setSongLists(res.data.songs);
-      })
-      .catch((err) => {
+        setUserAudioList(res.data.songs);
+      } catch (err) {
         console.log(err);
-      });
+      }
+    };
+    fetchData();
   }, [lastPathSegment]);
 
   return (
@@ -65,21 +76,22 @@ function UserPlayList() {
           <MoreHorizIcon />
         </BodyIcons>
 
-        {songLists?.map((item: any, inx) => (
-          <SongRow
-            removeSongListById={removeSongListById}
-            id={item.id}
-            audioList={userAudioList}
-            key={inx}
-            url={item.url}
-            time={item.time}
-            image={item.image}
-            name={item.name}
-            albumName={item.albumName}
-            artistsName={item.artistsName}
-            isUserPlaylist={true}
-          />
-        ))}
+        {userAudioList.length > 0 &&
+          userAudioList.map((item: any, inx: number) => (
+            <SongRow
+              id={item.id}
+              audioList={userAudioList}
+              key={inx}
+              url={item.url}
+              time={item.time}
+              image={item.image}
+              name={item.name}
+              albumName={item.albumName}
+              artistsName={item.artistsName}
+              isUserPlaylist={true}
+              removeSongListById={removeSongListById}
+            />
+          ))}
       </BodySongs>
     </BodyContainer>
   );

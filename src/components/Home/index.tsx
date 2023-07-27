@@ -12,6 +12,7 @@ function Home() {
   return (
     <HomeContainer>
       <>
+        {/*TODO: Make an array and use map to display */}
         <HomeContentContainer>
           <h1>Top play lists</h1>
           <PostsContainer>
