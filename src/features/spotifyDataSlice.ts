@@ -1,17 +1,20 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { RootState } from "app/store";
-import { getCategories } from "utils/spotify";
+import {
+  getArtistDetail,
+  getCategories,
+  getCategoryPlaylists,
+} from "utils/spotify";
 //categoriesDetail
-interface CategoriesDetail {
-  id: string;
-  name: string;
-  playlistItems: {
-    id: string;
-    name: string;
-    description: string;
-    image: string;
-  }[];
-}
+// interface CategoriesDetail {
+//   id: string;
+//   name: string;
+//   playlistItems: {
+//     id: string;
+//     name: string;
+//     description: string | null;
+//     image: string;
+//   }[];
+// }
 //artist
 export interface IArtistDetail {
   url: string;
@@ -31,14 +34,11 @@ export interface IArtistDetail {
   }[];
 }
 
-interface ArtistDetail {
-  artistDetail: IArtistDetail[];
-  artistInfo: {
-    name: string;
-    image: string;
-    followers: number;
-    genres: string[];
-  };
+interface IArtistInfo {
+  name: string;
+  image: string;
+  followers: number;
+  genres: string[];
 }
 
 // topList, workout, mood, party...
@@ -65,33 +65,54 @@ interface SpotifyData {
   categories: {
     status: "idle" | "loading" | "succeeded" | "failed";
     data: {
-      toplistsData: SpotifyPlaylist[];
-      workoutData: SpotifyPlaylist[];
-      moodData: SpotifyPlaylist[];
-      partyData: SpotifyPlaylist[];
-      categoriesData: SpotifyCategory[];
-    } | null;
+      toplistsData: SpotifyPlaylist[] | null;
+      workoutData: SpotifyPlaylist[] | null;
+      moodData: SpotifyPlaylist[] | null;
+      partyData: SpotifyPlaylist[] | null;
+      categoriesData: SpotifyCategory[] | null;
+    };
   };
-  topList: SpotifyPlaylist[] | null;
-  workout: SpotifyPlaylist[] | null;
-  mood: SpotifyPlaylist[] | null;
-  party: SpotifyPlaylist[] | null;
-  category: SpotifyCategory[] | null;
-  categoryDetail: CategoriesDetail | null;
-  artistDetail: ArtistDetail | null;
+  categoriesByName: {
+    status: "idle" | "loading" | "succeeded" | "failed";
+    playlistItems:
+      | {
+          id: string;
+          name: string;
+          description: string | null;
+          image: string;
+        }[]
+      | [];
+  };
+  artistDetail: {
+    status: "idle" | "loading" | "succeeded" | "failed";
+    artist: {
+      tracks: IArtistDetail[] | null;
+      info: IArtistInfo | null;
+    };
+  };
 }
 const initialSpotifyDataState: SpotifyData = {
   categories: {
     status: "idle",
-    data: null,
+    data: {
+      toplistsData: null,
+      workoutData: null,
+      moodData: null,
+      partyData: null,
+      categoriesData: null,
+    },
   },
-  topList: null,
-  workout: null,
-  mood: null,
-  party: null,
-  category: null,
-  categoryDetail: null,
-  artistDetail: null,
+  categoriesByName: {
+    status: "idle",
+    playlistItems: [],
+  },
+  artistDetail: {
+    status: "idle",
+    artist: {
+      tracks: null,
+      info: null,
+    },
+  },
 };
 
 export const fetchSpotifyCategories = createAsyncThunk(
@@ -101,51 +122,46 @@ export const fetchSpotifyCategories = createAsyncThunk(
     return response;
   }
 );
-// const fetchCategoryPlaylists = createAsyncThunk(
-//   "spotifyData/fetchCategoryPlaylists",
-//   async (id) => {
-//     const response = await getCategoryPlaylists(id);
-//     return response;
-//   }
-// );
-// const fetchArtistTopTracks = createAsyncThunk(
-//   "spotifyData/fetchArtistTopTracks",
-//   async (id) => {
-//     const response = await getCategoryPlaylists(id);
-//     return response;
-//   }
-// );
+
+export const fetchCategoryPlaylists = createAsyncThunk(
+  "spotifyData/fetchCategoryPlaylists",
+  async (id: string) => {
+    const response = await getCategoryPlaylists(id);
+    return response;
+  }
+);
+
+export const fetchArtistDetails = createAsyncThunk(
+  "spotifyData/fetchArtistDetails",
+  async (id: string) => {
+    const { newArtistInfo, newArtistTopTracks } = await getArtistDetail(id);
+
+    return {
+      artistTracks: newArtistTopTracks,
+      artistInfo: newArtistInfo,
+    };
+  }
+);
 
 const spotifyDataSlice = createSlice({
   name: "spotifyData",
   initialState: initialSpotifyDataState,
 
-  reducers: {
-    set_topList: (state, action) => {
-      state.topList = action.payload;
-    },
-    set_workout: (state, action) => {
-      state.workout = action.payload;
-    },
-    set_mood: (state, action) => {
-      state.mood = action.payload;
-    },
-    set_party: (state, action) => {
-      state.party = action.payload;
-    },
-
-    set_categories: (state, action) => {
-      state.category = action.payload;
-    },
-    set_categoriesDetail: (state, action) => {
-      state.categoryDetail = action.payload;
-    },
-
-    set_artistDetail: (state, action) => {
-      state.artistDetail = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
+    // fetchCategoryPlaylists
+    builder.addCase(fetchCategoryPlaylists.pending, (state, action) => {
+      state.categoriesByName.status = "loading";
+    });
+    builder.addCase(fetchCategoryPlaylists.fulfilled, (state, action) => {
+      state.categoriesByName.status = "succeeded";
+
+      state.categoriesByName.playlistItems = action.payload;
+    });
+    builder.addCase(fetchCategoryPlaylists.rejected, (state, action) => {
+      state.categoriesByName.status = "failed";
+    });
+    // fetchSpotifyCategories
     builder.addCase(fetchSpotifyCategories.pending, (state, action) => {
       state.categories.status = "loading";
     });
@@ -158,50 +174,30 @@ const spotifyDataSlice = createSlice({
         toplistsData,
         workoutData,
       } = action.payload;
-      state.topList = toplistsData;
-      state.workout = workoutData;
-      state.mood = moodData;
-      state.party = partyData;
-      state.category = categoriesData;
+      state.categories.data.toplistsData = toplistsData;
+      state.categories.data.workoutData = workoutData;
+      state.categories.data.moodData = moodData;
+      state.categories.data.partyData = partyData;
+      state.categories.data.categoriesData = categoriesData;
     });
     builder.addCase(fetchSpotifyCategories.rejected, (state, action) => {
       state.categories.status = "failed";
     });
 
-    // builder.addCase(fetchCategoryPlaylists.fulfilled, (state, action) => {
-    //   // state.categoryDetail = action.payload;
-    // });
-    // builder.addCase(fetchArtistTopTracks.fulfilled, (state, action) => {
-    //   // state.artistDetail = action.payload;
-    // });
+    // fetchArtistTopTracks
+    builder.addCase(fetchArtistDetails.pending, (state, action) => {
+      state.artistDetail.status = "loading";
+    });
+    builder.addCase(fetchArtistDetails.fulfilled, (state, action) => {
+      state.artistDetail.status = "succeeded";
+
+      state.artistDetail.artist.tracks = action.payload.artistTracks;
+      state.artistDetail.artist.info = action.payload.artistInfo;
+    });
+    builder.addCase(fetchArtistDetails.rejected, (state, action) => {
+      state.artistDetail.status = "failed";
+    });
   },
 });
-
-export const {
-  set_topList,
-  set_workout,
-  set_mood,
-  set_party,
-  set_categories,
-
-  set_categoriesDetail,
-  set_artistDetail,
-} = spotifyDataSlice.actions;
-
-export const selectTopList = (state: RootState): SpotifyPlaylist[] | null =>
-  state.spotifyData.topList;
-export const selectWorkout = (state: RootState): SpotifyPlaylist[] | null =>
-  state.spotifyData.workout;
-export const selectMood = (state: RootState): SpotifyPlaylist[] | null =>
-  state.spotifyData.mood;
-export const selectParty = (state: RootState): SpotifyPlaylist[] | null =>
-  state.spotifyData.party;
-export const selectCategories = (state: RootState): SpotifyCategory[] | null =>
-  state.spotifyData.category;
-export const selectCategoriesDetail = (
-  state: RootState
-): CategoriesDetail | null => state.spotifyData.categoryDetail;
-export const selectArtistDetail = (state: RootState): ArtistDetail | null =>
-  state.spotifyData.artistDetail;
 
 export default spotifyDataSlice.reducer;

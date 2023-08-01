@@ -80,7 +80,7 @@ export const getCategoryPlaylists = async (id: string) => {
   const response = await spotify.getCategoryPlaylists(id, {
     limit: 10,
   });
-  const playlistItems = response.playlists.items
+  const newPlaylistItems = response.playlists.items
     .filter((item) => item !== null)
     .map((item) => {
       return {
@@ -90,16 +90,23 @@ export const getCategoryPlaylists = async (id: string) => {
         image: item.images[0].url,
       };
     });
-  return playlistItems;
+  return newPlaylistItems;
 };
 
-export const getArtistTopTracks = async (id: string) => {
+export const getArtistDetail = async (id: string) => {
   const spotify = await getSpotifyAccess();
 
-  const res = await spotify.getArtistTopTracks(id, "CA");
-  const filteredTracks = res.tracks.map((track) => {
+  const artistInfo = await spotify.getArtist(id);
+  const artistTopTracks = await spotify.getArtistTopTracks(id, "CA");
+  const newArtistInfo = {
+    followers: artistInfo.followers.total,
+    genres: artistInfo.genres,
+    image: artistInfo.images[0].url,
+    name: artistInfo.name,
+  };
+  const newArtistTopTracks = artistTopTracks.tracks.map((track) => {
     return {
-      preview_url: track.preview_url,
+      url: track.preview_url,
       time: track.duration_ms,
       image: track.album.images[0].url,
       name: track.name,
@@ -107,5 +114,8 @@ export const getArtistTopTracks = async (id: string) => {
       artistsName: track.artists,
     };
   });
-  return filteredTracks;
+  return {
+    newArtistInfo,
+    newArtistTopTracks,
+  };
 };

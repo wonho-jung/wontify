@@ -30,7 +30,7 @@ function Player() {
                 path="/detail_playlist/:id"
                 element={<DetailPlaylistSong />}
               />
-              <Route path="/search/:name" element={<SearchCategory />} />
+              <Route path="/search/:id" element={<SearchCategory />} />
               <Route path="/search" element={<Search />} />
               <Route path="/artist/:id" element={<Artist />} />
               <Route path="/playlist/:id" element={<UserPlayList />} />

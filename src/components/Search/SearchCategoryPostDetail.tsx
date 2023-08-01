@@ -1,41 +1,59 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectCategoriesDetail } from "../../features/spotifyDataSlice";
+import { fetchCategoryPlaylists } from "../../features/spotifyDataSlice";
 import Post from "../shared/Post";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "app/hook";
+import LoadingScreen from "components/shared/LoadingScreen";
 
 function SearchCategoryPostDetail() {
-  const categoryDetail = useSelector(selectCategoriesDetail);
+  const dispatch = useAppDispatch();
+  const { status, playlistItems } = useAppSelector(
+    (state) => state.spotifyData.categoriesByName
+  );
+  const categories = useAppSelector(
+    (state) => state.spotifyData.categories.data.categoriesData
+  );
+  const { id } = useParams();
+  const categoryTitle = categories!.find((category) => category.id === id);
   const navigate = useNavigate();
 
+  //Load data when component mounts
   useEffect(() => {
-    //If user refresh the page, categoryDetail will be null. So, redirect to search page.
-    if (!categoryDetail) {
-      navigate(`/search`);
+    dispatch(fetchCategoryPlaylists(id as string));
+  }, [dispatch, id]);
+  //Check if there is no data, go back to search page
+  useEffect(() => {
+    if (status === "failed") {
+      alert("Failed to load category");
+      navigate("/search");
     }
-  }, [categoryDetail, navigate]);
+  }, [status, navigate]);
 
   return (
     <SearchCategoryContainer>
-      <HomeContentContainer>
-        {categoryDetail && (
-          <>
-            <h1>{categoryDetail!.name}</h1>
-            <PostsContainer>
-              {categoryDetail!.playlistItems.map((track, inx) => (
-                <Post
-                  key={inx}
-                  playlistId={track.id}
-                  image={track.image}
-                  artistsName={track.name}
-                  description={track.description}
-                />
-              ))}
-            </PostsContainer>
-          </>
-        )}
-      </HomeContentContainer>
+      {status === "loading" && <LoadingScreen />}
+      {status === "succeeded" && (
+        <HomeContentContainer>
+          {playlistItems && (
+            <>
+              <h1>{categoryTitle?.name}</h1>
+              <PostsContainer>
+                {playlistItems.length > 0 &&
+                  playlistItems.map((track, inx) => (
+                    <Post
+                      key={inx}
+                      playlistId={track.id}
+                      image={track.image}
+                      artistsName={track.name}
+                      description={track.description}
+                    />
+                  ))}
+              </PostsContainer>
+            </>
+          )}
+        </HomeContentContainer>
+      )}
     </SearchCategoryContainer>
   );
 }

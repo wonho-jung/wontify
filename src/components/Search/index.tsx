@@ -49,7 +49,9 @@ export interface ISearchResult {
 
 function Search() {
   const spotify = useContext(spotifyContext);
-  const category = useAppSelector((state) => state.spotifyData.category);
+  const category = useAppSelector(
+    (state) => state.spotifyData.categories.data.categoriesData
+  );
   const [inputValue, setInputValue] = useState("");
 
   const [searchResult, setSearchResult] = useState<null | ISearchResult>(null);
