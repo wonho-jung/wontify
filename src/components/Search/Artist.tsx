@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
@@ -14,6 +13,7 @@ function Artist() {
   const { status, artist } = useAppSelector(
     (state) => state.spotifyData.artistDetail
   );
+
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const [followNumber, setFollowNumber] = useState<null | number>(null);

@@ -1,58 +1,165 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "app/store";
+import {
+  addSongToPlaylist,
+  createPlaylist,
+  deletePlaylist,
+  deleteSongFromPlaylist,
+  getPlaylists,
+} from "backend";
 
-interface IPlaylists {
-  name: string;
-  _id: string;
-  songs: {
-    albumName: string;
-    artistsName: {
-      external_urls: {
-        spotify: string;
-      };
-      href: string;
-      id: string;
-      name: string;
-      type: string;
-      uri: string;
-    }[];
-    image: string;
+export interface ISongs {
+  albumName: string;
+  artistsName: {
+    external_urls: {
+      spotify: string;
+    };
+    href: string;
+    id: string;
     name: string;
-    time: number;
-    url: string;
+    type: string;
+    uri: string;
   }[];
+  id: string;
+  image: string | null;
+  name: string | null;
+  time: number | null;
+  url: string | null;
 }
 
 interface UserPlaylistState {
-  playlists: IPlaylists[] | [];
-  playlistId: string | null;
+  // fetchUserPlaylists
+  status: "idle" | "loading" | "succeeded" | "failed";
+  playlists:
+    | {
+        name: string;
+        _id: string;
+        songs: [] | ISongs[];
+      }[]
+    | [];
+  // createNewPlaylist, deleteUserPlaylist, addSongToUserPlaylist, deleteUserPlaylistSong
+  isPlaylistUpdated: boolean;
+  updatedError:
+    | "idle"
+    | "createNewPlaylist"
+    | "deletePlaylist"
+    | "addSongToUserPlaylist"
+    | "deleteUserPlaylistSong";
+  updatedErrorMessage: string;
 }
 
 const initialUserPlaylistState: UserPlaylistState = {
+  status: "idle",
   playlists: [],
-  playlistId: null,
+  //First time load, we need to fetchUserPlaylists
+  //When isPlaylistUpdated is true, call fetchUserPlaylists.
+  isPlaylistUpdated: true,
+  updatedError: "idle",
+  updatedErrorMessage: "",
 };
+
+export const fetchUserPlaylists = createAsyncThunk(
+  "userPlaylist/fetchUserPlaylists",
+  async () => {
+    const response = await getPlaylists();
+    return response.data;
+  }
+);
+export const createNewPlaylist = createAsyncThunk(
+  "userPlaylist/createNewPlaylist",
+  async (playlistName: string) => {
+    await createPlaylist({ name: playlistName });
+  }
+);
+export const deleteUserPlaylist = createAsyncThunk(
+  "userPlaylist/deletePlaylist",
+  async (playlistId: string) => {
+    await deletePlaylist(playlistId);
+  }
+);
+export const addSongToUserPlaylist = createAsyncThunk(
+  "userPlaylist/addSongToPlaylist",
+  async (props: { song: ISongs; userPlaylistId: string }) => {
+    const { song, userPlaylistId } = props;
+    await addSongToPlaylist({ data: song, id: userPlaylistId });
+  }
+);
+export const deleteUserPlaylistSong = createAsyncThunk(
+  "userPlaylist/deleteUserPlaylistSong",
+  async (props: { playlistId: string; songId: string }) => {
+    const { playlistId, songId } = props;
+    await deleteSongFromPlaylist({ id: playlistId, songId });
+  }
+);
 
 export const userPlaylistSlice = createSlice({
   name: "userPlaylist",
   initialState: initialUserPlaylistState,
 
   reducers: {
-    set_playlists: (state, action) => {
+    reset_updatedError: (state) => {
+      state.updatedError = "idle";
+      state.updatedErrorMessage = "";
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchUserPlaylists.pending, (state, action) => {
+      state.status = "loading";
+    });
+    builder.addCase(fetchUserPlaylists.fulfilled, (state, action) => {
+      state.status = "succeeded";
       state.playlists = action.payload;
-    },
+      state.isPlaylistUpdated = false;
+    });
+    builder.addCase(fetchUserPlaylists.rejected, (state, action) => {
+      state.status = "failed";
+    });
 
-    set_playlistId: (state, action) => {
-      state.playlistId = action.payload;
-    },
+    // After update playlist, we need to fetchUserPlaylists again.
+    // So we set isPlaylistUpdated to true to trigger fetchUserPlaylists.
+    builder.addCase(createNewPlaylist.fulfilled, (state, action) => {
+      state.isPlaylistUpdated = true;
+    });
+
+    builder.addCase(deleteUserPlaylist.fulfilled, (state, action) => {
+      state.isPlaylistUpdated = true;
+    });
+
+    builder.addCase(addSongToUserPlaylist.fulfilled, (state, action) => {
+      state.isPlaylistUpdated = true;
+    });
+    builder.addCase(deleteUserPlaylistSong.fulfilled, (state, action) => {
+      state.isPlaylistUpdated = true;
+    });
+    //update error
+    //TODO: make banner and show up in the top of the page.
+    builder.addCase(createNewPlaylist.rejected, (state, action) => {
+      state.updatedError = "createNewPlaylist";
+      state.updatedErrorMessage =
+        "create new playlist failed. Please try again.";
+    });
+    builder.addCase(deleteUserPlaylist.rejected, (state, action) => {
+      state.updatedError = "deletePlaylist";
+      state.updatedErrorMessage = "delete playlist failed. Please try again.";
+    });
+    builder.addCase(addSongToUserPlaylist.rejected, (state, action) => {
+      state.updatedError = "addSongToUserPlaylist";
+      state.updatedErrorMessage =
+        "add song to playlist failed. Please try again.";
+    });
+    builder.addCase(deleteUserPlaylistSong.rejected, (state, action) => {
+      state.updatedError = "deleteUserPlaylistSong";
+      state.updatedErrorMessage =
+        "delete song from playlist failed. Please try again.";
+    });
   },
 });
 
-export const { set_playlists, set_playlistId } = userPlaylistSlice.actions;
+export const { reset_updatedError } = userPlaylistSlice.actions;
 
 export const selectPlaylists = (state: RootState) =>
   state.userPlaylist.playlists;
-export const selectPlaylistId = (state: RootState) =>
-  state.userPlaylist.playlistId;
+export const selectIsPlaylistUpdated = (state: RootState) =>
+  state.userPlaylist.isPlaylistUpdated;
 
 export default userPlaylistSlice.reducer;

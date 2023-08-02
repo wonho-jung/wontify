@@ -61,7 +61,6 @@ export default function FormDialog({
             }}
             onClick={() => {
               handleSubmit();
-              handleClose();
             }}
           >
             {buttonText}

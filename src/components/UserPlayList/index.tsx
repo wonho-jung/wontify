@@ -1,72 +1,51 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { selectPlaylists } from "../../features/userPlaylistSlice";
+import { ISongs, selectPlaylists } from "../../features/userPlaylistSlice";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "../shared/SongRow";
-import { getPlaylistDetails } from "../../backend";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useAppSelector } from "app/hook";
 
-interface isUserAudioList {
-  albumName: string;
-  artistsName: {
-    external_urls: {
-      spotify: string;
-    };
-    href: string;
-    id: string;
-    name: string;
-    type: string;
-    uri: string;
-  }[];
-  image: string;
+interface IUserPlaylist {
   name: string;
-  time: number;
-  url: string;
+  _id: string;
+  songs: ISongs[] | [];
 }
 
 function UserPlayList() {
-  const [userAudioList, setUserAudioList] = useState<isUserAudioList[] | []>(
-    []
-  );
+  const [userPlaylist, setUserPlaylist] = useState<IUserPlaylist>({
+    name: "",
+    _id: "",
+    songs: [],
+  });
   const playlists = useAppSelector(selectPlaylists);
-  const location = useLocation();
-  const currentPath = location.pathname;
-  const lastPathSegment = currentPath.substring(
-    currentPath.lastIndexOf("/") + 1
-  );
-  const playlistName = playlists?.find((item) => item._id === lastPathSegment)
-    ?.name;
-
-  const removeSongListById = (id: string) => {
-    const newSongLists = userAudioList.filter((item: any) => item.id !== id);
-    setUserAudioList([...newSongLists]);
-  };
+  const { playlistId } = useParams();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getPlaylistDetails(lastPathSegment);
-        if (!res.data.songs) {
-          setUserAudioList([]);
-          return;
-        }
-        setUserAudioList(res.data.songs);
-      } catch (err) {
-        console.log(err);
-      }
+    if (playlists.length === 0) {
+      return;
+    }
+    const playlist = playlists.find((item) => item._id === playlistId) || {
+      name: "",
+      _id: "",
+      songs: [],
     };
-    fetchData();
-  }, [lastPathSegment]);
+
+    setUserPlaylist({
+      name: playlist.name,
+      _id: playlist._id,
+      songs: playlist.songs || [],
+    });
+  }, [playlists, playlistId]);
 
   return (
     <BodyContainer>
       <BodyInfo>
         <BodyInfoText>
           <strong>PLAYLIST</strong>
-          <h2>{playlistName}</h2>
+          <h2>{userPlaylist.name}</h2>
         </BodyInfoText>
       </BodyInfo>
       <BodySongs>
@@ -76,11 +55,12 @@ function UserPlayList() {
           <MoreHorizIcon />
         </BodyIcons>
 
-        {userAudioList.length > 0 &&
-          userAudioList.map((item: any, inx: number) => (
+        {userPlaylist.songs.length > 0 &&
+          userPlaylist.songs.map((item: any, inx: number) => (
             <SongRow
               id={item.id}
-              audioList={userAudioList}
+              playlistId={playlistId}
+              audioList={userPlaylist.songs}
               key={inx}
               url={item.url}
               time={item.time}
@@ -89,7 +69,6 @@ function UserPlayList() {
               albumName={item.albumName}
               artistsName={item.artistsName}
               isUserPlaylist={true}
-              removeSongListById={removeSongListById}
             />
           ))}
       </BodySongs>

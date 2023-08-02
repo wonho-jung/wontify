@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import SongRow from "./shared/SongRow";
-import { spotifyContext } from "App";
 import LoadingScreen from "./shared/LoadingScreen";
+import { getSpotifyPlaylist } from "utils/spotify";
 
-interface IdetailPlaylists {
+interface IDetailPlaylists {
   image: string;
   name: string;
   description: string | null;
@@ -35,13 +35,12 @@ interface IdetailPlaylists {
 }
 
 function DetailPlaylist() {
-  const spotify = useContext(spotifyContext);
   const [
     detailPlaylists,
     setDetailPlaylists,
-  ] = useState<IdetailPlaylists | null>(null);
+  ] = useState<IDetailPlaylists | null>(null);
 
-  const playlistId = window.location?.href.split("/")[4];
+  const { playlistId } = useParams();
 
   const [isLoadData, setIsLoadData] = useState(false);
 
@@ -50,26 +49,14 @@ function DetailPlaylist() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await spotify.getPlaylist(playlistId);
-
-        //Fix error TS2339: Property 'preview_url' does not exist on type 'TrackObjectFull | EpisodeObjectFull'.
-        //'TrackObjectFull | EpisodeObjectFull' does not contain the property 'preview_url' but it does exist.
-        const filteredTracks = res.tracks.items.map((item: any) => {
-          return {
-            url: item.track.preview_url,
-            name: item.track.name,
-            time: item.track.duration_ms,
-            image: item.track.album.images[0].url,
-            albumName: item.track.album.name,
-            artistsName: item.track.artists,
-          };
-        });
-
+        const { image, name, description, tracks } = await getSpotifyPlaylist(
+          playlistId as string
+        );
         setDetailPlaylists({
-          image: res.images[0].url,
-          name: res.name,
-          description: res.description,
-          tracks: filteredTracks,
+          image,
+          name,
+          description,
+          tracks,
         });
         setIsLoadData(true);
       } catch (err) {

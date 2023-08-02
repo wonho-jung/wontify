@@ -1,12 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 
 import styled from "styled-components";
 import SearchCategoryPost from "./SearchCategoryPost";
 import SearchHeader from "./SearchHeader";
 import SearchDetail from "./SearchDetail";
-import { spotifyContext } from "App";
 import { useAppSelector } from "app/hook";
 import { SpotifyCategory } from "features/spotifyDataSlice";
+import { getSearchResult } from "utils/spotify";
 
 export interface IArtists {
   id: string;
@@ -19,7 +19,7 @@ export interface IArtists {
     genres: string[];
   };
 }
-export interface Itracks {
+export interface ITracks {
   url: string;
   time: number;
   image: string;
@@ -44,11 +44,10 @@ export interface ISearchResult {
   topFollowers: number;
   topGenres: string[];
   artists: IArtists[];
-  tracks: Itracks[];
+  tracks: ITracks[];
 }
 
 function Search() {
-  const spotify = useContext(spotifyContext);
   const category = useAppSelector(
     (state) => state.spotifyData.categories.data.categoriesData
   );
@@ -67,56 +66,25 @@ function Search() {
       return;
     }
     try {
-      const res = await spotify.search(inputValue, ["artist", "track"], {
-        limit: 14,
-      });
+      const {
+        topId,
+        topName,
+        topImage,
+        topFollowers,
+        topGenres,
+        searchResultArtists,
+        searchResultTracks,
+      } = await getSearchResult(inputValue);
 
-      if (res.artists!.items.length !== 0) {
-        const artistsArray = res.artists!.items.map((item) => {
-          return {
-            id: item.id,
-            name: item.name,
-            image: item.images[0]?.url,
-            artistInfo: {
-              name: item.name,
-              image: item.images[0]?.url,
-              followers: item.followers.total,
-              genres: item.genres,
-            },
-          };
-        });
-        const artistsTracksArray = res
-          .tracks!.items.filter((item) => !!item.preview_url)
-          .map((item) => {
-            return {
-              url: item.preview_url,
-              time: item.duration_ms,
-              image: item.album.images[0].url,
-              name: item.name,
-              albumName: item.album.name,
-              artistsName: item.artists,
-            };
-          });
-        setSearchResult({
-          topId: res.artists!.items[0].id,
-          topName: res.artists!.items[0].name,
-          topImage: res.artists!.items[0].images[0].url,
-          topFollowers: res.artists!.items[0].followers.total,
-          topGenres: res.artists!.items[0].genres,
-          artists: artistsArray,
-          tracks: artistsTracksArray,
-        });
-      } else {
-        setSearchResult({
-          topId: "",
-          topName: "",
-          topImage: "",
-          topFollowers: 0,
-          topGenres: [],
-          artists: [],
-          tracks: [],
-        });
-      }
+      setSearchResult({
+        topId,
+        topName,
+        topImage,
+        topFollowers,
+        topGenres,
+        artists: searchResultArtists,
+        tracks: searchResultTracks,
+      });
     } catch (err) {
       alert(err);
     }
@@ -149,7 +117,7 @@ function Search() {
         </>
       ) : (
         <>
-          {!searchResult.topId && <h1>No result</h1>}
+          {searchResult.artists.length === 0 && <h1>No result</h1>}
           {searchResult && searchResult.artists.length !== 0 && (
             <SearchDetail searchResult={searchResult} />
           )}

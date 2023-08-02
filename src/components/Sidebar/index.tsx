@@ -3,20 +3,25 @@ import styled from "styled-components";
 import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import SidebarOptions from "./SidebarOptions";
 import AddIcon from "@mui/icons-material/Add";
 import { IconButton, TextField } from "@mui/material";
-import { createPlaylist, deletePlaylist, getPlaylists } from "../../backend";
 import FormDialog from "../shared/designSystem";
 import {
-  set_playlists,
   selectPlaylists,
+  fetchUserPlaylists,
+  createNewPlaylist,
+  selectIsPlaylistUpdated,
+  deleteUserPlaylist,
 } from "../../features/userPlaylistSlice";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { useAppSelector } from "app/hook";
 const SAM_PLAY_LIST = "sam_playlist";
 
 function Sidebar() {
+  const isPlaylistUpdated = useAppSelector(selectIsPlaylistUpdated);
+
   const [createPlaylistDialogOpen, setCreatePlaylistDialogOpen] = useState(
     false
   );
@@ -28,55 +33,29 @@ function Sidebar() {
   const dispatch = useDispatch();
   const playlists = useSelector(selectPlaylists);
 
-  const playlistExists = playlists?.some(
-    (playlist) => playlist.name === playlistName
+  const playlistExists = playlists.some(
+    (playlist) => playlist?.name === playlistName
   );
 
-  const dialogOpenHandler = () => {
-    setCreatePlaylistDialogOpen(true);
-  };
-  const reloadGetPlaylists = () => {
-    return getPlaylists()
-      .then((res) => {
-        dispatch(set_playlists(res.data));
-      })
-      .catch((err) => {
-        console.log("getPlaylists", err);
-      });
-  };
-  const createDialogCloseHandler = () => {
-    //Reload playlists after 500ms, to give enough time for the backend to create the playlist
-    const reloadTimeout = setTimeout(() => {
-      reloadGetPlaylists().finally(() => {
-        setCreatePlaylistDialogOpen(false);
-        setPlaylistName("");
-      });
-    }, 100);
-    return () => clearTimeout(reloadTimeout);
-  };
-  const createDialogSubmitHandler = () => {
-    createPlaylist({ name: playlistName });
-  };
-
-  const deleteDialogCloseHandler = () => {
-    const reloadTimeout = setTimeout(() => {
-      reloadGetPlaylists().finally(() => {
-        setDeletePlaylistDialogOpen(false);
-        setDeleteId("");
-      });
-    }, 100);
-    return () => clearTimeout(reloadTimeout);
-  };
-  const deleteDialogSubmitHandler = () => {
-    deletePlaylist(deleteId).then(() => {
-      reloadGetPlaylists();
-    });
+  const dialogCloseHandler = ({
+    setDialogClose,
+    setInputValue = null,
+  }: {
+    setDialogClose: React.Dispatch<React.SetStateAction<boolean>>;
+    setInputValue?: React.Dispatch<React.SetStateAction<string>> | null;
+  }) => {
+    setDialogClose(false);
+    if (!!setInputValue) {
+      setInputValue("");
+    }
   };
 
   useEffect(() => {
-    reloadGetPlaylists();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // Fetch user playlists when component mounts and when playlist is updated
+    if (isPlaylistUpdated) {
+      dispatch(fetchUserPlaylists());
+    }
+  }, [dispatch, isPlaylistUpdated]);
 
   return (
     <SidebarContainer>
@@ -84,17 +63,19 @@ function Sidebar() {
         src="https://getheavy.com/wp-content/uploads/2019/12/spotify2019-830x350.jpg"
         alt=""
       />
-      <Link to="/" style={{ textDecoration: "none" }}>
+      <Link to="/home">
         <SidebarOptions title="Home" Icon={HomeIcon} />
       </Link>
-      <Link to="/search" style={{ textDecoration: "none" }}>
+      <Link to="/search">
         <SidebarOptions title="Search" Icon={SearchIcon} />
       </Link>
       <AddPlayListContainer>
         <strong>PLAYLISTS</strong>
         <IconButton
-          disabled={playlists && playlists.length > 5}
-          onClick={dialogOpenHandler}
+          disabled={playlists.length > 5}
+          onClick={() => {
+            setCreatePlaylistDialogOpen(true);
+          }}
         >
           <AddIcon sx={{ color: "#ffffff" }} />
         </IconButton>
@@ -104,10 +85,21 @@ function Sidebar() {
       <FormDialog
         dialogTitle="Create Playlist"
         dialogContentText="Enter a name for your new playlist."
-        open={createPlaylistDialogOpen}
-        handleClose={createDialogCloseHandler}
-        handleSubmit={createDialogSubmitHandler}
         buttonText="Create"
+        open={createPlaylistDialogOpen}
+        handleClose={() => {
+          dialogCloseHandler({
+            setDialogClose: setCreatePlaylistDialogOpen,
+            setInputValue: setPlaylistName,
+          });
+        }}
+        handleSubmit={() => {
+          dispatch(createNewPlaylist(playlistName));
+          dialogCloseHandler({
+            setDialogClose: setCreatePlaylistDialogOpen,
+            setInputValue: setPlaylistName,
+          });
+        }}
         buttonDisabled={playlistName === "" || playlistExists}
       >
         <TextField
@@ -148,8 +140,7 @@ function Sidebar() {
           }
         />
       </FormDialog>
-      {!!playlists &&
-        playlists.length > 0 &&
+      {playlists.length > 0 &&
         playlists.map((playlist, idx) => (
           <PlaylistBox key={idx}>
             <SidebarOptions id={playlist._id} title={playlist.name} />
@@ -170,8 +161,17 @@ function Sidebar() {
         dialogTitle="Delete from Playlists?"
         dialogContentText="This action cannot be undone."
         open={deletePlaylistDialogOpen}
-        handleClose={deleteDialogCloseHandler}
-        handleSubmit={deleteDialogSubmitHandler}
+        handleClose={() => {
+          dialogCloseHandler({
+            setDialogClose: setDeletePlaylistDialogOpen,
+          });
+        }}
+        handleSubmit={() => {
+          dispatch(deleteUserPlaylist(deleteId));
+          dialogCloseHandler({
+            setDialogClose: setDeletePlaylistDialogOpen,
+          });
+        }}
         buttonText="Delete"
       />
     </SidebarContainer>
