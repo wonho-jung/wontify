@@ -30,8 +30,9 @@ function Player() {
                 path="/detail_playlist/:playlistId"
                 element={<DetailPlaylistSong />}
               />
-              <Route path="/search/:id" element={<SearchCategory />} />
               <Route path="/search" element={<Search />} />
+
+              <Route path="/search/:id" element={<SearchCategory />} />
               <Route path="/artist/:id" element={<Artist />} />
               <Route path="/playlist/:playlistId" element={<UserPlayList />} />
               <Route path="*" element={<Navigate to="/home" replace />} />
