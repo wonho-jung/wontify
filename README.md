@@ -13,32 +13,38 @@
 
 - Listen to the preview track and adjust the volume using the control
 - Search for artists or songs using the search bar
-- Get song recommendations based on your playlist
-- Select tracks to add to your existing Spotify playlist
-- Preview songs from recently played albums, new releases, top playlists, workout, mood, and other genres
+- Add a new song to the playlist / Create a new playlist (connected with wontify-backend)
+- Preview songs from new releases, top playlists, workout, mood, and other genres
 
-## Pages
+## Pages / Routes
 
-- Login
-- Home
-- Search
-- Search detail
+- /home
+- /search
+- /search/:id
+- /artist/:id
+- /playlist/:playlistId
+- /detail_playlist/:playlistId
+
 - Playlists
 
 
 ## API Verbs
-- getUserPlaylists          -[v] 
-- getMyRecentlyPlayedTracks -[v] 
-- getNewReleases            -[v]  
+
+### Spotify API
 - getCategoryPlaylists      -[v] 
 - getCategories             -[v] 
-- addTracksToPlaylist       -[v]  
+- getArtist                 -[v]  
+- getArtistTopTracks        -[v] 
 - getPlaylist               -[v] 
-- getRecommendations        -[v] 
-- getAlbumTracks            -[v] 
-- getAlbum                  -[v] 
-- search                    -[v] 
-- getCategoryPlaylists      -[v]
+- search                    -[v]
+
+### Backend API(wontify-backend)
+- createPlaylist            -[v]
+- getPlaylists              -[v]
+- addSongToPlaylist         -[v]
+- getPlaylistDetails        -[v]
+- deletePlaylist            -[v]
+- deleteSongFromPlaylist    -[v]
 
 
 
@@ -73,8 +79,5 @@ const clientId = process.env.REACT_APP_CLIENT_ID;
 const clientSecret = process.env.REACT_APP_CLIENT_SECRET_KEY;
 ```
 
-## Update / News (26/06/2023)
-You can't let the user sign in/up to get a token to call API anymore in the Development mode.
-Spotify Dashboard role is changed. The user needs to be added to the Spotify dashboard user setting to get the right token to call API. Such as getPlaylist(), getMyRecentlyPlayedTracks()..
  
 
