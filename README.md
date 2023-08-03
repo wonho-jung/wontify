@@ -29,7 +29,8 @@
 
 
 ## API Verbs
-# Spotify API
+
+### Spotify API
 - getCategoryPlaylists      -[v] 
 - getCategories             -[v] 
 - getArtist                 -[v]  
@@ -37,7 +38,7 @@
 - getPlaylist               -[v] 
 - search                    -[v]
 
-# Backend API(wontify-backend)
+### Backend API(wontify-backend)
 - createPlaylist            -[v]
 - getPlaylists              -[v]
 - addSongToPlaylist         -[v]
