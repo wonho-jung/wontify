@@ -5,8 +5,8 @@ import Post from "../shared/Post";
 import { useAppSelector } from "app/hook";
 
 function Home() {
-  const { topList, workout, party, mood } = useAppSelector(
-    (state) => state.spotifyData
+  const { toplistsData, workoutData, partyData, moodData } = useAppSelector(
+    (state) => state.spotifyData.categories.data
   );
 
   return (
@@ -16,7 +16,7 @@ function Home() {
         <HomeContentContainer>
           <h1>Top play lists</h1>
           <PostsContainer>
-            {topList!.map((track, inx) => (
+            {toplistsData!.map((track, inx) => (
               <Post
                 key={inx}
                 playlistId={track.playlistId}
@@ -31,7 +31,7 @@ function Home() {
         <HomeContentContainer>
           <h1>Work out</h1>
           <PostsContainer>
-            {workout!.map((track, inx) => (
+            {workoutData!.map((track, inx) => (
               <Post
                 key={inx}
                 playlistId={track.playlistId}
@@ -45,7 +45,7 @@ function Home() {
         <HomeContentContainer>
           <h1>Mood</h1>
           <PostsContainer>
-            {mood!.map((track, inx) => (
+            {moodData!.map((track, inx) => (
               <Post
                 key={inx}
                 playlistId={track.playlistId}
@@ -60,7 +60,7 @@ function Home() {
         <HomeContentContainer>
           <h1>Party</h1>
           <PostsContainer>
-            {party!.map((track, inx) => (
+            {partyData!.map((track, inx) => (
               <Post
                 key={inx}
                 playlistId={track.playlistId}

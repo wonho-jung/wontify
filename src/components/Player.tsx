@@ -27,13 +27,13 @@ function Player() {
             <Routes>
               <Route path="/home" element={<Home />} />
               <Route
-                path="/detail_playlist/:id"
+                path="/detail_playlist/:playlistId"
                 element={<DetailPlaylistSong />}
               />
-              <Route path="/search/:name" element={<SearchCategory />} />
+              <Route path="/search/:id" element={<SearchCategory />} />
               <Route path="/search" element={<Search />} />
               <Route path="/artist/:id" element={<Artist />} />
-              <Route path="/playlist/:id" element={<UserPlayList />} />
+              <Route path="/playlist/:playlistId" element={<UserPlayList />} />
               <Route path="*" element={<Navigate to="/home" replace />} />
             </Routes>
           </PlayerBody>

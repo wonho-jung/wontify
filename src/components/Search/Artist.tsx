@@ -1,64 +1,72 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { selectArtistDetail } from "../../features/spotifyDataSlice";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SongRow from "../shared/SongRow";
 import { Button } from "@material-ui/core";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "app/hook";
+import LoadingScreen from "components/shared/LoadingScreen";
+import { fetchArtistDetails } from "features/spotifyDataSlice";
 function Artist() {
   const navigate = useNavigate();
+  const { status, artist } = useAppSelector(
+    (state) => state.spotifyData.artistDetail
+  );
 
-  const artistDetail = useSelector(selectArtistDetail);
-
+  const { id } = useParams();
+  const dispatch = useAppDispatch();
   const [followNumber, setFollowNumber] = useState<null | number>(null);
   const [btnText, setBtnText] = useState("Follow");
 
-  //If there is no data, go back to search page
+  //Load data when component mounts
   useEffect(() => {
-    if (!artistDetail) {
-      navigate(`/search`);
-    }
-  }, [artistDetail, navigate]);
-
+    dispatch(fetchArtistDetails(id as string));
+  }, [dispatch, id]);
+  //Check if there is no data, go back to search page
   useEffect(() => {
-    if (artistDetail) {
-      setFollowNumber(artistDetail.artistInfo.followers);
+    if (status === "failed") {
+      alert("Failed to load artist");
+      navigate("/search");
     }
-  }, [artistDetail]);
+  }, [status, navigate]);
 
-  const followArtist = () => {
+  //Set follow number when artist info is loaded
+  useEffect(() => {
+    if (!!artist.info) {
+      setFollowNumber(artist.info!.followers);
+    }
+    return () => {
+      setFollowNumber(null);
+    };
+  }, [artist.info]);
+
+  const followOnClickHandler = () => {
     if (btnText === "Follow") {
-      setFollowNumber(artistDetail!.artistInfo.followers + 1);
-
+      setFollowNumber(artist.info!.followers + 1);
       setBtnText("Followed");
     } else {
-      setFollowNumber(artistDetail!.artistInfo.followers);
-
+      setFollowNumber(artist.info!.followers);
       setBtnText("Follow");
     }
   };
+
   return (
     <ArtistContainer>
-      {artistDetail?.artistInfo.image &&
-      artistDetail?.artistInfo.name &&
-      artistDetail?.artistInfo.genres &&
-      followNumber ? (
+      {status === "loading" && <LoadingScreen />}
+      {status === "succeeded" && (
         <>
           <ArtistInfo>
-            <img src={artistDetail?.artistInfo.image} alt="" />
+            <img src={artist.info!.image} alt="" />
             <ArtistInfoText>
               <strong>ARTIST</strong>
 
-              <h1>{artistDetail?.artistInfo.name}</h1>
+              <h1>{artist.info!.name}</h1>
 
-              {artistDetail?.artistInfo.genres && (
+              {artist.info!.genres.length > 0 && (
                 <p>
                   Genres:{" "}
-                  {artistDetail?.artistInfo.genres
-                    .map((genre: string) => genre)
-                    .join(", ")}
+                  {artist.info!.genres.map((genre: string) => genre).join(", ")}
                 </p>
               )}
               <p>Follower: {followNumber}</p>
@@ -68,14 +76,14 @@ function Artist() {
           <ArtistSongs>
             <ArtistIcons>
               <PlayCircleFilledIcon className="Artist__shuffle" />
-              <Button onClick={followArtist}>{btnText}</Button>
+              <Button onClick={followOnClickHandler}>{btnText}</Button>
               <MoreHorizIcon />
             </ArtistIcons>
             <h1>Popular Top 10</h1>
-            {artistDetail?.artistDetail.map((item, inx) => (
+            {artist.tracks!.map((item, inx) => (
               <SongRow
                 key={inx}
-                audioList={artistDetail.artistDetail}
+                audioList={artist.tracks!}
                 url={item.url}
                 time={item.time}
                 image={item.image}
@@ -86,8 +94,6 @@ function Artist() {
             ))}
           </ArtistSongs>
         </>
-      ) : (
-        <h1 style={{ fontSize: "30px" }}>No data.. go back to Search</h1>
       )}
     </ArtistContainer>
   );

@@ -1,62 +1,28 @@
-import React, { useContext } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
 import styled from "styled-components";
-import { set_artistDetail } from "../../features/spotifyDataSlice";
 import SearchArtistPost from "./SearchArtistPost";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import SongRow from "../shared/SongRow";
-import { useNavigate } from "react-router-dom";
-import { spotifyContext } from "App";
+
 import { ISearchResult } from "./index";
+import { Link } from "react-router-dom";
 
 function SearchDetail({ searchResult }: { searchResult: ISearchResult }) {
-  const spotify = useContext(spotifyContext);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const getArtistTracks = async () => {
-    try {
-      const res = await spotify.getArtistTopTracks(searchResult.topId, "CA");
-      const filteredTracks = res.tracks.map((track) => {
-        return {
-          url: track.preview_url,
-          time: track.duration_ms,
-          image: track.album.images[0].url,
-          name: track.name,
-          albumName: track.album.name,
-          artistsName: track.artists,
-        };
-      });
-      dispatch(
-        set_artistDetail({
-          artistDetail: filteredTracks,
-          artistInfo: {
-            name: searchResult.topName,
-            image: searchResult.topImage,
-            followers: searchResult.topFollowers,
-            genres: searchResult.topGenres,
-          },
-        })
-      );
-      navigate(`/artist/${searchResult.topId}`);
-    } catch (err) {
-      alert(err);
-    }
-  };
-
   return (
     <SearchResultContainer>
       <TopResultBox>
         <ResultLeft>
           <h3>Top result</h3>
-
-          <PostContainer>
-            <PostContent onClick={getArtistTracks}>
-              <img src={searchResult.topImage} alt="" />
-              <h2>{searchResult.topName}</h2>
-              <h3>Artist</h3>
-              <PlayCircleOutlineIcon className="icon" fontSize="large" />
-            </PostContent>
-          </PostContainer>
+          <Link to={`/artist/${searchResult.topId}`}>
+            <PostContainer>
+              <PostContent>
+                <img src={searchResult.topImage} alt="" />
+                <h2>{searchResult.topName}</h2>
+                <h3>Artist</h3>
+                <PlayCircleOutlineIcon className="icon" fontSize="large" />
+              </PostContent>
+            </PostContainer>
+          </Link>
         </ResultLeft>
         <ResultRight>
           <h3>Songs</h3>
@@ -85,7 +51,6 @@ function SearchDetail({ searchResult }: { searchResult: ISearchResult }) {
             id={item.id}
             image={item.image}
             name={item.name}
-            artistInfo={item.artistInfo}
           />
         ))}
       </Test>

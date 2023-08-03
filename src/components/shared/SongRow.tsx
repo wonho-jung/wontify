@@ -2,7 +2,6 @@ import { Button } from "@material-ui/core";
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
-import { useDispatch, useSelector } from "react-redux";
 import {
   set_footerAudioState,
   set_isAudioPlaying,
@@ -10,16 +9,13 @@ import {
   set_currentTime,
 } from "../../features/audioStatusSlice";
 import {
+  addSongToUserPlaylist,
+  deleteUserPlaylistSong,
   selectPlaylists,
-  set_playlists,
 } from "../../features/userPlaylistSlice";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
-import {
-  addSongToPlaylist,
-  deleteSongFromPlaylist,
-  getPlaylists,
-} from "../../backend";
+
 import FormDialog from "./designSystem";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
@@ -27,7 +23,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { audioContext } from "components/Player";
-import { useAppSelector } from "app/hook";
+import { useAppDispatch, useAppSelector } from "app/hook";
 
 interface ISongRow {
   url: string | null;
@@ -63,7 +59,7 @@ interface ISongRow {
   }[];
   isUserPlaylist?: boolean;
   id?: string;
-  removeSongListById?: ((id: string) => void) | null;
+  playlistId?: string;
 }
 function SongRow({
   url,
@@ -75,21 +71,23 @@ function SongRow({
   audioList,
   isUserPlaylist = false,
   id = "",
-  removeSongListById = null,
+  playlistId = "",
 }: ISongRow) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { currentPlayingURL } = useAppSelector((state) => state.audioStatus);
-  const playlists = useSelector(selectPlaylists);
+  const playlists = useAppSelector(selectPlaylists);
   const [addSongDialogOpen, setAddSongDialogOpen] = useState(false);
   const [userPlaylistId, setUserPlaylistId] = useState("");
-  const playlistId = window.location?.pathname.split("/")[2];
   const audioObject = useContext(audioContext);
-  const deleteSongHandler = () => {
-    deleteSongFromPlaylist(playlistId, id).then((res) => {
-      removeSongListById && removeSongListById(id);
-    });
-  };
 
+  const deleteSongHandler = () => {
+    dispatch(
+      deleteUserPlaylistSong({
+        playlistId,
+        songId: id,
+      })
+    );
+  };
   const dialogOpenHandler = () => {
     setAddSongDialogOpen(true);
   };
@@ -97,33 +95,24 @@ function SongRow({
     setUserPlaylistId("");
     setAddSongDialogOpen(false);
   };
-
   const dialogSubmitHandler = () => {
-    addSongToPlaylist({
-      data: {
-        id: uuidv4(),
-        url,
-        image,
-        name,
-        albumName,
-        artistsName,
-        time,
-      },
-      id: userPlaylistId,
-    })
-      .then((res) => {
-        getPlaylists()
-          .then((res) => {
-            dispatch(set_playlists(res.data));
-          })
-          .catch((err) => {
-            console.log("getPlaylists", err);
-          });
+    dispatch(
+      addSongToUserPlaylist({
+        song: {
+          id: uuidv4(),
+          url,
+          image,
+          name,
+          albumName,
+          artistsName,
+          time,
+        },
+        userPlaylistId,
       })
-      .catch((err) => {
-        console.log("addSongToPlaylist", err);
-      });
+    );
+    dialogCloseHandler();
   };
+
   const playSong = () => {
     dispatch(set_currentPlayingURL(url));
     dispatch(set_isAudioPlaying(true));

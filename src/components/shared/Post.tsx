@@ -11,7 +11,7 @@ interface IPost {
   description?: string | null;
   playlistId: string;
 }
-
+//Todo: combine this component with SearchCategoryPost component
 function Post({
   image,
   name = null,
@@ -20,11 +20,8 @@ function Post({
   playlistId,
 }: IPost) {
   return (
-    <PostContainer>
-      <Link
-        to={`/detail_playlist/${playlistId}`}
-        style={{ textDecoration: "none", color: "white" }}
-      >
+    <Link to={`/detail_playlist/${playlistId}`}>
+      <PostContainer>
         <PostContent>
           <img src={image && image} alt="" />
           <h4>{artistsName && artistsName}</h4>
@@ -32,8 +29,8 @@ function Post({
           <p>{description && description}</p>
         </PostContent>
         <PlayCircleOutlineIcon className="icon" fontSize="large" />
-      </Link>
-    </PostContainer>
+      </PostContainer>
+    </Link>
   );
 }
 

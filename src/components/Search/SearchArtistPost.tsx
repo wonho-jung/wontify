@@ -1,62 +1,26 @@
-import React, { useContext } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
 import styled from "styled-components";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
-import { set_artistDetail } from "../../features/spotifyDataSlice";
-import { useNavigate } from "react-router-dom";
-import { spotifyContext } from "App";
+import { Link } from "react-router-dom";
 
 interface ISearchArtistPost {
   image: string;
   name: string;
   id: string;
-  artistInfo: {
-    name: string;
-    image: string;
-    followers: number;
-    genres: string[];
-  };
 }
 
-function SearchArtistPost({ image, name, id, artistInfo }: ISearchArtistPost) {
-  const spotify = useContext(spotifyContext);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const sendToArtiest = async () => {
-    try {
-      const res = await spotify.getArtistTopTracks(id, "CA");
-      const filteredTracks = res.tracks.map((track) => {
-        return {
-          preview_url: track.preview_url,
-          time: track.duration_ms,
-          image: track.album.images[0].url,
-          name: track.name,
-          albumName: track.album.name,
-          artistsName: track.artists,
-        };
-      });
-      dispatch(
-        set_artistDetail({
-          artistDetail: filteredTracks,
-          artistInfo: artistInfo,
-        })
-      );
-
-      navigate(`/artist/${id}`);
-    } catch (err) {
-      alert(err);
-    }
-  };
-
+function SearchArtistPost({ image, name, id }: ISearchArtistPost) {
   return (
-    <PostContainer onClick={sendToArtiest}>
-      <PostContent>
-        <img src={image} alt="artist" />
-        <p>{name && name}</p>
-        <p>Artist</p>
-        <PlayCircleOutlineIcon className="icon" fontSize="large" />
-      </PostContent>
-    </PostContainer>
+    <Link to={`/artist/${id}`}>
+      <PostContainer>
+        <PostContent>
+          <img src={image} alt="artist" />
+          <p>{name && name}</p>
+          <p>Artist</p>
+          <PlayCircleOutlineIcon className="icon" fontSize="large" />
+        </PostContent>
+      </PostContainer>
+    </Link>
   );
 }
 
