@@ -4,6 +4,7 @@ import {
   getCategories,
   getCategoryPlaylists,
 } from "utils/spotify";
+//Todo: Remove this.
 //categoriesDetail
 // interface CategoriesDetail {
 //   id: string;
