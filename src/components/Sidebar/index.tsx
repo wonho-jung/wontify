@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
-import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import SidebarOptions from "./SidebarOptions";
 import AddIcon from "@mui/icons-material/Add";
@@ -16,11 +15,14 @@ import {
   deleteUserPlaylist,
 } from "../../features/userPlaylistSlice";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import { useAppSelector } from "app/hook";
-const SAM_PLAY_LIST = "sam_playlist";
+import { useAppDispatch, useAppSelector } from "app/hook";
+import samLogo from "../../assets/sam_logo.svg";
+
+export const SAM_PLAY_LIST = "sam_playlist";
 
 function Sidebar() {
   const isPlaylistUpdated = useAppSelector(selectIsPlaylistUpdated);
+  const playlists = useAppSelector(selectPlaylists);
 
   const [createPlaylistDialogOpen, setCreatePlaylistDialogOpen] = useState(
     false
@@ -30,8 +32,7 @@ function Sidebar() {
   );
   const [playlistName, setPlaylistName] = useState("");
   const [deleteId, setDeleteId] = useState("");
-  const dispatch = useDispatch();
-  const playlists = useSelector(selectPlaylists);
+  const dispatch = useAppDispatch();
 
   const playlistExists = playlists.some(
     (playlist) => playlist?.name === playlistName
@@ -59,10 +60,8 @@ function Sidebar() {
 
   return (
     <SidebarContainer>
-      <img
-        src="https://getheavy.com/wp-content/uploads/2019/12/spotify2019-830x350.jpg"
-        alt=""
-      />
+      <img src={samLogo} alt="logo" />
+
       <Link to="/home">
         <SidebarOptions title="Home" Icon={HomeIcon} />
       </Link>
@@ -181,14 +180,14 @@ function Sidebar() {
 export default Sidebar;
 
 const SidebarContainer = styled.div`
-  overflow-y: overlay;
-  min-height: 100vh;
-  flex: 0.2;
-  background-color: #040404;
-  color: white;
-  min-width: 230px;
-  padding-left: 10px;
-  padding-right: 10px;
+  // overflow-y: overlay;
+  // min-height: 100vh;
+  // flex: 0.2;
+  // background-color: #040404;
+  // color: white;
+  // min-width: 230px;
+  // padding-left: 10px;
+  // padding-right: 10px;
   > img {
     height: 70px;
     padding: 10px;

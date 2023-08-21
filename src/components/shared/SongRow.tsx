@@ -1,4 +1,4 @@
-import { Button } from "@material-ui/core";
+import Button from "@mui/material/Button";
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
@@ -13,8 +13,8 @@ import {
   deleteUserPlaylistSong,
   selectPlaylists,
 } from "../../features/userPlaylistSlice";
-import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
-import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
+import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
+import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 
 import FormDialog from "./designSystem";
 import Box from "@mui/material/Box";

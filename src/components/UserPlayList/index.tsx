@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { ISongs, selectPlaylists } from "../../features/userPlaylistSlice";
-import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import SongRow from "../shared/SongRow";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppSelector } from "app/hook";
 
 interface IUserPlaylist {
@@ -22,10 +22,14 @@ function UserPlayList() {
   });
   const playlists = useAppSelector(selectPlaylists);
   const { playlistId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (playlists.length === 0) {
       return;
+    }
+    if (!playlists.find((item) => item._id === playlistId)) {
+      navigate("/home");
     }
     const playlist = playlists.find((item) => item._id === playlistId) || {
       name: "",
@@ -38,7 +42,7 @@ function UserPlayList() {
       _id: playlist._id,
       songs: playlist.songs || [],
     });
-  }, [playlists, playlistId]);
+  }, [playlists, playlistId, navigate]);
 
   return (
     <BodyContainer>
@@ -50,7 +54,7 @@ function UserPlayList() {
       </BodyInfo>
       <BodySongs>
         <BodyIcons>
-          <PlayCircleFilledIcon className="body__shuffle" />
+          <PlayCircleOutlineIcon className="body__shuffle" />
           <FavoriteIcon fontSize="large" />
           <MoreHorizIcon />
         </BodyIcons>

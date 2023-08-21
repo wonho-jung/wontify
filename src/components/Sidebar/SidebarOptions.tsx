@@ -1,3 +1,4 @@
+import { useBreakpoints } from "components/shared/designSystem";
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -8,17 +9,18 @@ interface ISidebarOptions {
 }
 
 function SidebarOptions({ title, Icon, id }: ISidebarOptions) {
+  const { lg } = useBreakpoints();
   return (
     <>
       {id ? (
-        <Link to={`/playlist/${id}`} style={{ textDecoration: "none" }}>
-          <SidebarOptionContainer>
+        <Link to={`/playlist/${id}`}>
+          <SidebarOptionContainer lg={lg}>
             {Icon && <Icon />}
             {Icon ? <h4>{title}</h4> : <p>{title}</p>}
           </SidebarOptionContainer>
         </Link>
       ) : (
-        <SidebarOptionContainer>
+        <SidebarOptionContainer lg={lg}>
           {Icon && <Icon />}
           {Icon ? <h4>{title}</h4> : <p>{title}</p>}
         </SidebarOptionContainer>
@@ -29,7 +31,7 @@ function SidebarOptions({ title, Icon, id }: ISidebarOptions) {
 
 export default SidebarOptions;
 
-const SidebarOptionContainer = styled.div`
+const SidebarOptionContainer = styled.div<{ lg: boolean }>`
   color: gray;
   height: 40px;
   cursor: pointer;
@@ -38,7 +40,7 @@ const SidebarOptionContainer = styled.div`
   align-items: center;
 
   :hover {
-    color: white;
+    color: ${({ lg }) => (lg ? "#ffffff" : "#1db954")};
   }
   > .MuiSvgIcon-root {
     padding-left: 10px;

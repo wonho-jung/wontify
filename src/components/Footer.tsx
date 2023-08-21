@@ -17,8 +17,10 @@ import {
 } from "../features/audioStatusSlice";
 import { audioContext } from "./Player";
 import { useAppSelector } from "app/hook";
+import { useBreakpoints } from "./shared/designSystem";
 
 function Footer() {
+  const { lg } = useBreakpoints();
   const audioObject = useContext(audioContext);
 
   const {
@@ -145,9 +147,9 @@ function Footer() {
     updateAudioState(currentIndex, filterList);
   };
   return (
-    <FooterContainer>
+    <FooterContainer lg={lg}>
       {!isFooterStateEmpty ? (
-        <FooterLeft>
+        <FooterLeft lg={lg}>
           {footerAudioState.image && (
             <img src={footerAudioState.image} alt="" />
           )}
@@ -163,7 +165,7 @@ function Footer() {
           </FooterSongInfo>
         </FooterLeft>
       ) : (
-        <FooterLeft>
+        <FooterLeft lg={lg}>
           <img
             src="https://avatars.githubusercontent.com/u/62073233?s=400&u=3de8c98fc486dcaa0469a9d1be5f37133bf92aa1&v=4"
             alt=""
@@ -226,23 +228,24 @@ function Footer() {
 
 export default Footer;
 
-const FooterContainer = styled.div`
+const FooterContainer = styled.div<{ lg: boolean }>`
   position: fixed;
-  display: flex;
-  justify-content: space-around;
+  display: flex-column;
+  justify-content: ${({ lg }) => (lg ? "space-around" : "center")};
+  align-items: center;
   bottom: 0px;
-  height: 65px;
+  height: ${({ lg }) => (lg ? "65px" : "200px")};
   width: 100%;
   background-color: #282828;
   padding: 20px;
 `;
 
-const FooterLeft = styled.div`
-  flex: 0.3;
+const FooterLeft = styled.div<{ lg: boolean }>`
   display: flex;
+  justify-content: center;
   align-items: center;
   color: white;
-  width: 300px;
+  width: ${({ lg }) => (lg ? "300px" : "100%")};
   > img {
     height: 60px;
     width: 60px;
@@ -262,7 +265,6 @@ const FooterSongInfo = styled.div`
 `;
 
 const FooterCenter = styled.div`
-  flex: 0.4;
   padding: 0 100px;
   color: white;
   margin: 0 auto;
@@ -283,7 +285,6 @@ const FooterCenter = styled.div`
 `;
 
 const FooterRight = styled.div`
-  flex: 0.3;
   display: flex;
   align-items: center;
   justify-content: space-between;
